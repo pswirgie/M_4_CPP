@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/16 10:11:09 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/08/17 14:57:05 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/09/19 14:40:33 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ void		ScalarConverter::convert( const std::string& src )
 			return ;
 		}
 	}
+	std::cerr << RED << "Invalid arguement" << RESET << std::endl;
 }
 
 bool	ScalarConverter::isChar( const std::string& src)
@@ -195,7 +196,7 @@ void	ScalarConverter::printFloat( float value, size_t addPrecision )
 
 void	ScalarConverter::printDouble( double value, size_t addPrecision )
 {
-	std::cout << std::fixed << "double:	" << std::setprecision(addPrecision) << value << "f" << std::endl;
+	std::cout << std::fixed << "double:	" << std::setprecision(addPrecision) << value << std::endl;
 }
 
 size_t	ScalarConverter::setPrecision( const std::string& src )

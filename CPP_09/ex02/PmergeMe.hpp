@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/08/21 12:07:55 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/08/22 11:26:28 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,13 @@ class PmergeMe
 		void	_moveRange(size_t start, size_t length, size_t newIndex, std::vector<int>& src, std::vector<int>& dst);
 		void	_allLosersToArrayB( size_t sizeGrp, size_t nbGrp );
 		void	_pushToArr(size_t start, size_t length, std::vector<int>& src, std::vector<int>& dst);
+	
+		size_t	_getSuiteJacobsthal( void );
+		void	_setSuiteJacobsthal( void );
+		void	_printArrayJacobsthal( void );
+
 		std::vector<int>			_arrayA;
 		std::vector<int>			_arrayB;
+		std::vector<size_t>			_suiteJacobsthal; // give the last group Index for comparsion inorder to insert losers
 		std::vector<int>::iterator	it;
 };

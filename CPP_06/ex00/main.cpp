@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/16 09:52:14 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/08/17 14:19:00 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/09/19 14:38:35 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,6 @@
 #define RED		"\033[31m"
 #define BROWN	"\033[33m"
 #define RESET	"\033[0m"
-
-/*
-pour une valuer str donne
-
-ScalarConverter converter();
-converter.convert("42");
--> print output en char, int, float et double
-
-- As this class doesn’t need to store anything at all, it must not be instantiable by users.
-Except for char parameters, only the decimal notation will be used
-
-- parsing des entrées
-
-
-*/
 
 int main( int ac, char **av )
 {

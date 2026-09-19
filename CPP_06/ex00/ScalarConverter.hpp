@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/16 09:54:30 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/08/19 16:31:59 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/09/19 14:37:21 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,16 +58,5 @@ class ScalarConverter
 		static void		printFloat( float value, size_t add_precision );
 		static void		printDouble( double value, size_t add_precision );
 		static size_t	setPrecision ( const std::string& src );
-
-// char -> que de des lettres + len de 1
-
-// int -> que des lettres, -, entre int min et int max
-
-// float -> int + . + int + f, avec ou sans -
-// -> se reseigner pour -inff, +inff
-
-// double -> int + . + int, avec ou sans -
-
-// faire les conversions et voir s il y a une erreur
 
 };

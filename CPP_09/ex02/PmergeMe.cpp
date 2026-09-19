@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/08/21 12:08:14 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/08/22 12:11:36 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,10 +295,73 @@ size_t	PmergeMe::_nbGrp( size_t sizeArr, size_t sizeGrp )
 	return (res);
 }
 
+void	PmergeMe::_printArrayJacobsthal( void )
+{
+	size_t i = 0;
+	while (i < _suiteJacobsthal.size())
+	{
+		std::cout << std::setfill('0') << std::setw(2);
+		std::cout << _suiteJacobsthal[i] << " ";
+		++i;
+	}
+	std::cout << RESET << std::endl;
+}
+
+void	PmergeMe::_setSuiteJacobsthal( void )
+{
+	_suiteJacobsthal.push_back(1);
+	_suiteJacobsthal.push_back(1);
+	_suiteJacobsthal.push_back(3);
+}
+
+// 1 1 3
+// 3 + 3 - 1 = 5
+// 3 + 5 -1 = 7
+
+
+size_t	PmergeMe::_getSuiteJacobsthal( void )
+{
+	size_t	index = _suiteJacobsthal.at(1);
+	_suiteJacobsthal.push_back(_suiteJacobsthal.at(1) + _suiteJacobsthal.at(2) - 1);
+	_suiteJacobsthal.erase(_suiteJacobsthal.begin(), _suiteJacobsthal.begin() + 1);
+	return (index);
+}
+// toujours garder l index davant 
+// des que j utilise la fonction 
+//  - calculer un nouvel index
+// - retourner l index actuel
+// - retirer le 1er index
+
 void	PmergeMe::algo( void )
 {
-	printArray('A', true);
-	_orderGrp(GROUP);
-	printArray('A', true);
-	_allLosersToArrayB(GROUP, 0);
+// Suite de Jacobsthal------------
+	_setSuiteJacobsthal();
+
+	_getSuiteJacobsthal();
+	_printArrayJacobsthal();
+
+	// printArray('A', true);
+	// _orderGrp(GROUP);
+	// printArray('A', true);
+	// _allLosersToArrayB(GROUP, 0);
+
+
+	/*
+	taile du groupe = 2 puissance etape de la cursion  -> i 
+	if (groupes de la taille requise < 2)
+		return -: trie fini
+	Merge -> a partir des gagnants trier entre perdants et gagnants et deplacer, sort loser winner groups by pair
+	recursif = refaire merge puis insertion
+	if (min 3 groupes) sinon deja trier
+			 mettre les perdants dans l arrayB
+				- choisir le groupe perdants a prendre -> suite de machin
+					la suite de machin permet de donner la premiere position position
+					du grouppe perdant a prendre, puis c est vers la droite tant qu on ne recontre pas un groupe deja comparer
+						-> on peut compter le nb de groupes par index de machin
+							-> entre l index 1 et 3 il y a juste un groupe a comparer etc 
+							-> l index de machn commence a 1 attention
+				- choisir a partir du groupe de quel gagnant le comparer -> calcul nombre 
+					puis ce sera une comparaison vers la gauche
+	
+	*/
 }

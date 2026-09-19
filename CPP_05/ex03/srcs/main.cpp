@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/31 10:18:33 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/08/16 09:12:14 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/09/19 14:49:31 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,11 @@ int main( void )
 	martin.executeForm(*shrubbery);
 	martin.executeForm(*robotomy);
 	martin.executeForm(*presidential);
+
+	delete shrubbery;
+	delete shrubbery2;
+	delete robotomy;
+	delete presidential;
 
 	std::cout << std::endl << std::string(60, '-') << std::endl << std::endl;
 }

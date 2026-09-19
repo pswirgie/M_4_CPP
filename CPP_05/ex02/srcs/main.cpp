@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/31 10:18:33 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/08/15 12:24:10 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/09/19 14:47:59 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ int main( void )
 	lupin.signForm(*certificate);
 	lupin.executeForm(*certificate);
 
+	delete permis;
+	delete certificate;
 
 // Robotomy --------------------------------------------------------------------------------------------------------
 
@@ -90,7 +92,8 @@ int main( void )
 	alexandrin.executeForm(*degree);
 	std::cout << std::endl;
 
-	
+	delete degree;
+
 // Presidential --------------------------------------------------------------------------------------------------------
 
 	std::cout << std::endl << std::string(60, '-') << std::endl;
@@ -111,6 +114,8 @@ int main( void )
 	Bureaucrat albin("Alexandrin", 6);
 	albin.signForm(*punishement);
 	albin.executeForm(*punishement);
+
+	delete punishement;
 
 	std::cout << std::endl << std::string(60, '-') << std::endl << std::endl;
 }
