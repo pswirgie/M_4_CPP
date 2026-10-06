@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/08/22 11:26:28 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/06 14:17:50 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class PmergeMe
 {
 	public:
 		// PmergeMe( void );
-		void	insertNumber();
+		void	insertNumber( void );
 		int		argsToNumbers( int ac, char **av );
 		void	invalidArguement( void );
 		void	clearArrayA( void );
@@ -40,7 +40,7 @@ class PmergeMe
 		void	algo( void );
 		
 	private:
-		int		_sendToArray ( std::string str );
+		int		_sendToArray( std::string str );
 		bool	_isSorted( std::vector<int>& arr );
 		size_t	_nbGrp( size_t sizeArr, size_t sizeGrp );
 		void	_orderGrp( size_t sizeGrp );

@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 10:16:50 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/08/19 10:34:39 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/09/21 15:09:52 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int main( int , char ** )
 
 	std::cout << "ptr Adress :	" << ptr << std::endl;
 	std::cout << "myData adress :	" << &myData << std::endl;
+	std::cout << "myData adress :	" << myData.data << std::endl;
 
 	std::cout << std::endl << std::string(60, '-') << std::endl;
 }
