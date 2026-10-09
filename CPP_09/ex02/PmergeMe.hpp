@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/09 17:01:53 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/09 18:10:14 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ class PmergeMe
 		bool	_isSorted( std::vector<int>& arr );
 		size_t	_nbGrp( size_t sizeArr, size_t sizeGrp );
 		void	_orderGrp( size_t sizeGrp );
-		void	_moveRange( bool deleteFromSrc, size_t start, size_t length, size_t newIndex, std::vector<int>& src, std::vector<int>& dst );
+		void	_moveRange( bool deleteFromSrc, size_t startGrp, size_t length, size_t newIndex, std::vector<int>& src, std::vector<int>& dst );
 		void	_allLosersToArrayB( size_t sizeGrp, size_t nbGrp );
 		void	_pushToArr( size_t start, size_t length, bool deleteFromSrc, std::vector<int>& src, std::vector<int>& dst );
 		int		_binarySearch( std::vector<int>& arr, int nbTarget );

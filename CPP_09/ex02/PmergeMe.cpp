@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/09 17:07:21 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/09 18:23:34 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,19 +228,24 @@ void	PmergeMe::_orderGrp( size_t sizeGrp )
 }
 
 // Move a group
-void PmergeMe::_moveRange(bool deleteFromSrc, size_t start, size_t length, size_t newIndex,
+void PmergeMe::_moveRange(bool deleteFromSrc, size_t startGrp, size_t length, size_t newIndex,
 	std::vector<int>& src, std::vector<int>& dst)
 {
-	const size_t final_dst = newIndex > start ? newIndex - length : newIndex;
+	// if newIndex > startGrp -> - length -> have first index to move group
+	size_t final_dst = newIndex > startGrp ? newIndex - length : newIndex;
 	// std::cout << BLUE << "[DEBUG] moveRange -> start: " << start;
 	// std::cout << ", length: " << length << ", newIndex: " << newIndex;
 	// std::cout << std::endl;
+	// printMessage(DEBUGS, "_moveRange() - final_dst: ", final_dst);
+	// printMessage(DEBUGS, "_moveRange() - newIndex: ", newIndex);
+	// printMessage(DEBUGS, "_moveRange() - startGrp: ", startGrp);
 
-	std::vector<int> tmp(src.begin() + start, src.begin() + start + length);
+	std::vector<int> tmp(src.begin() + startGrp, src.begin() + startGrp + length);
 	if (deleteFromSrc)
-		src.erase(src.begin() + start, src.begin() + start + length);
-	printMessage(DEBUGS, "_moveRange() - tmp: ", "");
-	printArray(tmp, 0);
+		src.erase(src.begin() + startGrp, src.begin() + startGrp + length);
+	// printMessage(DEBUGS, "_moveRange() - tmp: ", "");
+	// printArray(tmp, 0);
+	// printMessage(DEBUGS, "_moveRange() - length: ", length);
 	dst.insert(dst.begin() + final_dst, tmp.begin(), tmp.end());
 }
 
@@ -329,25 +334,29 @@ size_t	PmergeMe::_getSuiteJacobsthal( void )
 	return (index);
 }
 
-
 int	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget )
 {
-	int	current = arr.size() / 2;
+	size_t	current = arr.size() - 1;
+	// size_t	size = 
 
-	while (arr[current])
+	printMessage(DEBUGS, "_binarySearch() - nbTarget: ", nbTarget );
+	printMessage(DEBUGS, "_binarySearch() - arr.size(): ", arr.size() );
+	while (1)
 	{
-		current = current/2;
+		printMessage(DEBUGS, "_binarySearch() - current: ", current);
+		printMessage(DEBUGS, "_binarySearch() - arr[current]: ", arr[current] );
+		current = floor(current/2);
 		if (arr[current] > nbTarget)
 			continue;
 		else // arr[current] < nbTarget
 		{
 			// continue unleast number is bigger than nbTarget
 			// -> nbTarget is inbetween a inferior number and a bigger number
-			while (arr[current] && arr[current] < nbTarget)
+			while (current < arr.size() && arr[current] < nbTarget)
 				++current;
 			if (arr[current] > nbTarget && arr[current - 1])
-				--arr[current];
-			return (current);
+				--current;
+			return (current + 1);
 		}
 	}
 	std::stringstream ss;
@@ -357,12 +366,22 @@ int	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget )
 
 void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, std::vector<int>& src, std::vector<int>& dst, int nbTarget, size_t startGrp, size_t sizeGrp )
 {
-	size_t indexInsert = _binarySearch(src, nbTarget);
+	printMessage(DEBUGS, "_insertGrpBinarySearch() ", std::string(FILLIGN, '-'));
+	size_t indexInsert = _binarySearch(dst, nbTarget);
+	// give index target, not index group
 	printMessage(DEBUGS, "_insertGrpBinarySearch() - nbTarget: ", nbTarget);
 	printMessage(DEBUGS, "_insertGrpBinarySearch() - indexInsert: ", indexInsert);
 	printMessage(DEBUGS, "_insertGrpBinarySearch() - startGrp: ", startGrp);
 	printMessage(DEBUGS, "_insertGrpBinarySearch() - sizeGrp: ", sizeGrp);
-	_moveRange(deleteFromSrc, startGrp, sizeGrp, indexInsert, src, dst);
+
+	// printArray(_arrayA, false);
+	std::vector<int> tmp(src.begin() + startGrp, src.begin() + startGrp + sizeGrp + 1);
+	// printArray(tmp, 0);
+	if (deleteFromSrc)
+		src.erase(src.begin() + startGrp, src.begin() + startGrp + sizeGrp + 1);
+	dst.insert(dst.begin() + indexInsert, tmp.begin(), tmp.end());
+	// printArray(_arrayA, false);
+	printMessage(DEBUGS, "_insertGrpBinarySearch() - end ", std::string(FILLIGN, '-'));
 }
 
 void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
@@ -388,6 +407,7 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 		printMessage(DEBUGS, "_sortAll() - already sorted", "");
 		return ;
 	}
+	printMessage(DEBUGS, "levelIteration: ", levelIteration);
 	if (levelIteration == 1)
 	{
 		// 1. All losers to array B
@@ -400,7 +420,11 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 		printMessage(DEBUGS, "indexNextGrpToInsert: ", indexNextGrpToInsert);
 		printMessage(DEBUGS, "startGrp: ", startGrp);
 		printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
+		printMessage(DEBUGS, "_arrayB[startGrp + sizeGrp]: ", _arrayB[startGrp + sizeGrp]);
+		// printArray(_arrayA, false);
 		_insertGrpBinarySearch(0, _arrayB, _arrayA, _arrayB[startGrp + sizeGrp], startGrp, sizeGrp);
+		printArray(_arrayA, false);
+		printArray(_arrayB, false);
 		// push [2]
 		size_t inter = indexNextGrpToInsert;
 		while (inter - indexLastGrpInsert > 0)
@@ -464,8 +488,9 @@ void	PmergeMe::algo( void )
 		// printArray('A', false);
 		
 		_sortAll(0, 1);
-		printArray(_arrayA, false);
-		printArray(_arrayB, false);
+		// printMessage(DEBUGS, "algo()", std::string(50, '-'));
+		// printArray(_arrayA, false);
+		// printArray(_arrayB, false);
 
 		
 		// 1.faire une reorder winner loser en augmentant la taille du groupe 
