@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/09 13:49:57 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/09 15:24:28 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	PmergeMe::argsToNumbers( int ac, char **av ) // parser les arguemnts de av e
 	for(int i = 0; i < ac - 1; ++i)
 	{
 		std::string arg = av[i];
-		// std::cout << BLUE << "[DEBUG] arg = " << arg << RESET << std::endl;
+		// printMessage(DEBUGS, "arg: ", arg);
 		if (arg.empty()) // case arg = ""
 		{
 			invalidArguement();
@@ -73,7 +73,7 @@ int	PmergeMe::argsToNumbers( int ac, char **av ) // parser les arguemnts de av e
 		size_t start = 0;
 		for(size_t j = 0; arg[j]; ++j) // case arg != digit && space
 		{
-			// std::cout << BLUE << "[DEBUG] arg j = " << arg[j] << RESET << std::endl;
+			// printMessage(DEBUGS, "arg[j]: ", arg[j]);
 			if (std::isspace(arg[j]))
 			{
 				if (isNumber)
@@ -124,7 +124,7 @@ void	PmergeMe::clearArrayA( void )
 
 void	PmergeMe::printArray( char arr, bool sortByLoseWin )
 {
-	printMessage(DEBUGS, "PrintArray() ", (std::string(FILLIGN, '-')));
+	// printMessage(DEBUGS, "PrintArray() ", (std::string(FILLIGN, '-')));
 	std::vector<int> *src = NULL;
 	switch (arr)
 	{
@@ -189,7 +189,7 @@ void	PmergeMe::printArray( char arr, bool sortByLoseWin )
 		++j;
 	}
 	std::cout << RESET << std::endl;
-	printMessage(DEBUGS, "PrintArray() - END ", (std::string(FILLIGN, '-')));
+	// printMessage(DEBUGS, "PrintArray() - END ", (std::string(FILLIGN, '-')));
 }
 
 /*
@@ -201,7 +201,7 @@ if loser > winner, we invert group positions
 */
 void	PmergeMe::_orderGrp( size_t sizeGrp )
 {
-	printMessage(DEBUGS, "_orderGrp() ", std::string(FILLIGN, '-'));
+	// printMessage(DEBUGS, "_orderGrp() ", std::string(FILLIGN, '-'));
 	if (sizeGrp < 1)
 	{
 		printMessage(ERROR, "Order group: sizeGrp invalid", "");
@@ -214,39 +214,40 @@ void	PmergeMe::_orderGrp( size_t sizeGrp )
 		size_t startLoser = i - (sizeGrp - 1);
 		size_t winner = i + sizeGrp;
 
-		std::cout << BLUE << "[DEBUG] index loser = " << loser;
-		std::cout << " | index winner = " << winner;
-		std::cout << " | size = " << _arrayA.size();
-		std::cout << " | sizeGrp = " << sizeGrp;
-		std::cout << RESET << std::endl;
+		// std::cout << BLUE << "[DEBUG] index loser = " << loser;
+		// std::cout << " | index winner = " << winner;
+		// std::cout << " | size = " << _arrayA.size();
+		// std::cout << " | sizeGrp = " << sizeGrp;
+		// std::cout << RESET << std::endl;
 
 		if ( winner >= _arrayA.size() )
 		{
-			std::cout << BROWN << "[DEBUG] end " << std::string(60, '-') << RESET << std::endl;
+			// printMessage(DEBUGS, "_orderGrp() - end ", std::string(FILLIGN, '-'));
 			return ; // paire fictive, ne pas modifier
 		}
 		if ( i < _arrayA.size() - 1 )
 		{
 
-			std::cout << BLUE << "[DEBUG] value loser = " << _arrayA.at(loser);
-			std::cout << " | value winner = " << _arrayA.at(winner) << std::endl;
-			printArray('A', true);
+			// std::cout << BLUE << "[DEBUG] value loser = " << _arrayA.at(loser);
+			// std::cout << " | value winner = " << _arrayA.at(winner) << std::endl;
+			// printArray('A', true);
 
 			if (_arrayA.at(loser) > _arrayA.at(winner))
 				_moveRange(startLoser, sizeGrp, winner + 1, _arrayA, _arrayA);
 		}
 		i += sizeGrp * 2;
 	}
-	printMessage(DEBUGS, "_orderGrp() - END ", std::string(FILLIGN, '-'));
+	// printMessage(DEBUGS, "_orderGrp() - END ", std::string(FILLIGN, '-'));
 }
 
+// Move a group
 void PmergeMe::_moveRange(size_t start, size_t length, size_t newIndex,
 	std::vector<int>& src, std::vector<int>& dst)
 {
 	const size_t final_dst = newIndex > start ? newIndex - length : newIndex;
-	std::cout << BLUE << "[DEBUG] moveRange -> start: " << start;
-	std::cout << ", length: " << length << ", newIndex: " << newIndex;
-	std::cout << std::endl;
+	// std::cout << BLUE << "[DEBUG] moveRange -> start: " << start;
+	// std::cout << ", length: " << length << ", newIndex: " << newIndex;
+	// std::cout << std::endl;
 
 	std::vector<int> tmp(src.begin() + start, src.begin() + start + length);
 	src.erase(src.begin() + start, src.begin() + start + length);
@@ -339,24 +340,91 @@ size_t	PmergeMe::_getSuiteJacobsthal( void )
 	return (index);
 }
 
+
+int	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget )
+{
+	int	current = arr.size() / 2;
+
+	while (arr[current])
+	{
+		current = current/2;
+		if (arr[current] > nbTarget)
+			continue;
+		else // arr[current] < nbTarget
+		{
+			// continue unleast number is bigger than nbTarget
+			// -> nbTarget is inbetween a inferior number and a bigger number
+			while (arr[current] && arr[current] < nbTarget)
+				++current;
+			if (arr[current] > nbTarget && arr[current - 1])
+				--arr[current];
+			return (current);
+		}
+	}
+	std::stringstream ss;
+	ss << nbTarget;
+	throw std::runtime_error("_binarySearch() - Can't find a index with target number: " + ss.str());
+}
+
+void	PmergeMe::_insertGrpBinarySearch( std::vector<int>& arr, int nbTarget, size_t startGrp, size_t sizeGrp )
+{
+	size_t indexInsert = _binarySearch(arr, nbTarget);
+	_moveRange(startGrp, sizeGrp, indexInsert, _arrayA, _arrayA);
+	
+}
+
+
 void	PmergeMe::algo( void )
 {
-// Suite de Jacobsthal------------
+	try
+	{
+		printArray('A', false);
+		
+		size_t levelIteration = 0;
+		size_t sizeGroup = pow(2, levelIteration);
+		_orderGrp(1);
+		
+		printArray('A', false);
 
-	// size_t nbJaco = _getSuiteJacobsthal();
-	// nbJaco = _getSuiteJacobsthal();
-	// nbJaco = _getSuiteJacobsthal();
-	// nbJaco = _getSuiteJacobsthal();
-	// nbJaco = _getSuiteJacobsthal();
-	// nbJaco = _getSuiteJacobsthal();
-	// nbJaco = _getSuiteJacobsthal();
-	// (void) nbJaco;
-	// _printArrayJacobsthal();
+		
+		// printArray('A', false);
+		// _insertGrpBinarySearch(_arrayA, 5, 3, 3);
+		// printArray('A', false);
+		
+		// int result = _binarySearch(_arrayA, 5);
+		// printMessage(DEBUGS, "binarySearch(): ", result);
+		
+		
 
-	printArray('A', true);
-	_orderGrp(GROUP);
-	// printArray('A', true);
-	// _allLosersToArrayB(GROUP, 0);
+
+
+		
+		// size_t nbJaco = _getSuiteJacobsthal();
+		// nbJaco = _getSuiteJacobsthal();
+		// nbJaco = _getSuiteJacobsthal();
+		// nbJaco = _getSuiteJacobsthal();
+		// nbJaco = _getSuiteJacobsthal();
+		// nbJaco = _getSuiteJacobsthal();
+		// nbJaco = _getSuiteJacobsthal();
+		// (void) nbJaco;
+		// _printArrayJacobsthal();
+	
+
+		// int result = _binarySearch(_arrayA, 5);
+		// printArray('A', false);
+		// printMessage(DEBUGS, "binarySearch(): ", result);
+		
+		// printArray('A', true);
+		// _orderGrp(sizeGroup);
+		// printArray('A', true);
+		// _allLosersToArrayB(GROUP, 0);
+	
+	}
+	catch (const std::exception& e)
+	{
+		printMessage(ERROR, "", e.what());
+		return ;
+	}
 
 
 	/*
