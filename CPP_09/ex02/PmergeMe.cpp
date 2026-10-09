@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/09 15:45:25 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/09 17:07:21 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,37 +122,24 @@ int	PmergeMe::argsToNumbers( int ac, char **av ) // parser les arguemnts de av e
 void	PmergeMe::clearArrayA( void )
 {	_arrayA.clear();	}
 
-void	PmergeMe::printArray( char arr, bool sortByLoseWin )
+void	PmergeMe::printArray( const std::vector<int>& arr, bool sortByLoseWin )
 {
 	// printMessage(DEBUGS, "PrintArray() ", (std::string(FILLIGN, '-')));
-	std::vector<int> *src = NULL;
-	switch (arr)
-	{
-		case 'A':
-		{
-			std::cout << CYAN << "LOSER " << LYLA << " WINNER" << std::endl;
-			std::cout << BLUE << "ArrA:	";
-			src = &_arrayA;
-			break;
-		}
-		case 'B':
-		{
-			std::cout << CYAN << "LOSER " << LYLA << " WINNER" << std::endl;
-			std::cout << BLUE << "ArrB:	";
-			src = &_arrayB;
-			break;
-		}
-		default:
-		{
-			printMessage(ERROR, "Invalid array, choose A or B", "");
-			return;
-		}
-	} 
+	if (sortByLoseWin)
+		std::cout << CYAN << "LOSER " << LYLA << " WINNER" << std::endl;
+
+	if (arr == _arrayA)
+		std::cout << BLUE << "ArrA:	";
+	else if (arr == _arrayB)
+		std::cout << BLUE << "ArrB:	";
+	else
+		std::cout << BLUE << "Other:	";
+
 	size_t i = 0;
-	while (i < src->size())
+	while (i < arr.size())
 	{
 		std::cout << std::setfill('0') << std::setw(2);
-		std::cout << (*src)[i] << "	";
+		std::cout << arr[i] << "	";
 		++i;
 	}
 	std::cout << std::endl << LYLA << "i:	";
@@ -233,7 +220,7 @@ void	PmergeMe::_orderGrp( size_t sizeGrp )
 			// printArray('A', true);
 
 			if (_arrayA.at(loser) > _arrayA.at(winner))
-				_moveRange(startLoser, sizeGrp, winner + 1, _arrayA, _arrayA);
+				_moveRange(1, startLoser, sizeGrp, winner + 1, _arrayA, _arrayA);
 		}
 		i += sizeGrp * 2;
 	}
@@ -241,7 +228,7 @@ void	PmergeMe::_orderGrp( size_t sizeGrp )
 }
 
 // Move a group
-void PmergeMe::_moveRange(size_t start, size_t length, size_t newIndex,
+void PmergeMe::_moveRange(bool deleteFromSrc, size_t start, size_t length, size_t newIndex,
 	std::vector<int>& src, std::vector<int>& dst)
 {
 	const size_t final_dst = newIndex > start ? newIndex - length : newIndex;
@@ -250,13 +237,14 @@ void PmergeMe::_moveRange(size_t start, size_t length, size_t newIndex,
 	// std::cout << std::endl;
 
 	std::vector<int> tmp(src.begin() + start, src.begin() + start + length);
-	src.erase(src.begin() + start, src.begin() + start + length);
-	// (void)final_dst;
-	// (void)dst;
+	if (deleteFromSrc)
+		src.erase(src.begin() + start, src.begin() + start + length);
+	printMessage(DEBUGS, "_moveRange() - tmp: ", "");
+	printArray(tmp, 0);
 	dst.insert(dst.begin() + final_dst, tmp.begin(), tmp.end());
 }
 
-void PmergeMe::_pushToArr(size_t start, size_t length,
+void PmergeMe::_pushToArr(size_t start, size_t length, bool deleteFromSrc,
 	std::vector<int>& src, std::vector<int>& dst)
 {
 	std::cout << BROWN << "[DEBUG] moveRange -> start: " << start;
@@ -264,7 +252,8 @@ void PmergeMe::_pushToArr(size_t start, size_t length,
 	std::cout << std::endl;
 
 	std::vector<int> tmp(src.begin() + start, src.begin() + start + length);
-	src.erase(src.begin() + start, src.begin() + start + length);
+	if (deleteFromSrc)
+		src.erase(src.begin() + start, src.begin() + start + length);
 	// (void)final_dst;
 	// (void)dst;
 	dst.insert(dst.end(), tmp.begin(), tmp.end());
@@ -284,9 +273,9 @@ void	PmergeMe::_allLosersToArrayB( size_t sizeGrp, size_t nbGrp )
 	{
 		size_t start = i;
 		// size_t end = i + sizeGrp;
-		_pushToArr(start, sizeGrp, _arrayA, _arrayB);
-		printArray('A', false);
-		printArray('B', false);
+		_pushToArr(start, sizeGrp, 1, _arrayA, _arrayB);
+		printArray(_arrayA, false);
+		printArray(_arrayB, false);
 		nbTransfer++;
 		i = sizeGrp * skipWinners;
 		skipWinners++;
@@ -297,7 +286,7 @@ void	PmergeMe::_allLosersToArrayB( size_t sizeGrp, size_t nbGrp )
 size_t	PmergeMe::_nbGrp( size_t sizeArr, size_t sizeGrp )
 {
 	size_t res = ceil(static_cast<double>(sizeArr) / sizeGrp);
-	std::cout << BROWN << "[DEBUG] _nbGrp -> res: " << res << RESET << std::endl;
+	// std::cout << BROWN << "[DEBUG] _nbGrp -> res: " << res << RESET << std::endl;
 	return (res);
 }
 
@@ -366,32 +355,100 @@ int	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget )
 	throw std::runtime_error("_binarySearch() - Can't find a index with target number: " + ss.str());
 }
 
-void	PmergeMe::_insertGrpBinarySearch( std::vector<int>& arr, int nbTarget, size_t startGrp, size_t sizeGrp )
+void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, std::vector<int>& src, std::vector<int>& dst, int nbTarget, size_t startGrp, size_t sizeGrp )
 {
-	size_t indexInsert = _binarySearch(arr, nbTarget);
-	_moveRange(startGrp, sizeGrp, indexInsert, _arrayA, _arrayA);
-	
+	size_t indexInsert = _binarySearch(src, nbTarget);
+	printMessage(DEBUGS, "_insertGrpBinarySearch() - nbTarget: ", nbTarget);
+	printMessage(DEBUGS, "_insertGrpBinarySearch() - indexInsert: ", indexInsert);
+	printMessage(DEBUGS, "_insertGrpBinarySearch() - startGrp: ", startGrp);
+	printMessage(DEBUGS, "_insertGrpBinarySearch() - sizeGrp: ", sizeGrp);
+	_moveRange(deleteFromSrc, startGrp, sizeGrp, indexInsert, src, dst);
 }
 
 void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 {
+	// Sort all by grp with loser - winner ----------------------------------
 	if (_nbGrp(_arrayA.size(), sizeGrp) < 2)
 	{
 		printMessage(DEBUGS, "_sortAll() - order is finished ", "");
-		return;
+		return ;
 	}
 	_orderGrp(sizeGrp);
-	printMessage(DEBUGS, "sizeGrp: ", sizeGrp + 1);
-	printArray('A', false);
+	printMessage(DEBUGS, "sizeGrp: ", sizeGrp );
+	printArray(_arrayA, false);
 	++levelIteration;
+	// ----------------------------------------------------------------------
+
+	// Recursivity ----------------------------------------------------------
 	_sortAll(levelIteration, pow(2, levelIteration));
+	
+	// Insertion ------------------------------------------------------------
+	if (_nbGrp(_arrayA.size(), sizeGrp) < 3) // already sorted
+	{
+		printMessage(DEBUGS, "_sortAll() - already sorted", "");
+		return ;
+	}
+	if (levelIteration == 1)
+	{
+		// 1. All losers to array B
+			_allLosersToArrayB(sizeGrp + 1, _nbGrp(_arrayA.size(), sizeGrp));
+		// 2. Reinsert to array A
+		size_t indexLastGrpInsert = _getSuiteJacobsthal(); // [1]
+		size_t indexNextGrpToInsert = _getSuiteJacobsthal(); // [3]
+		size_t startGrp = sizeGrp*(indexNextGrpToInsert - 1);
+		printMessage(DEBUGS, "indexLastGrpInsert: ", indexLastGrpInsert);
+		printMessage(DEBUGS, "indexNextGrpToInsert: ", indexNextGrpToInsert);
+		printMessage(DEBUGS, "startGrp: ", startGrp);
+		printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
+		_insertGrpBinarySearch(0, _arrayB, _arrayA, _arrayB[startGrp + sizeGrp], startGrp, sizeGrp);
+		// push [2]
+		size_t inter = indexNextGrpToInsert;
+		while (inter - indexLastGrpInsert > 0)
+		{
+			--inter;
+			startGrp = sizeGrp*(inter - 1);
+			_pushToArr(startGrp, sizeGrp, 0, _arrayB, _arrayA);
+		}
+		return ;
+		
+		// while (indexNextGrpToInsert < _nbGrp(_arrayA.size(), sizeGrp))
+		// {
+		// 	size_t startGrp = sizeGrp*(targetGrp - 1);
+		// 	_pushToArr(startGrp, sizeGrp, 0, _arrayB, _arrayA);
+			
+		// 	indexNextGrpToInsert = _getSuiteJacobsthal();
+		// }
+	}
+
+	/*
+	Iteration actuelle 
+	tant que je n ai pas inserer tous les groupes, je continue
+	flag d insertion ? = nb de groupes actuel
+	
+	connaitre le nb de groupe qu il reste
+
+	IndexLastGrpInsert -> le dernier groupe insere
+	IndexNextGrpToInsert -> le prochain groupe a inserer
+
+	recuperer les nb de jaco par deux 
+
+	
+	
+	*/
+	
+	// ----------------------------------------------------------------------
+
+	
+	return ;
+	
+	
 }
 
 void	PmergeMe::algo( void )
 {
 	try
 	{
-		printArray('A', false);
+		printArray(_arrayA, false);
 		
 		// size_t levelIteration = 0;
 		// size_t sizeGrp = pow(2, levelIteration);
@@ -407,7 +464,8 @@ void	PmergeMe::algo( void )
 		// printArray('A', false);
 		
 		_sortAll(0, 1);
-		printArray('A', false);
+		printArray(_arrayA, false);
+		printArray(_arrayB, false);
 
 		
 		// 1.faire une reorder winner loser en augmentant la taille du groupe 
