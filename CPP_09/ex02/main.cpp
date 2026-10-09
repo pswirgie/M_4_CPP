@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:47 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/08/22 11:15:12 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/09 13:50:21 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,16 +82,16 @@ int main( int ac, char **av )
 
 	PmergeMe all;
 
-	// std::cout << "75 4 8741 130 198 25 7" << std::endl;
-	// const char *args6[] = {"75", "4", "8741", "130", "198", "25", "7"};
-	// all.argsToNumbers(8, (char **)args6);
-	// all.algo();
-	// all.clearArrayA();
+	std::cout << "75 4 8741 130 198 25 7" << std::endl;
+	const char *args6[] = {"75", "4", "8741", "130", "198", "25", "7"};
+	all.argsToNumbers(8, (char **)args6);
+	all.algo();
+	all.clearArrayA();
 
 	// std::cout << "5 4 6 1 2 3" << std::endl;
 	// const char *args7[] = {"5", "4", "6", "1", "2", "3", "5", "8", "9", "10", "11", "42", "50", "60", "80", "90"};
 	// all.argsToNumbers(17, (char **)args7);
-	all.algo();
+	// all.algo();
 	// all.clearArrayA();
 
 	std::cout << std::endl << std::string(60, '-') << std::endl;

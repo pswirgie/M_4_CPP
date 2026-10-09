@@ -6,30 +6,24 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/08/22 12:11:36 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/09 13:49:57 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
-#include <climits>
-#include <stdlib.h>
-#include <errno.h>
-#include <cmath>
-#include <iomanip>
 
-void	printError( char *message )
+PmergeMe::PmergeMe( void )
 {
-	std::cerr << RED << "Error" << std::endl;
-	std::cerr << message << RESET << std::endl;
+	_initSuiteJacobsthal();
+	
 }
 
 void	PmergeMe::invalidArguement( void )
 {
-	std::cerr << RED << "Error" << std::endl;
-	std::cerr << "Invalid arguements, pattern required a unsorted"
-	" positive integer sequence (at least 2 elements)";
-	std::cerr << " separated by spaces: ./PmergeMe [numbers] [//] [//] ...";
-	std::cerr << RESET << std::endl;
+	std:: string	message("Invalid arguements, pattern required a unsorted"
+		" positive integer sequence (at least 2 elements)"
+		" separated by spaces: ./PmergeMe [numbers] [//] [//] ...");
+	printMessage(ERROR, "", message);
 }
 
 int PmergeMe::_sendToArray( std::string str )
@@ -114,12 +108,12 @@ int	PmergeMe::argsToNumbers( int ac, char **av ) // parser les arguemnts de av e
 	}
 	if (_arrayA.size() <= 1) // case one argument
 	{
-		printError((char *)"Only one arguement, required at least two");
+		printMessage(ERROR, "Only one arguement, required at least two", "");
 		return (1);
 	}
 	else if (_isSorted(_arrayA)) // case already sorted
 	{
-		printError((char *)"Arguements already sorted");
+		printMessage(ERROR, "Arguements already sorted", "");
 		return (1);
 	}
 	return (0);
@@ -130,24 +124,27 @@ void	PmergeMe::clearArrayA( void )
 
 void	PmergeMe::printArray( char arr, bool sortByLoseWin )
 {
+	printMessage(DEBUGS, "PrintArray() ", (std::string(FILLIGN, '-')));
 	std::vector<int> *src = NULL;
 	switch (arr)
 	{
 		case 'A':
 		{
+			std::cout << CYAN << "LOSER " << LYLA << " WINNER" << std::endl;
 			std::cout << BLUE << "ArrA:	";
 			src = &_arrayA;
 			break;
 		}
 		case 'B':
 		{
+			std::cout << CYAN << "LOSER " << LYLA << " WINNER" << std::endl;
 			std::cout << BLUE << "ArrB:	";
 			src = &_arrayB;
 			break;
 		}
 		default:
 		{
-			printError((char *)"Invalid array, choose A or B");
+			printMessage(ERROR, "Invalid array, choose A or B", "");
 			return;
 		}
 	} 
@@ -155,7 +152,7 @@ void	PmergeMe::printArray( char arr, bool sortByLoseWin )
 	while (i < src->size())
 	{
 		std::cout << std::setfill('0') << std::setw(2);
-		std::cout << (*src)[i] << " ";
+		std::cout << (*src)[i] << "	";
 		++i;
 	}
 	std::cout << std::endl << LYLA << "i:	";
@@ -166,12 +163,19 @@ void	PmergeMe::printArray( char arr, bool sortByLoseWin )
 		if (sortByLoseWin)
 		{
 			if (loser)
-				std::cout << CYAN << std::setfill('0') << std::setw(2) << j;
+				std::cout << CYAN;
 			else 
-				std::cout << LYLA << std::setfill('0') << std::setw(2) << j;
+				std::cout << LYLA;
+			if (j != 0)
+				std::cout << "	";
+			std::cout << std::setfill('0') << std::setw(2) << j;
 		}
 		else
+		{
+			if (j != 0)
+				std::cout << "	";
 			std::cout << LYLA << std::setfill('0') << std::setw(2) << j;
+		}
 		if (!((j + 1)%GROUP))
 		{
 			std::cout << BLUE << "|" << LYLA;
@@ -185,6 +189,7 @@ void	PmergeMe::printArray( char arr, bool sortByLoseWin )
 		++j;
 	}
 	std::cout << RESET << std::endl;
+	printMessage(DEBUGS, "PrintArray() - END ", (std::string(FILLIGN, '-')));
 }
 
 /*
@@ -196,10 +201,10 @@ if loser > winner, we invert group positions
 */
 void	PmergeMe::_orderGrp( size_t sizeGrp )
 {
-	std::cout << BROWN << "[DEBUG] _orderGrp" << std::string(60, '-') << std::endl;
+	printMessage(DEBUGS, "_orderGrp() ", std::string(FILLIGN, '-'));
 	if (sizeGrp < 1)
 	{
-		printError((char *)"Order group: sizeGrp invalid");
+		printMessage(ERROR, "Order group: sizeGrp invalid", "");
 		return ;
 	}
 	size_t i = sizeGrp - 1;
@@ -211,8 +216,8 @@ void	PmergeMe::_orderGrp( size_t sizeGrp )
 
 		std::cout << BLUE << "[DEBUG] index loser = " << loser;
 		std::cout << " | index winner = " << winner;
-		std::cout << BLUE << " | size = " << _arrayA.size();
-		std::cout << BLUE << " | sizeGrp = " << sizeGrp;
+		std::cout << " | size = " << _arrayA.size();
+		std::cout << " | sizeGrp = " << sizeGrp;
 		std::cout << RESET << std::endl;
 
 		if ( winner >= _arrayA.size() )
@@ -232,7 +237,7 @@ void	PmergeMe::_orderGrp( size_t sizeGrp )
 		}
 		i += sizeGrp * 2;
 	}
-	std::cout << BROWN << "[DEBUG] _orderGrp end " << std::string(60, '-') << RESET << std::endl;
+	printMessage(DEBUGS, "_orderGrp() - END ", std::string(FILLIGN, '-'));
 }
 
 void PmergeMe::_moveRange(size_t start, size_t length, size_t newIndex,
@@ -307,41 +312,49 @@ void	PmergeMe::_printArrayJacobsthal( void )
 	std::cout << RESET << std::endl;
 }
 
-void	PmergeMe::_setSuiteJacobsthal( void )
+void	PmergeMe::_initSuiteJacobsthal( void )
 {
 	_suiteJacobsthal.push_back(1);
 	_suiteJacobsthal.push_back(1);
-	_suiteJacobsthal.push_back(3);
 }
 
-// 1 1 3
-// 3 + 3 - 1 = 5
-// 3 + 5 -1 = 7
-
-
+/*
+-> Return first index and calcul the next + 1
+[0] = 1
+[1] = 1
+[n] = [n - 1] + 2*[n - 2]
+Suite Jacobsthal : 1, 1, 3, 5, 11, 21, 43, 85, 171, 341
+*/
 size_t	PmergeMe::_getSuiteJacobsthal( void )
 {
-	size_t	index = _suiteJacobsthal.at(1);
-	_suiteJacobsthal.push_back(_suiteJacobsthal.at(1) + _suiteJacobsthal.at(2) - 1);
+	size_t	index = _suiteJacobsthal.at(0);
+	// printMessage(DEBUGS, "suite jaco BEGIN ----------------------------------------", "");
+	// _printArrayJacobsthal();
+	// printMessage(DEBUGS, "suite jaco - index[0]: ", _suiteJacobsthal.at(0));
+	// printMessage(DEBUGS, "suite jaco - index[1]: ", _suiteJacobsthal.at(1));
+	_suiteJacobsthal.push_back(_suiteJacobsthal.at(1) + (2*(_suiteJacobsthal.at(0))));
 	_suiteJacobsthal.erase(_suiteJacobsthal.begin(), _suiteJacobsthal.begin() + 1);
+	// _printArrayJacobsthal();
+	// printMessage(DEBUGS, "suite jaco END ----------------------------------------", "");
 	return (index);
 }
-// toujours garder l index davant 
-// des que j utilise la fonction 
-//  - calculer un nouvel index
-// - retourner l index actuel
-// - retirer le 1er index
 
 void	PmergeMe::algo( void )
 {
 // Suite de Jacobsthal------------
-	_setSuiteJacobsthal();
 
-	_getSuiteJacobsthal();
-	_printArrayJacobsthal();
+	// size_t nbJaco = _getSuiteJacobsthal();
+	// nbJaco = _getSuiteJacobsthal();
+	// nbJaco = _getSuiteJacobsthal();
+	// nbJaco = _getSuiteJacobsthal();
+	// nbJaco = _getSuiteJacobsthal();
+	// nbJaco = _getSuiteJacobsthal();
+	// nbJaco = _getSuiteJacobsthal();
+	// (void) nbJaco;
+	// _printArrayJacobsthal();
 
-	// printArray('A', true);
-	// _orderGrp(GROUP);
+	printArray('A', true);
+	_orderGrp(GROUP);
 	// printArray('A', true);
 	// _allLosersToArrayB(GROUP, 0);
 
@@ -365,3 +378,5 @@ void	PmergeMe::algo( void )
 	
 	*/
 }
+
+
