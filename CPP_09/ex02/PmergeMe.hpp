@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/09 15:19:18 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/09 15:38:30 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	printMessage(LevelMessage level, const std::string &header, const T &messag
 		}
 		case (DEBUGS):
 		{
-			out << LYLA << "[DEBUG]	- " << header << stream.str() << RESET << std::endl;
+			out << RESET << "[DEBUG]	- " << header << stream.str() << RESET << std::endl;
 			return;
 		}
 		case (ERROR):
@@ -90,8 +90,9 @@ class PmergeMe
 		void	algo( void );
 		
 	private:
+		void	_sortAll( size_t levelIteration, size_t sizeGrp );
+	
 		int		_sendToArray( std::string str );
-
 		bool	_isSorted( std::vector<int>& arr );
 		size_t	_nbGrp( size_t sizeArr, size_t sizeGrp );
 		void	_orderGrp( size_t sizeGrp );

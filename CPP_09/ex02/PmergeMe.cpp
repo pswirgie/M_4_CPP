@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/09 15:24:28 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/09 15:45:25 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -373,6 +373,19 @@ void	PmergeMe::_insertGrpBinarySearch( std::vector<int>& arr, int nbTarget, size
 	
 }
 
+void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
+{
+	if (_nbGrp(_arrayA.size(), sizeGrp) < 2)
+	{
+		printMessage(DEBUGS, "_sortAll() - order is finished ", "");
+		return;
+	}
+	_orderGrp(sizeGrp);
+	printMessage(DEBUGS, "sizeGrp: ", sizeGrp + 1);
+	printArray('A', false);
+	++levelIteration;
+	_sortAll(levelIteration, pow(2, levelIteration));
+}
 
 void	PmergeMe::algo( void )
 {
@@ -380,13 +393,32 @@ void	PmergeMe::algo( void )
 	{
 		printArray('A', false);
 		
-		size_t levelIteration = 0;
-		size_t sizeGroup = pow(2, levelIteration);
-		_orderGrp(1);
+		// size_t levelIteration = 0;
+		// size_t sizeGrp = pow(2, levelIteration);
+
+		// printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
+		// _orderGrp(sizeGrp);
+		// printArray('A', false);
+
+		// ++levelIteration;
+		// sizeGrp = pow(2, levelIteration);
+		// printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
+		// _orderGrp(sizeGrp);
+		// printArray('A', false);
 		
+		_sortAll(0, 1);
 		printArray('A', false);
 
 		
+		// 1.faire une reorder winner loser en augmentant la taille du groupe 
+		// -> sizeGrp = pow(2, levelIteration)
+		// jusqu a ne plus avoir qu un seul groupe qui fait la sizeGrp
+		// while (nbGrp(_arrA.size(), sizeGrp) > 2)
+		//		sizeGrp = pow(2, levelIteration);
+		//		_orderGrp(sizeGrp);
+		//		
+
+
 		// printArray('A', false);
 		// _insertGrpBinarySearch(_arrayA, 5, 3, 3);
 		// printArray('A', false);
@@ -394,10 +426,6 @@ void	PmergeMe::algo( void )
 		// int result = _binarySearch(_arrayA, 5);
 		// printMessage(DEBUGS, "binarySearch(): ", result);
 		
-		
-
-
-
 		
 		// size_t nbJaco = _getSuiteJacobsthal();
 		// nbJaco = _getSuiteJacobsthal();
