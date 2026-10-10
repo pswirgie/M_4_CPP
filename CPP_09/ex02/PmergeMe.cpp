@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/09 18:23:34 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/10 11:38:08 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,40 +334,66 @@ size_t	PmergeMe::_getSuiteJacobsthal( void )
 	return (index);
 }
 
-int	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget )
-{
-	size_t	current = arr.size() - 1;
-	// size_t	size = 
+// Comparison with winners
+// While winner > target -> division by 2
+// If winner < target -> + 1
+// int	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t sizeGrp )
+// {
+// 	printMessage(DEBUGS, "_binarySearch() - sizeGrp: ", sizeGrp );
+// 	printMessage(DEBUGS, "_binarySearch() - nbTarget: ", nbTarget );
+// 	printMessage(DEBUGS, "_binarySearch() - arr.size(): ", arr.size() );
+// 	// mon current ne doit pourvoir se poser que sur des gagnants des groupe
+// 	// nbgrp
+// 	/*
+// 		current = last winner -> nbgroup * sizegroup ?
+	
+// 	*/
+// 	size_t current = (_nbGrp(arr.size(), sizeGrp) * sizeGrp) - 1;
+// 	// printMessage(DEBUGS, "_binarySearch() - _nbGrp: ", _nbGrp(arr.size(), sizeGrp));
+// 	// printMessage(DEBUGS, "_binarySearch() - arr.size()/sizeGrp: ", arr.size()/sizeGrp);
+// 	// printMessage(DEBUGS, "_binarySearch() - arr.size(): ", arr.size());
+// 	if ((arr.size() % sizeGrp) != 0)
+// 	{
+// 		// printMessage(DEBUGS, "_binarySearch() - sizeGrp > 2 ", "");
+// 		current -= arr.size() % sizeGrp;
+// 		--current;
+// 	}
+// 	// printMessage(DEBUGS, "_binarySearch() - current: ", current);
+// 	// printMessage(DEBUGS, "_binarySearch() - sizeGrp: ", sizeGrp);
+// 	// current = current % sizeGrp;
+// 	// printMessage(DEBUGS, "_binarySearch() - current: ", current);
+	
+// 	while (1)
+// 	{
+// 		printMessage(DEBUGS, "_binarySearch() - current: ", current);
+// 		printMessage(DEBUGS, "_binarySearch() - arr[current]: ", arr[current] );
+// 		if (arr[current] > nbTarget)
+// 		{
+// 			current = current % (sizeGrp/2);
+// 			continue;
+// 		}
+// 		else // arr[current] < nbTarget
+// 		{
+// 			// continue unleast number is bigger than nbTarget
+// 			// -> nbTarget is inbetween a inferior number and a bigger number
+// 			while (current < arr.size() && arr[current] < nbTarget)
+// 				++current;
+// 			if (arr[current] > nbTarget && arr[current - 1])
+// 				--current;
+// 			return (current);
+// 		}
+// 	}
+// 	std::stringstream ss;
+// 	ss << nbTarget;
+// 	throw std::runtime_error("_binarySearch() - Can't find a index with target number: " + ss.str());
+// }
 
-	printMessage(DEBUGS, "_binarySearch() - nbTarget: ", nbTarget );
-	printMessage(DEBUGS, "_binarySearch() - arr.size(): ", arr.size() );
-	while (1)
-	{
-		printMessage(DEBUGS, "_binarySearch() - current: ", current);
-		printMessage(DEBUGS, "_binarySearch() - arr[current]: ", arr[current] );
-		current = floor(current/2);
-		if (arr[current] > nbTarget)
-			continue;
-		else // arr[current] < nbTarget
-		{
-			// continue unleast number is bigger than nbTarget
-			// -> nbTarget is inbetween a inferior number and a bigger number
-			while (current < arr.size() && arr[current] < nbTarget)
-				++current;
-			if (arr[current] > nbTarget && arr[current - 1])
-				--current;
-			return (current + 1);
-		}
-	}
-	std::stringstream ss;
-	ss << nbTarget;
-	throw std::runtime_error("_binarySearch() - Can't find a index with target number: " + ss.str());
-}
+
 
 void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, std::vector<int>& src, std::vector<int>& dst, int nbTarget, size_t startGrp, size_t sizeGrp )
 {
 	printMessage(DEBUGS, "_insertGrpBinarySearch() ", std::string(FILLIGN, '-'));
-	size_t indexInsert = _binarySearch(dst, nbTarget);
+	size_t indexInsert = _binarySearch(dst, nbTarget, sizeGrp + 1);
 	// give index target, not index group
 	printMessage(DEBUGS, "_insertGrpBinarySearch() - nbTarget: ", nbTarget);
 	printMessage(DEBUGS, "_insertGrpBinarySearch() - indexInsert: ", indexInsert);
@@ -411,7 +437,8 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	if (levelIteration == 1)
 	{
 		// 1. All losers to array B
-			_allLosersToArrayB(sizeGrp + 1, _nbGrp(_arrayA.size(), sizeGrp));
+		_allLosersToArrayB(sizeGrp + 1, _nbGrp(_arrayA.size(), sizeGrp));
+		
 		// 2. Reinsert to array A
 		size_t indexLastGrpInsert = _getSuiteJacobsthal(); // [1]
 		size_t indexNextGrpToInsert = _getSuiteJacobsthal(); // [3]
@@ -422,7 +449,9 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 		printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
 		printMessage(DEBUGS, "_arrayB[startGrp + sizeGrp]: ", _arrayB[startGrp + sizeGrp]);
 		// printArray(_arrayA, false);
+		
 		_insertGrpBinarySearch(0, _arrayB, _arrayA, _arrayB[startGrp + sizeGrp], startGrp, sizeGrp);
+		
 		printArray(_arrayA, false);
 		printArray(_arrayB, false);
 		// push [2]
@@ -468,15 +497,119 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	
 }
 
+// Comparison with winners only
+// 1. create a vector* with only winners
+// 2. search in winners
+size_t	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t sizeGrp )
+{
+	printMessage(DEBUGS, "_binarySearch() ", std::string(FILLIGN, '-'));
+	
+	// 1. Create winner vector ------------------------------------------
+	std::vector<int*> winners;
+	size_t nbGrp = _nbGrp(arr.size(), sizeGrp);
+	size_t current = 0;
+	
+	//if the last group is uncomplete, so no winner
+	if (arr.size() % nbGrp != 0)
+		--nbGrp;
+	// printMessage(DEBUGS, "_binarySearch() - nbGrp: ", nbGrp);
+	printMessage(DEBUGS, "_binarySearch() - sizeGrp: ", sizeGrp);
+
+	// version qui commence dans l ordre croissant
+	while ((sizeGrp * current) + 1 < arr.size())
+	{
+		winners.push_back(&arr[(sizeGrp * current) + 1]);
+		// printMessage(DEBUGS, "_binarySearch() - current: ", current);
+		// printMessage(DEBUGS, "_binarySearch() - arr[(sizeGrp * current) + 1]: ", arr[(sizeGrp * current) + 1]);
+		// printMessage(DEBUGS, "_binarySearch() - indexNow: ", (sizeGrp * current) + 1);
+		++current;
+	}
+
+	for (size_t i = 0; i < winners.size(); ++i)
+		std::cout << *winners[i] << std::endl;
+
+	// ------------------------------------------------------------------
+
+	// 2. find index ------------------------------------------------------
+	// values are indexs
+	int start = 0;
+	int end = winners.size();
+	while (start < end)
+	{
+		size_t half = (start + end)/2;
+		printMessage(DEBUGS, "_binarySearch() - half: ", half);
+		printMessage(DEBUGS, "_binarySearch() - *winners[half]: ", *winners[half]);
+		if (*winners[half] > nbTarget)
+		{
+			end = half - 1;
+			continue;
+		}
+		else if (*winners[half] < nbTarget)
+		{
+			start = half + 1;
+			printMessage(DEBUGS, "_binarySearch() - *winners[start]: ", *winners[start]);
+			printMessage(DEBUGS, "_binarySearch() - start: ", start);
+			if (*winners[start] > nbTarget)
+			{
+				start = half;
+				break;
+			}
+			continue;
+		}
+	}
+	printMessage(DEBUGS, "_binarySearch() - start def: ", start);
+	printMessage(DEBUGS, "_binarySearch() - end def: ", end);
+
+	// 3. Convert winner index to array index ------------------------------------------------------
+	size_t res = 0;
+	if (start > 0)
+	{
+		size_t nbGroup = ++start; // start is a index, start 0, but it is the nb of group 1st, 2nd, etc
+		printMessage(DEBUGS, "_binarySearch() - nbGroup: ", nbGroup);
+		res = (nbGroup * sizeGrp);
+	}
+	
+	printMessage(DEBUGS, "_binarySearch() - res: ", res);
+
+	printMessage(DEBUGS, "_binarySearch() end ", std::string(FILLIGN, '-'));
+
+
+	return (res);
+}
+
 void	PmergeMe::algo( void )
 {
 	try
 	{
-		printArray(_arrayA, false);
-		
-		// size_t levelIteration = 0;
-		// size_t sizeGrp = pow(2, levelIteration);
+		_sortAll(0, 1);
+		// printMessage(DEBUGS, "algo()", std::string(50, '-'));
+		// printArray(_arrayA, false);
+		// printArray(_arrayB, false);
 
+		// std::vector<int> tmp;
+		// tmp.push_back(1);
+		// tmp.push_back(3);
+		// tmp.push_back(3);
+		// tmp.push_back(4);
+		// tmp.push_back(4);
+		// tmp.push_back(6);
+		// tmp.push_back(7);
+		// tmp.push_back(8);
+		// tmp.push_back(9);
+		// tmp.push_back(10);
+		// tmp.push_back(11);
+		// tmp.push_back(12);
+		// tmp.push_back(13);
+		// tmp.push_back(14);
+		// tmp.push_back(15);
+		// printArray(tmp, false);
+		// size_t index = _binarySearch(tmp, 5, 2);
+		// printMessage(DEBUGS, "index: ", index);
+
+
+		
+		// printArray(_arrayA, false);
+		
 		// printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
 		// _orderGrp(sizeGrp);
 		// printArray('A', false);
@@ -487,10 +620,7 @@ void	PmergeMe::algo( void )
 		// _orderGrp(sizeGrp);
 		// printArray('A', false);
 		
-		_sortAll(0, 1);
-		// printMessage(DEBUGS, "algo()", std::string(50, '-'));
-		// printArray(_arrayA, false);
-		// printArray(_arrayB, false);
+
 
 		
 		// 1.faire une reorder winner loser en augmentant la taille du groupe 
@@ -502,9 +632,11 @@ void	PmergeMe::algo( void )
 		//		
 
 
-		// printArray('A', false);
+
+
+		
 		// _insertGrpBinarySearch(_arrayA, 5, 3, 3);
-		// printArray('A', false);
+		// printArray(_arrayA, false);
 		
 		// int result = _binarySearch(_arrayA, 5);
 		// printMessage(DEBUGS, "binarySearch(): ", result);
