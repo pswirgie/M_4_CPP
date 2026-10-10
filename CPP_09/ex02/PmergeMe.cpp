@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/10 11:38:08 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/10 12:20:25 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -441,8 +441,15 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 		
 		// 2. Reinsert to array A
 		size_t indexLastGrpInsert = _getSuiteJacobsthal(); // [1]
-		size_t indexNextGrpToInsert = _getSuiteJacobsthal(); // [3]
-		size_t startGrp = sizeGrp*(indexNextGrpToInsert - 1);
+		size_t indexNextGrpToInsert = _getSuiteJacobsthal();
+		size_t startGrp = 0;
+		while (indexNextGrpToInsert < _arrayB.size())
+		{
+			startGrp = sizeGrp*(indexNextGrpToInsert - 1);
+			_insertGrpBinarySearch(0, _arrayB, _arrayA, _arrayB[startGrp + sizeGrp], startGrp, sizeGrp);
+			indexNextGrpToInsert = _getSuiteJacobsthal(); // [3]
+			
+		}
 		printMessage(DEBUGS, "indexLastGrpInsert: ", indexLastGrpInsert);
 		printMessage(DEBUGS, "indexNextGrpToInsert: ", indexNextGrpToInsert);
 		printMessage(DEBUGS, "startGrp: ", startGrp);
@@ -450,7 +457,7 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 		printMessage(DEBUGS, "_arrayB[startGrp + sizeGrp]: ", _arrayB[startGrp + sizeGrp]);
 		// printArray(_arrayA, false);
 		
-		_insertGrpBinarySearch(0, _arrayB, _arrayA, _arrayB[startGrp + sizeGrp], startGrp, sizeGrp);
+		
 		
 		printArray(_arrayA, false);
 		printArray(_arrayB, false);
