@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/11 15:04:03 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/11 16:14:09 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ void	PmergeMe::printArray( const std::vector<int>& arr, bool sortByLoseWin, size
 				std::cout << "	";
 			std::cout << LYLA << std::setfill('0') << std::setw(2) << j;
 		}
-		if (!((j + 1)%sizeGrp))
+		if (sizeGrp > 0 && !((j + 1) % sizeGrp))
 		{
 			std::cout << BLUE << "|" << LYLA;
 			if (loser)

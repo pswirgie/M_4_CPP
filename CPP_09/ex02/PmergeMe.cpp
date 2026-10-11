@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/11 16:07:48 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/11 16:17:56 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,15 +268,15 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	// 	printArray(_arrayA, false, sizeGrp);
 	// }
 	_allLosersToArrayB(sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
-	// if (sizeGrp == 1)
-	// {
-	// 	printMessage(DEBUGS, "after remove losers", "");
-	// 	printArray(_arrayA, false, sizeGrp);
-	// 	_printArrBWithWinnerIndex(sizeGrp);
-	// }
+	if (sizeGrp == 1)
+	{
+		printMessage(DEBUGS, "after remove losers", "");
+		printArray(_arrayA, false, sizeGrp);
+		_printArrBWithWinnerIndex(sizeGrp);
+		printArray(_leftOver, false, sizeGrp);
+	}
 	
 	// printArray(_arrayB, false, sizeGrp);
-
 
 	// 2. Reinsert to array A
 	size_t indexLastGrpInsert = _getSuiteJacobsthal();
@@ -334,100 +334,19 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	// printArray(_arrayA, false, sizeGrp);
 }
 
-
-
 void	PmergeMe::algo( void )
 {
 	try
 	{
 		_sortAll(0, 1);
-		// printMessage(DEBUGS, "algo()", std::string(50, '-'));
-		// printArray(_arrayA, false);
-		// printArray(_arrayB, false);
-
-		// std::vector<int> tmp;
-		// tmp.push_back(1);
-		// tmp.push_back(3);
-		// tmp.push_back(3);
-		// tmp.push_back(4);
-		// tmp.push_back(4);
-		// tmp.push_back(6);
-		// tmp.push_back(7);
-		// tmp.push_back(8);
-		// tmp.push_back(9);
-		// tmp.push_back(10);
-		// tmp.push_back(11);
-		// tmp.push_back(12);
-		// tmp.push_back(13);
-		// tmp.push_back(14);
-		// tmp.push_back(15);
-		// printArray(tmp, false);
-		// size_t index = _binarySearch(tmp, 5, 2);
-		// printMessage(DEBUGS, "index: ", index);
-
-
-		
-		// printArray(_arrayA, false);
-		
-		// printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
-		// _orderGrp(sizeGrp);
-		// printArray('A', false);
-
-		// ++levelIteration;
-		// sizeGrp = pow(2, levelIteration);
-		// printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
-		// _orderGrp(sizeGrp);
-		// printArray('A', false);
-		
-
-
-		
-		// 1.faire une reorder winner loser en augmentant la taille du groupe 
-		// -> sizeGrp = pow(2, levelIteration)
-		// jusqu a ne plus avoir qu un seul groupe qui fait la sizeGrp
-		// while (nbGrp(_arrA.size(), sizeGrp) > 2)
-		//		sizeGrp = pow(2, levelIteration);
-		//		_orderGrp(sizeGrp);
-		//		
-
-
-
-
-		
-		// _insertGrpBinarySearch(_arrayA, 5, 3, 3);
-		// printArray(_arrayA, false);
-		
-		// int result = _binarySearch(_arrayA, 5);
-		// printMessage(DEBUGS, "binarySearch(): ", result);
-		
-		
-		// size_t nbJaco = _getSuiteJacobsthal();
-		// nbJaco = _getSuiteJacobsthal();
-		// nbJaco = _getSuiteJacobsthal();
-		// nbJaco = _getSuiteJacobsthal();
-		// nbJaco = _getSuiteJacobsthal();
-		// nbJaco = _getSuiteJacobsthal();
-		// nbJaco = _getSuiteJacobsthal();
-		// (void) nbJaco;
-		// _printArrayJacobsthal();
-	
-
-		// int result = _binarySearch(_arrayA, 5);
-		// printArray('A', false);
-		// printMessage(DEBUGS, "binarySearch(): ", result);
-		
-		// printArray('A', true);
-		// _orderGrp(sizeGroup);
-		// printArray('A', true);
-		// _allLosersToArrayB(GROUP, 0);
-	
+		printMessage(DEBUGS, "Final result: ", "");
+		printArray(_arrayA, false, 0);
 	}
 	catch (const std::exception& e)
 	{
 		printMessage(ERROR, "", e.what());
 		return ;
 	}
-
 
 	/*
 	taile du groupe = 2 puissance etape de la cursion  -> i 
