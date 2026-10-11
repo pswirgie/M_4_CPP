@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/11 13:48:35 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/11 13:50:41 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,89 +107,6 @@ void	PmergeMe::_initLeftOvers( size_t sizeGrp, size_t nbGrp )
 	// !!!! bien remettre ses restes durant l insertion
 }
 
-void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
-{
-	// Sort all by grp with loser - winner ----------------------------------
-	if (_nbGrp(_arrayA.size(), sizeGrp) < 2)
-	{
-		// printMessage(DEBUGS, "_sortAll() - order is finished ", "");
-		return ;
-	}
-	_orderGrp(sizeGrp);
-	// printMessage(DEBUGS, "sizeGrp: ", sizeGrp );
-	// printArray(_arrayA, false);
-	++levelIteration;
-	// ----------------------------------------------------------------------
-
-	// Recursivity ----------------------------------------------------------
-	_sortAll(levelIteration, pow(2, levelIteration));
-	
-	// Insertion ------------------------------------------------------------
-	if (_nbGrp(_arrayA.size(), sizeGrp) < 3) // already sorted
-	{
-		// printMessage(DEBUGS, "_sortAll() - already sorted", "");
-		return ;
-	}
-	// printMessage(DEBUGS, "levelIteration: ", levelIteration);
-	if (levelIteration == 1)
-	{
-		// 1. All losers to array B
-		_initLeftOvers(sizeGrp + 1, _nbGrp(_arrayA.size(), sizeGrp + 1));
-		_allLosersToArrayB(sizeGrp + 1, _nbGrp(_arrayA.size(), sizeGrp));
-
-		// _printArrBWithWinnerIndex();
-
-		// 2. Reinsert to array A
-		size_t indexLastGrpInsert = _getSuiteJacobsthal();
-		size_t indexNextGrpToInsert = _getSuiteJacobsthal();
-		++sizeGrp;
- 
-		/*
-		   3. Insert interval inbetween two Jacobasthal Numbers
-		1 grp a inserer -> (1(indexdugrp) * 2(sizegrp)) - sizegrp(revenir au premier)
-		*/
-		bool interJaco = false;
-		while (indexNextGrpToInsert < _arrayB.size())
-		{
-			// printMessage(DEBUGS, "indexNextGrpToInsert: ", indexNextGrpToInsert);
-			_insertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, 0);
-			// printArray(_arrayA, false);
-			// _printArrBWithWinnerIndex();
-			if (interJaco)
-			{
-				interJaco = false;
-				size_t endInter = indexNextGrpToInsert - 1;
-				// printMessage(DEBUGS, "interJaco - indexLastGrpInsert: ", indexLastGrpInsert);
-				// printMessage(DEBUGS, "interJaco - endInter: ", endInter);
-				while (indexLastGrpInsert < endInter)
-				{
-					_insertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, indexLastGrpInsert);
-					++indexLastGrpInsert;
-					// printArray(_arrayA, false);
-				}
-			}
-			indexLastGrpInsert = indexNextGrpToInsert;
-			indexNextGrpToInsert = _getSuiteJacobsthal();
-			interJaco = true;
-		}
-
-		// 4. Insert leftOver
-		for (size_t i = 0; i < _leftOver.size(); ++i)
-			_arrayA.push_back(_leftOver[i]);
-
-		// 5. Clear _arrayB and _leftOver
-		_arrayB.clear();
-		_leftOver.clear();
-		
-		// printArray(_arrayA, false);
-
-		// printMessage(DEBUGS, "indexLastGrpInsert: ", indexLastGrpInsert);
-		// printMessage(DEBUGS, "startGrp: ", startGrp);
-		// printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
-		// printMessage(DEBUGS, "_arrayB[startGrp + sizeGrp]: ", _arrayB[startGrp + sizeGrp]);
-	}
-}
-
 // Comparison with winners only
 // 1. create a vector* with only winners
 // 2. search in winners
@@ -272,6 +189,92 @@ size_t	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t size
 	// printMessage(DEBUGS, "_binarySearch() end ", std::string(FILLIGN, '-'));
 	return (res);
 }
+
+void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
+{
+	
+	// Sort all by grp with loser - winner ----------------------------------
+	if (_nbGrp(_arrayA.size(), sizeGrp) < 2)
+	{
+		// printMessage(DEBUGS, "_sortAll() - order is finished ", "");
+		return ;
+	}
+	_orderGrp(sizeGrp);
+	// printMessage(DEBUGS, "sizeGrp: ", sizeGrp );
+	// printArray(_arrayA, false);
+	++levelIteration;
+	// ----------------------------------------------------------------------
+
+	// Recursivity ----------------------------------------------------------
+	_sortAll(levelIteration, pow(2, levelIteration));
+	
+	// Insertion ------------------------------------------------------------
+	if (_nbGrp(_arrayA.size(), sizeGrp) < 3) // already sorted
+	{
+		// printMessage(DEBUGS, "_sortAll() - already sorted", "");
+		return ;
+	}
+	// printMessage(DEBUGS, "levelIteration: ", levelIteration);
+	if (levelIteration == 1)
+	{
+		// 1. All losers to array B
+		_initLeftOvers(sizeGrp + 1, _nbGrp(_arrayA.size(), sizeGrp + 1));
+		_allLosersToArrayB(sizeGrp + 1, _nbGrp(_arrayA.size(), sizeGrp));
+
+		// _printArrBWithWinnerIndex();
+
+		// 2. Reinsert to array A
+		size_t indexLastGrpInsert = _getSuiteJacobsthal();
+		size_t indexNextGrpToInsert = _getSuiteJacobsthal();
+		++sizeGrp;
+ 
+		/*
+		   3. Insert interval inbetween two Jacobasthal Numbers
+		1 grp a inserer -> (1(indexdugrp) * 2(sizegrp)) - sizegrp(revenir au premier)
+		*/
+		bool interJaco = false;
+		while (indexNextGrpToInsert < _arrayB.size())
+		{
+			// printMessage(DEBUGS, "indexNextGrpToInsert: ", indexNextGrpToInsert);
+			_insertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, 0);
+			// printArray(_arrayA, false);
+			// _printArrBWithWinnerIndex();
+			if (interJaco)
+			{
+				interJaco = false;
+				size_t endInter = indexNextGrpToInsert - 1;
+				// printMessage(DEBUGS, "interJaco - indexLastGrpInsert: ", indexLastGrpInsert);
+				// printMessage(DEBUGS, "interJaco - endInter: ", endInter);
+				while (indexLastGrpInsert < endInter)
+				{
+					_insertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, indexLastGrpInsert);
+					++indexLastGrpInsert;
+					// printArray(_arrayA, false);
+				}
+			}
+			indexLastGrpInsert = indexNextGrpToInsert;
+			indexNextGrpToInsert = _getSuiteJacobsthal();
+			interJaco = true;
+		}
+
+		// 4. Insert leftOver
+		for (size_t i = 0; i < _leftOver.size(); ++i)
+			_arrayA.push_back(_leftOver[i]);
+
+		// 5. Clear _arrayB and _leftOver
+		_arrayB.clear();
+		_leftOver.clear();
+		
+		// printArray(_arrayA, false);
+
+		// printMessage(DEBUGS, "indexLastGrpInsert: ", indexLastGrpInsert);
+		// printMessage(DEBUGS, "startGrp: ", startGrp);
+		// printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
+		// printMessage(DEBUGS, "_arrayB[startGrp + sizeGrp]: ", _arrayB[startGrp + sizeGrp]);
+	}
+}
+
+
 
 void	PmergeMe::algo( void )
 {
