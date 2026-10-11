@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/11 13:23:01 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/11 13:29:09 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 		++sizeGrp;
  
 		/*
-		Insert interval inbetween two Jacobasthal Numbers
+		   3. Insert interval inbetween two Jacobasthal Numbers
 		1 grp a inserer -> (1(indexdugrp) * 2(sizegrp)) - sizegrp(revenir au premier)
 		*/
 		bool interJaco = false;
@@ -192,6 +192,17 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 			indexNextGrpToInsert = _getSuiteJacobsthal();
 			interJaco = true;
 		}
+
+		// 4. Insert leftOver
+		for (size_t i = 0; i < _leftOver.size(); ++i)
+			_arrayA.push_back(_leftOver[i]);
+
+		// 5. Clear _arrayB and _leftOver
+		_arrayB.clear();
+		_leftOver.clear();
+		
+		printArray(_arrayA, false);
+
 		// printMessage(DEBUGS, "indexLastGrpInsert: ", indexLastGrpInsert);
 		// printMessage(DEBUGS, "startGrp: ", startGrp);
 		// printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
