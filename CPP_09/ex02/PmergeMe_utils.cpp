@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/11 11:12:19 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/11 13:48:15 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,6 @@ int	PmergeMe::argsToNumbers( int ac, char **av ) // parser les arguemnts de av e
 
 void	PmergeMe::clearArrayA( void )
 {	_arrayA.clear();	}
-
 
 void	PmergeMe::printArray( const std::vector<int>& arr, bool sortByLoseWin )
 {
@@ -260,9 +259,9 @@ void PmergeMe::_moveRange(bool deleteFromSrc, size_t startGrp, size_t length, si
 void PmergeMe::_pushToArr(size_t start, size_t length, bool deleteFromSrc,
 	std::vector<int>& src, std::vector<int>& dst)
 {
-	std::cout << BROWN << "[DEBUG] moveRange -> start: " << start;
-	std::cout << ", length: " << length;
-	std::cout << std::endl;
+	// std::cout << BROWN << "[DEBUG] moveRange -> start: " << start;
+	// std::cout << ", length: " << length;
+	// std::cout << RESET << std::endl;
 
 	std::vector<int> tmp(src.begin() + start, src.begin() + start + length);
 	if (deleteFromSrc)
