@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/11 12:12:09 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/11 13:23:01 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,15 +127,21 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 		size_t indexNextGrpToInsert = _getSuiteJacobsthal();
 		size_t startGrp = 0;
 		++sizeGrp;
+ 
+		/*
+		Insert interval inbetween two Jacobasthal Numbers
+		1 grp a inserer -> (1(indexdugrp) * 2(sizegrp)) - sizegrp(revenir au premier)
+		*/
+		bool interJaco = false;
 		while (indexNextGrpToInsert < _arrayB.size())
 		{
-			// 1 grp a inserer -> (1(indexdugrp) * 2(sizegrp)) - sizegrp(revenir au premier)
-			// group 1 -> (1 x 2) - 2 = 0;
-			// group 3 -> (3 x 2) - 2 = 4;
-			
-			startGrp = (sizeGrp*(indexNextGrpToInsert)) - sizeGrp;
-			printMessage(DEBUGS, "startGrp: ", startGrp);
+
 			printMessage(DEBUGS, "indexNextGrpToInsert: ", indexNextGrpToInsert);
+
+			startGrp = (sizeGrp*(indexNextGrpToInsert)) - sizeGrp;
+			if (startGrp >= _arrayB.size())
+				break;
+			printMessage(DEBUGS, "startGrp: ", startGrp);
 			size_t indexNbTarget = startGrp + sizeGrp - 1; // in arrB
 			size_t endSearch;
 			if ((indexNbTarget - 1) < _indexWinnerA.size())
@@ -151,71 +157,46 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 				startGrp, sizeGrp, endSearch);
 			printArray(_arrayA, false);
 			_printArrBWithWinnerIndex();
+			if (interJaco)
+			{
+				// insert inter inbetween 2 jaco nb before get the next jaco nb
+				// 1 - 3 -> insert loser[1], loser[3] -> insert inter = loser[2]
+				interJaco = false;
+				size_t endInter = indexNextGrpToInsert - 1;
+				printMessage(DEBUGS, "interJaco - indexLastGrpInsert: ", indexLastGrpInsert);
+				printMessage(DEBUGS, "interJaco - endInter: ", endInter);
+				while (indexLastGrpInsert < endInter)
+				{
+					// insert with binary search in arrA
+					// ordre croissant des losers
+					// ensearch leur winners
+					// update les index des winners
+					startGrp = sizeGrp * indexLastGrpInsert;
+					printMessage(DEBUGS, "startGrp: ", startGrp);
+					indexNbTarget = startGrp + sizeGrp - 1;
+					if ((indexNbTarget - 1) < _indexWinnerA.size())
+						endSearch = _indexWinnerA[indexNbTarget - 1];
+					else
+						endSearch = _arrayA.size() - 1;
+					printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
+					printMessage(DEBUGS, "endSearch: ", endSearch);
+					printMessage(DEBUGS, "NbTarget: ", _arrayB[indexNbTarget]);
+					_insertGrpBinarySearch(0, _arrayB, _arrayA, _arrayB[indexNbTarget],
+						startGrp, sizeGrp, endSearch);
+					++indexLastGrpInsert;
+					printArray(_arrayA, false);
+					// return;
+				}
+			}
+			indexLastGrpInsert = indexNextGrpToInsert;
 			indexNextGrpToInsert = _getSuiteJacobsthal();
-
+			interJaco = true;
 		}
 		// printMessage(DEBUGS, "indexLastGrpInsert: ", indexLastGrpInsert);
 		// printMessage(DEBUGS, "startGrp: ", startGrp);
 		// printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
 		// printMessage(DEBUGS, "_arrayB[startGrp + sizeGrp]: ", _arrayB[startGrp + sizeGrp]);
-		
-		/*
-		faire en sorte que la recherche dichotomique ne soit pas sur
-		le rang entier de _arrayA mais que sur la portion 
-		de debut a winner du perdant
-
-		-> il faut avoir de stocker dans l arrayB l index du winner 
-		de chaque groupe perdant qui va etre push dedans
-		-> l index du winner, doit etre evolutif -> si on insere dans A, l index bouge avec 
-		-> comment garder en memoire l index de facon evolutive
-
-		1. avoir des index dans le array b
-		*/
-		
-		
-		// printArray(_arrayA, false);
-		// printArray(_arrayB, false);
-		// push [2]
-		size_t inter = indexNextGrpToInsert;
-		while (inter - indexLastGrpInsert > 0)
-		{
-			--inter;
-			startGrp = sizeGrp*(inter - 1);
-			_pushToArr(startGrp, sizeGrp, 0, _arrayB, _arrayA);
-		}
-		return ;
-		
-		// while (indexNextGrpToInsert < _nbGrp(_arrayA.size(), sizeGrp))
-		// {
-		// 	size_t startGrp = sizeGrp*(targetGrp - 1);
-		// 	_pushToArr(startGrp, sizeGrp, 0, _arrayB, _arrayA);
-			
-		// 	indexNextGrpToInsert = _getSuiteJacobsthal();
-		// }
 	}
-
-	/*
-	Iteration actuelle 
-	tant que je n ai pas inserer tous les groupes, je continue
-	flag d insertion ? = nb de groupes actuel
-	
-	connaitre le nb de groupe qu il reste
-
-	IndexLastGrpInsert -> le dernier groupe insere
-	IndexNextGrpToInsert -> le prochain groupe a inserer
-
-	recuperer les nb de jaco par deux 
-
-	
-	
-	*/
-	
-	// ----------------------------------------------------------------------
-
-	
-	return ;
-	
-	
 }
 
 // Comparison with winners only
