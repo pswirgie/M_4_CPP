@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/11 13:41:32 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/11 15:04:14 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ class PmergeMe
 		int		argsToNumbers( int ac, char **av );
 		void	invalidArguement( void );
 		void	clearArrayA( void );
-		void	printArray( const std::vector<int>& arr, bool sortByLoseWin );
+		void	printArray( const std::vector<int>& arr, bool sortByLoseWin,size_t sizeGrp );
 		void	algo( void );
 		
 	private:
@@ -103,7 +103,7 @@ class PmergeMe
 		size_t	_binarySearch( std::vector<int>& arr, int nbTarget, size_t sizeGrp, size_t endSearch);
 		void	_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter );
 		void	_initLeftOvers( size_t sizeGrp, size_t nbGrp );
-		void	_printArrBWithWinnerIndex( void );
+		void	_printArrBWithWinnerIndex( size_t sizeGrp );
 		
 		void	_initSuiteJacobsthal( void );
 		size_t	_getSuiteJacobsthal( void );

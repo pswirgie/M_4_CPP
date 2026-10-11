@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/11 13:48:15 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/11 15:04:03 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ bool	PmergeMe::_isSorted( std::vector<int>& array )
 	return (true);
 }
 
-void	PmergeMe::_printArrBWithWinnerIndex( void )
+void	PmergeMe::_printArrBWithWinnerIndex( size_t sizeGrp )
 {
 	printMessage(DEBUGS, "Print _array B with winner Index", std::string(FILLIGN - 20, '-'));
 	std::cout << BLUE << "ArrB:";
@@ -59,8 +59,8 @@ void	PmergeMe::_printArrBWithWinnerIndex( void )
 		std::cout << "	" << std::setfill('0') << std::setw(2) << _arrayB[i];
 	std::cout << std::endl << LYLA << "Iwin:";
 	for (size_t i = 0; i < _indexWinnerA.size(); ++i)
-		std::cout << "		" << std::setfill('0') << std::setw(2) << _indexWinnerA[i];
-	std::cout << "		NONE" << RESET << std::endl;
+		std::cout << std::string(sizeGrp, '	') << std::setfill('0') << std::setw(2) << _indexWinnerA[i];
+	std::cout << std::string(sizeGrp, '	') << "NONE" << RESET << std::endl;
 	printMessage(DEBUGS, "", std::string(FILLIGN, '-'));
 }
 
@@ -129,7 +129,7 @@ int	PmergeMe::argsToNumbers( int ac, char **av ) // parser les arguemnts de av e
 void	PmergeMe::clearArrayA( void )
 {	_arrayA.clear();	}
 
-void	PmergeMe::printArray( const std::vector<int>& arr, bool sortByLoseWin )
+void	PmergeMe::printArray( const std::vector<int>& arr, bool sortByLoseWin, size_t sizeGrp )
 {
 	// printMessage(DEBUGS, "PrintArray() ", (std::string(FILLIGN, '-')));
 	if (sortByLoseWin)
@@ -170,7 +170,7 @@ void	PmergeMe::printArray( const std::vector<int>& arr, bool sortByLoseWin )
 				std::cout << "	";
 			std::cout << LYLA << std::setfill('0') << std::setw(2) << j;
 		}
-		if (!((j + 1)%GROUP))
+		if (!((j + 1)%sizeGrp))
 		{
 			std::cout << BLUE << "|" << LYLA;
 			if (loser)
@@ -182,7 +182,10 @@ void	PmergeMe::printArray( const std::vector<int>& arr, bool sortByLoseWin )
 			std::cout << " ";
 		++j;
 	}
-	std::cout << RESET << std::endl;
+	// std::cout << RESET << std::endl;
+	std::cout << std::endl << std::string(FILLIGN, '-') << RESET << std::endl;
+	
+	// printMessage(DEBUGS, "", (std::string(FILLIGN, '-')));
 	// printMessage(DEBUGS, "PrintArray() - END ", (std::string(FILLIGN, '-')));
 }
 
