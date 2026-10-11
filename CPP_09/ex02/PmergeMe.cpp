@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/11 13:29:09 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/11 13:43:04 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,25 +49,42 @@ void	PmergeMe::_allLosersToArrayB( size_t sizeGrp, size_t nbGrp )
 	std::cout << BROWN << "[DEBUG] _allLosersToArrayB -> end " << std::string(40, '-') << RESET << std::endl;
 }
 
-void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, std::vector<int>& src, std::vector<int>& dst, int nbTarget, size_t startGrp, size_t sizeGrp, size_t endSearch )
+void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter )
 {
 	// printMessage(DEBUGS, "_insertGrpBinarySearch() ", std::string(FILLIGN, '-'));
-	size_t indexInsert = _binarySearch(dst, nbTarget, sizeGrp, endSearch);
-	// give index target, not index group
-	printMessage(DEBUGS, "_insertGrpBinarySearch() - nbTarget: ", nbTarget);
-	// printMessage(DEBUGS, "_insertGrpBinarySearch() - indexInsert: ", indexInsert);
-	// printMessage(DEBUGS, "_insertGrpBinarySearch() - startGrp: ", startGrp);
-	// printMessage(DEBUGS, "_insertGrpBinarySearch() - sizeGrp: ", sizeGrp);
 
-	// printArray(_arrayA, false);
-	std::vector<int> tmp(src.begin() + startGrp, src.begin() + startGrp + sizeGrp);
-	// printArray(tmp, 0);
+	size_t startGrp;
+	if (isInter)
+		startGrp = sizeGrp * isInter;
+	else
+		startGrp = (sizeGrp*(indexNextGrpToInsert)) - sizeGrp;
+	if (startGrp >= _arrayB.size())
+		return ;
+	printMessage(DEBUGS, "startGrp: ", startGrp);
+
+	size_t indexNbTarget = startGrp + sizeGrp - 1; // in arrB
+	int nbTarget = _arrayB[indexNbTarget];
+	size_t endSearch;
+	if ((indexNbTarget - 1) < _indexWinnerA.size())
+		endSearch = _indexWinnerA[indexNbTarget - 1];
+	else
+		endSearch = _arrayA.size() - 1;
+
+	printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
+	printMessage(DEBUGS, "indexNbTarget: ", indexNbTarget);
+	printMessage(DEBUGS, "NbTarget: ", _arrayB[indexNbTarget]);
+	printMessage(DEBUGS, "endSearch: ", endSearch);
+	printMessage(DEBUGS, "_arrayB[indexNextGrpToInsert]: ", _arrayB[indexNextGrpToInsert]);
+
+	size_t indexInsert = _binarySearch(_arrayA, nbTarget, sizeGrp, endSearch);
+
+	std::vector<int> tmp(_arrayB.begin() + startGrp, _arrayB.begin() + startGrp + sizeGrp);
 	if (deleteFromSrc)
-		src.erase(src.begin() + startGrp, src.begin() + startGrp + sizeGrp);
-	dst.insert(dst.begin() + indexInsert, tmp.begin(), tmp.end());
+		_arrayB.erase(_arrayB.begin() + startGrp, _arrayB.begin() + startGrp + sizeGrp);
+	_arrayA.insert(_arrayA.begin() + indexInsert, tmp.begin(), tmp.end());
 	for (size_t i = 0; i < _indexWinnerA.size(); ++i) // readapt index winner with new insertion
 		_indexWinnerA[i] += sizeGrp;
-	// printArray(_arrayA, false);
+
 	// printMessage(DEBUGS, "_insertGrpBinarySearch() - end ", std::string(FILLIGN, '-'));
 }
 
@@ -125,7 +142,6 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 		// 2. Reinsert to array A
 		size_t indexLastGrpInsert = _getSuiteJacobsthal();
 		size_t indexNextGrpToInsert = _getSuiteJacobsthal();
-		size_t startGrp = 0;
 		++sizeGrp;
  
 		/*
@@ -135,57 +151,21 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 		bool interJaco = false;
 		while (indexNextGrpToInsert < _arrayB.size())
 		{
-
-			printMessage(DEBUGS, "indexNextGrpToInsert: ", indexNextGrpToInsert);
-
-			startGrp = (sizeGrp*(indexNextGrpToInsert)) - sizeGrp;
-			if (startGrp >= _arrayB.size())
-				break;
-			printMessage(DEBUGS, "startGrp: ", startGrp);
-			size_t indexNbTarget = startGrp + sizeGrp - 1; // in arrB
-			size_t endSearch;
-			if ((indexNbTarget - 1) < _indexWinnerA.size())
-				endSearch = _indexWinnerA[indexNbTarget - 1];
-			else
-				endSearch = _arrayA.size() - 1;
-			printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
-			printMessage(DEBUGS, "indexNbTarget: ", indexNbTarget);
-			printMessage(DEBUGS, "NbTarget: ", _arrayB[indexNbTarget]);
-			printMessage(DEBUGS, "endSearch: ", endSearch);
-			printMessage(DEBUGS, "_arrayB[indexNextGrpToInsert]: ", _arrayB[indexNextGrpToInsert]);
-			_insertGrpBinarySearch(0, _arrayB, _arrayA, _arrayB[indexNbTarget],
-				startGrp, sizeGrp, endSearch);
+			// printMessage(DEBUGS, "indexNextGrpToInsert: ", indexNextGrpToInsert);
+			_insertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, 0);
 			printArray(_arrayA, false);
 			_printArrBWithWinnerIndex();
 			if (interJaco)
 			{
-				// insert inter inbetween 2 jaco nb before get the next jaco nb
-				// 1 - 3 -> insert loser[1], loser[3] -> insert inter = loser[2]
 				interJaco = false;
 				size_t endInter = indexNextGrpToInsert - 1;
 				printMessage(DEBUGS, "interJaco - indexLastGrpInsert: ", indexLastGrpInsert);
 				printMessage(DEBUGS, "interJaco - endInter: ", endInter);
 				while (indexLastGrpInsert < endInter)
 				{
-					// insert with binary search in arrA
-					// ordre croissant des losers
-					// ensearch leur winners
-					// update les index des winners
-					startGrp = sizeGrp * indexLastGrpInsert;
-					printMessage(DEBUGS, "startGrp: ", startGrp);
-					indexNbTarget = startGrp + sizeGrp - 1;
-					if ((indexNbTarget - 1) < _indexWinnerA.size())
-						endSearch = _indexWinnerA[indexNbTarget - 1];
-					else
-						endSearch = _arrayA.size() - 1;
-					printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
-					printMessage(DEBUGS, "endSearch: ", endSearch);
-					printMessage(DEBUGS, "NbTarget: ", _arrayB[indexNbTarget]);
-					_insertGrpBinarySearch(0, _arrayB, _arrayA, _arrayB[indexNbTarget],
-						startGrp, sizeGrp, endSearch);
+					_insertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, indexLastGrpInsert);
 					++indexLastGrpInsert;
 					printArray(_arrayA, false);
-					// return;
 				}
 			}
 			indexLastGrpInsert = indexNextGrpToInsert;
