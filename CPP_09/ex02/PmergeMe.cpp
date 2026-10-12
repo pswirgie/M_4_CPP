@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 16:32:56 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 17:16:23 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -317,6 +317,71 @@ size_t	PmergeMe::_binarySearch( T& arr, int nbTarget, size_t sizeGrp, size_t end
 	return (res);
 }
 
+void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
+{
+	// Sort all by grp with loser - winner ----------------------------------
+	// printMessage(DEBUGS, "_sortAll() - order is finished ", "");
+
+	if (_nbGrpStrict(_arrayA.size(), sizeGrp) < 2)
+		return ;
+	_orderGrp(sizeGrp);
+	++levelIteration;
+	// ----------------------------------------------------------------------
+
+	// Recursivity ----------------------------------------------------------
+	_sortAll(levelIteration, pow(2, levelIteration));
+	
+	// Insertion ------------------------------------------------------------
+	if (_nbGrpStrict(_arrayA.size(), sizeGrp) < 3) // already sorted
+		return ;
+
+	// Clear all reusables - DONT MOVE
+	_arrayB.clear();
+	_leftOver.clear();
+	_suiteJacobsthal.clear();
+	_indexWinnerA.clear();
+	
+	// 1. All losers to array B
+	_initSuiteJacobsthal();
+	_initLeftOvers(sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
+	_allLosersToArrayB(sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
+
+	// 2. Reinsert to array A
+	size_t indexLastGrpInsert = _getSuiteJacobsthal();
+	size_t indexNextGrpToInsert = _getSuiteJacobsthal();
+	bool interJaco = false;
+	while (indexNextGrpToInsert < _arrayB.size())
+	{
+		_insertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, 0);
+	
+		if (interJaco)
+		{
+			interJaco = false;
+			size_t endInter = indexNextGrpToInsert - 1;
+			while (indexLastGrpInsert < endInter)
+			{
+				_insertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, indexLastGrpInsert);
+				++indexLastGrpInsert;
+			}
+		}
+		indexLastGrpInsert = indexNextGrpToInsert;
+		indexNextGrpToInsert = _getSuiteJacobsthal();
+		interJaco = true;
+	}
+	if (indexLastGrpInsert < _arrayB.size())
+	{
+		++indexLastGrpInsert;
+		while (indexLastGrpInsert < _arrayB.size() + 1)
+		{
+			_insertGrpBinarySearch(0, sizeGrp, indexLastGrpInsert, 0);
+			++indexLastGrpInsert;
+		}
+	}
+
+	// 4. Insert leftOver
+	_insertLeftOverBinarySearch(sizeGrp);
+}
+
 void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 {
 	// Sort all by grp with loser - winner ----------------------------------
@@ -442,33 +507,36 @@ long long elapsed_us(const timeval& start, const timeval& end)
 	return (end.tv_sec - start.tv_sec) * 1000000LL + (end.tv_usec - start.tv_usec);
 }
 
+void	PmergeMe::_startVector( void )
+{
+	std::cout << "Before:	";
+	printArray(_arrayA);
+
+	struct timeval start, end;
+	gettimeofday(&start, NULL); 
+	_sortAll(0, 1);
+	gettimeofday(&end, NULL);
+
+	std::cout << "After:	";
+	printArray(_arrayA);
+
+	ContainerType type(VECTOR);
+	std::cout << "Time to process a range of " << _arrayA.size();
+	std::cout << " elements with std::" << (type == VECTOR ? "vector" : "else")<< " : " << elapsed_us(start, end)  << " us" << std::endl;
+
+	if (_isSorted())
+		printMessage(INFO, "Yes, it's sorted. Congratulations !", "");
+	else
+		printMessage(ERROR, "No, it isn't sorted. Good luck, yes you can !", "");
+}
+
 void	PmergeMe::algo( int ac, char **av )
 {
 	try
 	{
-
-		struct timeval start, end;
-		gettimeofday(&start, NULL); 
-
 		_parsing(ac, av);
-
-		std::cout << "Before:	";
-		printArray(_arrayA);
-
-		_sortAll(0, 1);
-		gettimeofday(&end, NULL);
-
-		std::cout << "After:	";
-		printArray(_arrayA);
-
-		ContainerType type(VECTOR);
-		std::cout << "Time to process a range of " << _arrayA.size();
-		std::cout << " elements with std::" << (type == VECTOR ? "vector" : "else")<< " : " << elapsed_us(start, end)  << " us" << std::endl;
-
-		if (_isSorted())
-			printMessage(INFO, "Yes, it's sorted. Congratulations !", "");
-		else
-			printMessage(ERROR, "No, it isn't sorted. Good luck, yes you can !", "");
+		_startVector();
+		// _sortDequeue();
 	}
 	catch (const std::exception& e)
 	{

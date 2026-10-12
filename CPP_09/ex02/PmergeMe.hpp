@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 16:34:12 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 17:16:26 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,8 @@ class PmergeMe
 		
 	private:
 		void	_sortAll( size_t levelIteration, size_t sizeGrp );
+		void	_startVector( void );
+		void	_sortDeque( size_t levelIteration, size_t sizeGrp );
 		
 		void	_parsing( int ac, char **av );
 		void	_invalidArguement( void );
@@ -123,10 +125,9 @@ class PmergeMe
 		void	_printArrayJacobsthal( void );
 
 		std::vector<int>			_arrayA;
-		// std::deque<int>				_arrayAD;
 		std::vector<int>			_arrayB;
 		std::vector<int>			_leftOver;
 		std::vector<size_t>			_indexWinnerA;
 		std::deque<size_t>			_suiteJacobsthal; // give the last group Index for comparsion inorder to insert losers
-		std::vector<int>::iterator	it;
+		// std::deque<int>				_arrayAD;
 };
