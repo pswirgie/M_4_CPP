@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 13:48:02 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 14:03:16 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,7 @@ size_t	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t size
 	{
 		size_t half = floor(start + ((endSearch - start)/2));
 		// start + ((end - start)/2);
-		if (nbTarget == 198)
+		if (nbTarget == 4)
 		{
 			printMessage(DEBUGS, "_binarySearch() - nbTarget: ", nbTarget);
 			printMessage(DEBUGS, "_binarySearch() - start: ", start);
@@ -235,8 +235,6 @@ size_t	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t size
 		}
 		if (*winners[half] > nbTarget)
 		{
-			
-			
 			if ((half - 1) < winners.size() && *winners[half - 1] < nbTarget)
 			{
 				start = half - 1;
@@ -263,14 +261,16 @@ size_t	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t size
 
 	// 3. Convert winner index to array index ------------------------------------------------------
 	size_t res = 0;
+	printMessage(DEBUGS, "start: ", start);
 	if (start > 0)
 	{
-		printMessage(DEBUGS, "start: ", start);
 		size_t nbGroup = ++start; // start is a index, start 0, but it is the nb of group 1st, 2nd, etc
 		// printMessage(DEBUGS, "_binarySearch() - nbGroup: ", nbGroup);
 		res = (nbGroup * sizeGrp);
 	}
-	else
+	else if (start == 0 && *winners[start] > nbTarget)
+		res = 0;
+	else if (start == 0 && *winners[start] < nbTarget)
 		res = sizeGrp;
 	
 	printMessage(DEBUGS, "res: ", res);
