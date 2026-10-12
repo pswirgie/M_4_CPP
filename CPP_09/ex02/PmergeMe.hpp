@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 10:31:39 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 12:37:18 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ class PmergeMe
 		int		_sendToArray( std::string str );
 		bool	_isSorted( std::vector<int>& arr );
 		size_t	_nbGrp( size_t sizeArr, size_t sizeGrp );
+		size_t	_nbGrpStrict( size_t sizeArr, size_t sizeGrp );
 		void	_orderGrp( size_t sizeGrp );
 		void	_moveRange( bool deleteFromSrc, size_t startGrp, size_t length, size_t newIndex, std::vector<int>& src, std::vector<int>& dst );
 		void	_allLosersToArrayB( size_t sizeGrp, size_t nbGrp );

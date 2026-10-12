@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 10:55:05 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 13:58:54 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,11 +211,10 @@ void	PmergeMe::_orderGrp( size_t sizeGrp )
 		size_t startLoser = i - (sizeGrp - 1);
 		size_t winner = i + sizeGrp;
 
-		// std::cout << BLUE << "[DEBUG] index loser = " << loser;
-		// std::cout << " | index winner = " << winner;
-		// std::cout << " | size = " << _arrayA.size();
-		// std::cout << " | sizeGrp = " << sizeGrp;
-		// std::cout << RESET << std::endl;
+		// printMessage(DEBUGS, "i: ", i);
+		// printMessage(DEBUGS, "loser: ", loser);
+		// printMessage(DEBUGS, "startLoser: ", startLoser);
+		// printMessage(DEBUGS, "winner: ", winner);
 
 		if ( winner >= _arrayA.size() )
 		{
@@ -281,6 +280,13 @@ size_t	PmergeMe::_nbGrp( size_t sizeArr, size_t sizeGrp )
 	return (res);
 }
 
+size_t	PmergeMe::_nbGrpStrict( size_t sizeArr, size_t sizeGrp )
+{
+	size_t res = floor(sizeArr / sizeGrp);
+	printMessage(DEBUGS, "_nbGrpStrict() - res: ", res);
+	return (res);
+}
+
 void	PmergeMe::_printArrayJacobsthal( void )
 {
 	size_t i = 0;
@@ -328,21 +334,15 @@ void	PmergeMe::_initLeftOvers( size_t sizeGrp, size_t nbGrp )
 	// printMessage(DEBUGS, "_arrayA.size(): ", _arrayA.size());
 	// printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
 	// printArray(_arrayA, 0, sizeGrp);
-	// deplacer ce calcul dans initleftover -> mettre ce restant dans initleftover
-	// puis passer ici au loser winner, -> _indexWinnerA -> _arrayB.size - 1 aussi du coup
 
-	if ((_arrayA.size() % (sizeGrp * 2) != 0) // -> un loser n a pas de winner
-		|| (_arrayA.size() % (nbGrp * 2) != 0)) // -> il y a un reste
+	// There is a rest
+	// Here It's the last grp, a incomplete loser/winner, size is < sizeGrp
+	// Don' t misunderstood with a complete loser
+	if (_arrayA.size() % sizeGrp != 0)
 	{
-	// 	isLeftOver = true;
-	// 	printMessage(DEBUGS, "_allLosersToArrayB() - has a loser grp with no winner", "");
-	// }
-	
-	
-	// if ((_arrayA.size() % sizeGrp) != 0)
-	// {
+		// printMessage(DEBUGS, "_initLeftOvers() - is leftOver", "");
+		// printMessage(DEBUGS, "_initLeftOvers() - sizeGrp: ", sizeGrp);
 		size_t start = sizeGrp * (nbGrp - 1);
-		// printMessage(DEBUGS, "_initLeftOvers() - start: ", start);
 		for (size_t i = start; i < _arrayA.size(); ++i)
 			_leftOver.push_back(_arrayA[i]);
 		_arrayA.erase(_arrayA.begin() + start, _arrayA.end());
