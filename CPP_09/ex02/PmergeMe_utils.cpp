@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 15:40:34 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 15:50:17 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void	PmergeMe::printArray( const std::vector<int>& arr )
 	std::cout << std::endl;
 }
 
-void	PmergeMe::printArrayWithIndexs( const std::vector<int>& arr, bool sortByLoseWin, size_t sizeGrp )
+void	PmergeMe::_printArrayWithIndexs( const std::vector<int>& arr, bool sortByLoseWin, size_t sizeGrp )
 {
 	// printMessage(DEBUGS, "PrintArray() ", (std::string(FILLIGN, '-')));
 
@@ -133,9 +133,6 @@ void	PmergeMe::printArrayWithIndexs( const std::vector<int>& arr, bool sortByLos
 		++i;
 	}
 	std::cout << std::endl;
-
-	(void) sizeGrp;
-	(void) sortByLoseWin;
 
 	// Indexs ---------------------------------------------------
 	std::cout << LYLA << "i:	";

@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 15:41:22 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 16:20:06 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,11 @@ enum LevelMessage
 	TRACE,
 	ERROR,
 	DEBUGS
+};
+
+enum ContainerType
+{
+	VECTOR
 };
 
 template <typename T>

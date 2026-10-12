@@ -6,12 +6,11 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:47 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 15:36:23 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 15:59:13 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
-
 
 void	testsParsing( void )
 {
@@ -60,6 +59,33 @@ void	testsParsing( void )
 	std::cout << std::endl << std::string(60, '-') << std::endl;
 }
 
+void	testsDivers( void )
+{
+	std::cout << std::endl << std::string(60, '-') << std::endl;
+	std::cout << "TESTS - divers" << std::endl << std::endl;
+	
+	PmergeMe all;
+	
+	std::cout << "10 8 7 9 6 3 4 5 2 1 11" << std::endl;
+	const char *args1[] = {"./Pmerge", "10", "8", "7", "9", "6", "3", "4", "5", "2", "1", "11"};
+	all.algo(12, (char **)args1);
+	all.clearArrayA();
+	std::cout << std::endl;
+
+	std::cout << "75 4 8741 130 198 25 7" << std::endl;
+	const char *args2[] = {"./Pmerge", "75", "4", "8741", "130", "198", "25", "7"};
+	all.algo(8, (char **)args2);
+	all.clearArrayA();
+	std::cout << std::endl;
+
+	std::cout << "5 4 6 1 2 3 5 8 9 10 11 42 50 60 80 90" << std::endl;
+	const char *args3[] = {"./Pmerge", "5", "4", "6", "1", "2", "3", "5", "8", "9", "10", "11", "42", "50", "60", "80", "90"};
+	all.algo(17, (char **)args3);
+	all.clearArrayA();
+	std::cout << std::endl;
+
+}
+
 int main( int ac, char **av )
 {
 	// testsParsing();
@@ -72,32 +98,12 @@ int main( int ac, char **av )
 		all.algo(ac, av);
 	}
 
-	std::cout << std::endl << std::string(60, '-') << std::endl;
-	std::cout << "TESTS - divers" << std::endl << std::endl;
-
-	PmergeMe all;
+	// testsDivers();
 
 	// tester nombre pair impair
-	// mettre en place l autorisatin d avoir des doublons
-	// + modifier le code pour accepeter les doublons
+	// temps
 	// tester : ./PmergeMe `shuf -i 1-100000 -n 3000 | tr "\n" " "`
 	
-	// std::cout << "10 8 7 9 6 3 4 5 2 1 11" << std::endl;
-	// const char *args6[] = {"./Pmerge", "10", "8", "7", "9", "6", "3", "4", "5", "2", "1", "11"};
-	// all.argsToNumbers(13, (char **)args6);
-	// all.algo();
-	// all.clearArrayA();
-
-	// std::cout << "75 4 8741 130 198 25 7" << std::endl;
-	// const char *args6[] = {"./Pmerge", "75", "4", "8741", "130", "198", "25", "7"};
-	// all.argsToNumbers(9, (char **)args6);
-	// all.algo();
-	// all.clearArrayA();
-
-	// std::cout << "5 4 6 1 2 3 5 8 9 10 11 42 50 60 80 90" << std::endl;
-	// const char *args7[] = {"./Pmerge", "5", "4", "6", "1", "2", "3", "5", "8", "9", "10", "11", "42", "50", "60", "80", "90"};
-	// all.algo(18, (char **)args7);
-	// all.clearArrayA();
 
 	std::cout << std::endl << std::string(60, '-') << std::endl;
 }

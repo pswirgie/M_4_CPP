@@ -6,11 +6,12 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 15:41:33 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 16:21:34 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
+#include <sys/time.h>
 
 PmergeMe::PmergeMe( void ){}
 
@@ -223,10 +224,10 @@ size_t	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t size
 		// start + ((end - start)/2);
 		// if (nbTarget == 4)
 		// {
-		// 	printMessage(DEBUGS, "_binarySearch() - nbTarget: ", nbTarget);
-		// 	printMessage(DEBUGS, "_binarySearch() - start: ", start);
-		// 	printMessage(DEBUGS, "_binarySearch() - half: ", half);
-		// 	printMessage(DEBUGS, "_binarySearch() - *winners[half]: ", *winners[half]);
+			// printMessage(DEBUGS, "_binarySearch() - nbTarget: ", nbTarget);
+			// printMessage(DEBUGS, "_binarySearch() - start: ", start);
+			// printMessage(DEBUGS, "_binarySearch() - half: ", half);
+			// printMessage(DEBUGS, "_binarySearch() - *winners[half]: ", *winners[half]);
 		// }
 		if (half <= 0)
 		{
@@ -258,6 +259,7 @@ size_t	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t size
 			}
 			continue;
 		}
+		--endSearch;
 	}
 	// printMessage(DEBUGS, "_binarySearch() - start def: ", start);
 
@@ -326,10 +328,10 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	_allLosersToArrayB(sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
 	// if (sizeGrp == 1)
 	// {
-		printMessage(DEBUGS, "after remove losers", "");
-		_printArrayWithIndexs(_arrayA, false, sizeGrp);
-		_printArrBWithWinnerIndex(sizeGrp);
-		_printArrayWithIndexs(_leftOver, false, sizeGrp);
+		// printMessage(DEBUGS, "after remove losers", "");
+		// _printArrayWithIndexs(_arrayA, false, sizeGrp);
+		// _printArrBWithWinnerIndex(sizeGrp);
+		// _printArrayWithIndexs(_leftOver, false, sizeGrp);
 	// }
 	
 	// _printArrayWithIndexs(_arrayB, false, sizeGrp);
@@ -407,17 +409,38 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	// _printArrayWithIndexs(_arrayA, false, sizeGrp);
 }
 
+long long elapsed_us(const timeval& start, const timeval& end)
+{
+	return (end.tv_sec - start.tv_sec) * 1000000LL + (end.tv_usec - start.tv_usec);
+}
+
 void	PmergeMe::algo( int ac, char **av )
 {
 	try
 	{
+
+		struct timeval start, end;
+		gettimeofday(&start, NULL); 
+
 		_parsing(ac, av);
+
+		std::cout << "Before:	";
+		printArray(_arrayA);
+
 		_sortAll(0, 1);
-		_printArrayWithIndexs(_arrayA, false, 0);
+		gettimeofday(&end, NULL);
+
+		std::cout << "After:	";
+		printArray(_arrayA);
+
+		ContainerType type(VECTOR);
+		std::cout << "Time to process a range of " << _arrayA.size();
+		std::cout << " elements with std::" << (type == VECTOR ? "vector" : "else")<< " : " << elapsed_us(start, end)  << " us" << std::endl;
+
 		if (_isSorted())
 			printMessage(INFO, "Yes, it's sorted. Congratulations !", "");
 		else
-			printMessage(INFO, "No, it isn't sorted. Good luck, yes you can !", "");
+			printMessage(ERROR, "No, it isn't sorted. Good luck, yes you can !", "");
 	}
 	catch (const std::exception& e)
 	{
