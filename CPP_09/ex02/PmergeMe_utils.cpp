@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 15:50:17 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 16:32:51 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,17 +100,10 @@ void	PmergeMe::_parsing( int ac, char **av ) // parser les arguemnts de av et le
 void	PmergeMe::clearArrayA( void )
 {	_arrayA.clear();	}
 
-void	PmergeMe::printArray( const std::vector<int>& arr )
-{
-	for (size_t i = 0; i < arr.size(); ++i)
-	{
-		std::cout << std::setfill('0') << std::setw(2);
-		std::cout << arr[i] << "	";
-	}
-	std::cout << std::endl;
-}
 
-void	PmergeMe::_printArrayWithIndexs( const std::vector<int>& arr, bool sortByLoseWin, size_t sizeGrp )
+
+template <typename T>
+void	PmergeMe::_printArrayWithIndexs( const T& arr, bool sortByLoseWin, size_t sizeGrp )
 {
 	// printMessage(DEBUGS, "PrintArray() ", (std::string(FILLIGN, '-')));
 
@@ -219,8 +212,9 @@ void	PmergeMe::_orderGrp( size_t sizeGrp )
 }
 
 // Move a group
+template <typename T>
 void PmergeMe::_moveRange(bool deleteFromSrc, size_t startGrp, size_t length, size_t newIndex,
-	std::vector<int>& src, std::vector<int>& dst)
+	T& src, T& dst)
 {
 	// if newIndex > startGrp -> - length -> have first index to move group
 	size_t final_dst = newIndex > startGrp ? newIndex - length : newIndex;
@@ -240,20 +234,7 @@ void PmergeMe::_moveRange(bool deleteFromSrc, size_t startGrp, size_t length, si
 	dst.insert(dst.begin() + final_dst, tmp.begin(), tmp.end());
 }
 
-void PmergeMe::_pushToArr(size_t start, size_t length, bool deleteFromSrc,
-	std::vector<int>& src, std::vector<int>& dst)
-{
-	// std::cout << BROWN << "[DEBUG] moveRange -> start: " << start;
-	// std::cout << ", length: " << length;
-	// std::cout << RESET << std::endl;
 
-	std::vector<int> tmp(src.begin() + start, src.begin() + start + length);
-	if (deleteFromSrc)
-		src.erase(src.begin() + start, src.begin() + start + length);
-	// (void)final_dst;
-	// (void)dst;
-	dst.insert(dst.end(), tmp.begin(), tmp.end());
-}
 
 size_t	PmergeMe::_nbGrp( size_t sizeArr, size_t sizeGrp )
 {

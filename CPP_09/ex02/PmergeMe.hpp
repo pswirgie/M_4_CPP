@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 16:20:06 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 16:34:12 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,8 @@ class PmergeMe
 	public:
 		PmergeMe( void );
 		void	clearArrayA( void );
-		void	printArray( const std::vector<int>& arr );
+		template <typename T>
+		void	printArray( const T& arr );
 		void	algo( int ac, char **av );
 		
 	private:
@@ -99,15 +100,19 @@ class PmergeMe
 		void	_invalidArguement( void );
 		void	_sendToArray( std::string str );
 		bool	_isSorted( void );
-		void	_printArrayWithIndexs( const std::vector<int>& arr, bool sortByLoseWin,size_t sizeGrp );
+		template <typename T>
+		void	_printArrayWithIndexs( const T& arr, bool sortByLoseWin,size_t sizeGrp );
 		
 		size_t	_nbGrp( size_t sizeArr, size_t sizeGrp );
 		size_t	_nbGrpStrict( size_t sizeArr, size_t sizeGrp );
 		void	_orderGrp( size_t sizeGrp );
-		void	_moveRange( bool deleteFromSrc, size_t startGrp, size_t length, size_t newIndex, std::vector<int>& src, std::vector<int>& dst );
+		template <typename T>
+		void	_moveRange( bool deleteFromSrc, size_t startGrp, size_t length, size_t newIndex, T& src, T& dst );
 		void	_allLosersToArrayB( size_t sizeGrp, size_t nbGrp );
-		void	_pushToArr( size_t start, size_t length, bool deleteFromSrc, std::vector<int>& src, std::vector<int>& dst );
-		size_t	_binarySearch( std::vector<int>& arr, int nbTarget, size_t sizeGrp, size_t endSearch);
+		template <typename T>
+		void	_pushToArr( size_t start, size_t length, bool deleteFromSrc, T& src, T& dst );
+		template <typename T>
+		size_t	_binarySearch( T& arr, int nbTarget, size_t sizeGrp, size_t endSearch);
 		void	_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter );
 		void	_insertLeftOverBinarySearch( size_t sizeGrp );
 		void	_initLeftOvers( size_t sizeGrp, size_t nbGrp );
@@ -118,6 +123,7 @@ class PmergeMe
 		void	_printArrayJacobsthal( void );
 
 		std::vector<int>			_arrayA;
+		// std::deque<int>				_arrayAD;
 		std::vector<int>			_arrayB;
 		std::vector<int>			_leftOver;
 		std::vector<size_t>			_indexWinnerA;

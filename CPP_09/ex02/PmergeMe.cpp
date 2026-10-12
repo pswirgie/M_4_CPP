@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 16:21:34 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 16:32:56 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,33 @@
 #include <sys/time.h>
 
 PmergeMe::PmergeMe( void ){}
+
+template <typename T>
+void PmergeMe::_pushToArr(size_t start, size_t length, bool deleteFromSrc,
+	T& src, T& dst)
+{
+	// std::cout << BROWN << "[DEBUG] moveRange -> start: " << start;
+	// std::cout << ", length: " << length;
+	// std::cout << RESET << std::endl;
+
+	std::vector<int> tmp(src.begin() + start, src.begin() + start + length);
+	if (deleteFromSrc)
+		src.erase(src.begin() + start, src.begin() + start + length);
+	// (void)final_dst;
+	// (void)dst;
+	dst.insert(dst.end(), tmp.begin(), tmp.end());
+}
+
+template <typename T>
+void	PmergeMe::printArray( const T& arr )
+{
+	for (size_t i = 0; i < arr.size(); ++i)
+	{
+		std::cout << std::setfill('0') << std::setw(2);
+		std::cout << arr[i] << "	";
+	}
+	std::cout << std::endl;
+}
 
 void	PmergeMe::_allLosersToArrayB( size_t sizeGrp, size_t nbGrp )
 {
@@ -153,7 +180,8 @@ void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_
 // Comparison with winners only
 // 1. create a vector* with only winners
 // 2. search in winners
-size_t	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t sizeGrp, size_t endSearch )
+template <typename T>
+size_t	PmergeMe::_binarySearch( T& arr, int nbTarget, size_t sizeGrp, size_t endSearch )
 {
 	// printMessage(DEBUGS, "_binarySearch() ", std::string(FILLIGN, '-'));
 	// if (sizeGrp == 1)
