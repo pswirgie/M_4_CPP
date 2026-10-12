@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 18:41:43 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 18:48:33 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -469,8 +469,6 @@ size_t	PmergeMe::_binarySearch( T& arr, int nbTarget, size_t sizeGrp, size_t end
 	return (res);
 }
 
-
-
 void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 {
 	// Sort all by grp with loser - winner ----------------------------------
@@ -615,10 +613,10 @@ void	PmergeMe::_startVector( void )
 	std::cout << "Time to process a range of " << _arrayA.size();
 	std::cout << " elements with std::vector" << " : " << elapsed_us(start, end)  << " us" << std::endl;
 
-	if (_isSorted(_arrayA))
-		printMessage(INFO, "(Vector) - Yes, it's sorted. Congratulations !", "");
-	else
-		printMessage(ERROR, "(Vector) - No, it isn't sorted. Good luck, yes you can !", "");
+	// if (_isSorted(_arrayA))
+	// 	printMessage(INFO, "(Vector) - Yes, it's sorted. Congratulations !", "");
+	// else
+	// 	printMessage(ERROR, "(Vector) - No, it isn't sorted. Good luck, yes you can !", "");
 }
 
 void	PmergeMe::_DinsertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter )
@@ -737,30 +735,77 @@ void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
 
 void	PmergeMe::_startDeque( void )
 {
-	std::cout << "Before:	";
-	printArray(_DarrayA);
+	// std::cout << "Before:	";
+	// printArray(_DarrayA);
 	
 	struct timeval start, end;
 	gettimeofday(&start, NULL); 
 	_sortDeque(0, 1);
 	gettimeofday(&end, NULL);
-	std::cout << "After:	";
-	printArray(_DarrayA);
+	
+	// std::cout << "After:	";
+	// printArray(_DarrayA);
 
 	std::cout << "Time to process a range of " << _arrayA.size();
-	std::cout << " elements with std::vector" << " : " << elapsed_us(start, end)  << " us" << std::endl;
+	std::cout << " elements with std::deque" << " : " << elapsed_us(start, end)  << " us" << std::endl;
 
-	if (_isSorted(_DarrayA))
-		printMessage(INFO, "(Deque) - Yes, it's sorted. Congratulations !", "");
-	else
-		printMessage(ERROR, "(Deque) - No, it isn't sorted. Good luck, yes you can !", "");
+	// if (_isSorted(_DarrayA))
+	// 	printMessage(INFO, "(Deque) - Yes, it's sorted. Congratulations !", "");
+	// else
+	// 	printMessage(ERROR, "(Deque) - No, it isn't sorted. Good luck, yes you can !", "");
 }
+
+template < typename T >
+bool	isStrOnlyType( T function, const std::string& src, const size_t& start, const size_t& end )
+{
+	size_t	index = start;
+	if (start >= end)
+		return (false);
+	while (index < end)
+	{
+		if (!function(src[index]))
+			return (false);
+		++index;
+	}
+	return (true);
+}
+
+void	PmergeMe::_parsing( int ac, char **av ) // parser les arguemnts de av et les trsnaformer en int
+{
+	if (ac < 2 || !av[1])
+		_invalidArguement();
+
+	size_t len = (size_t)ac;
+	// printMessage(DEBUGS, "ac: ", ac);
+	// for (size_t i = 1; i < len; ++i)
+	// 	printMessage(DEBUGS, "av[i]: ", av[i]);
+	
+	for (size_t i = 1; i < len && av[i]; ++i)
+	{
+		std::string	strNb(av[i]);
+		if (!isStrOnlyType<int(*)(int)>(std::isdigit, strNb, 0, strNb.size()))
+			throw std::runtime_error("Argument is not only a number: " + strNb);
+		char *end;
+		long nb = std::strtol(strNb.c_str(), &end, 10);
+		if (errno || nb < 0 || nb > INT_MAX)
+			_invalidArguement();
+		_arrayA.push_back((int)nb);
+		_DarrayA.push_back((int)nb);
+	}
+
+	if (_arrayA.size() <= 1)
+		throw std::runtime_error("Only one argument, required at least two");
+
+	if (_isSorted(_arrayA))
+		throw std::runtime_error("Arguments are already sorted");
+}
+
 void	PmergeMe::algo( int ac, char **av )
 {
 	try
 	{
 		_parsing(ac, av);
-		// _startVector();
+		_startVector();
 		_startDeque();
 	}
 	catch (const std::exception& e)
