@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 15:21:22 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 15:34:31 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,6 @@ class PmergeMe
 	
 		void	_parsing( int ac, char **av );
 		void	_invalidArguement( void );
-		void	_isCopy( void );
 		void	_sendToArray( std::string str );
 		bool	_isSorted( void );
 		

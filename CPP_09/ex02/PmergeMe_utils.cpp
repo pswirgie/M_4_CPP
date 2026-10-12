@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 15:23:43 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 15:34:25 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ bool	PmergeMe::_isSorted( void )
 			return (false);
 	}
 	return (true);
-
 }
 
 void	PmergeMe::_parsing( int ac, char **av ) // parser les arguemnts de av et les trsnaformer en int
@@ -95,25 +94,7 @@ void	PmergeMe::_parsing( int ac, char **av ) // parser les arguemnts de av et le
 		throw std::runtime_error("Only one argument, required at least two");
 
 	if (_isSorted())
-		throw std::runtime_error("Arguments already sorted");
-
-	_isCopy();
-}
-
-void	PmergeMe::_isCopy( void )
-{
-	for (size_t i = 0; i < _arrayA.size(); ++i)
-	{
-		for (size_t j = i + 1; j < _arrayA.size(); ++j)
-		{
-			if (_arrayA[i] == _arrayA[j])
-			{
-				std::stringstream ss;
-				ss << _arrayA[i];
-				throw std::runtime_error("Copy is fobidden, argument copied: " + ss.str());
-			}
-		}
-	}
+		throw std::runtime_error("Arguments are already sorted");
 }
 
 void	PmergeMe::clearArrayA( void )

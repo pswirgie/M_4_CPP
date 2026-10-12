@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:47 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 15:13:19 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 15:35:14 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,17 +57,12 @@ void	testsParsing( void )
 	all.algo(7, (char **)args6);
 	all.clearArrayA();
 
-	std::cout << std::endl << "Identic numbers" << std::endl;
-	const char *args8[] = {"./Pmerge", "2", "4", "15", "2", "198", "201"};
-	all.algo(7, (char **)args8);
-	all.clearArrayA();
-
 	std::cout << std::endl << std::string(60, '-') << std::endl;
 }
 
 int main( int ac, char **av )
 {
-	// testsParsing();
+	testsParsing();
 
 	{
 		std::cout << "TESTS - terminal" << std::endl;
