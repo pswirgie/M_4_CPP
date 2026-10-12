@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:47 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 15:08:08 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 15:13:19 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	testsParsing( void )
 	all.algo(3, (char **)args3);
 	all.clearArrayA();
 
-	std::cout << std::endl << "Already sorted" << std::endl;
+	std::cout << std::endl << "Already sorted simple" << std::endl;
 	std::cout << "{24, 75}" << std::endl;
 	const char *args5[] = {"./Pmerge", "24", "75"};
 	all.algo(3, (char **)args5);
@@ -82,6 +82,11 @@ int main( int ac, char **av )
 
 	PmergeMe all;
 
+	// tester nombre pair impair
+	// mettre en place l autorisatin d avoir des doublons
+	// + modifier le code pour accepeter les doublons
+	// tester : ./PmergeMe `shuf -i 1-100000 -n 3000 | tr "\n" " "`
+	
 	// std::cout << "10 8 7 9 6 3 4 5 2 1 11" << std::endl;
 	// const char *args6[] = {"./Pmerge", "10", "8", "7", "9", "6", "3", "4", "5", "2", "1", "11"};
 	// all.argsToNumbers(13, (char **)args6);

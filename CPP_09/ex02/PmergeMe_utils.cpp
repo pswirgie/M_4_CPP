@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 15:08:54 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 15:23:43 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,19 @@ bool	isStrOnlyType( T function, const std::string& src, const size_t& start, con
 	return (true);
 }
 
+bool	PmergeMe::_isSorted( void )
+{
+	for (size_t i = 0; i < _arrayA.size(); ++i)
+	{
+		if (i + 1 < _arrayA.size() && _arrayA[i] > _arrayA[i + 1])
+			return (false);
+	}
+	return (true);
+
+}
+
 void	PmergeMe::_parsing( int ac, char **av ) // parser les arguemnts de av et les trsnaformer en int
 {
-	bool	isSorted = true;
-
 	if (ac < 2 || !av[1])
 		_invalidArguement();
 
@@ -85,12 +94,7 @@ void	PmergeMe::_parsing( int ac, char **av ) // parser les arguemnts de av et le
 	if (_arrayA.size() <= 1) // case one argument
 		throw std::runtime_error("Only one argument, required at least two");
 
-	for (size_t i = 0; i < _arrayA.size(); ++i)
-	{
-		if (i + 1 < _arrayA.size() && _arrayA[i] > _arrayA[i + 1])
-			isSorted = false;
-	}
-	if (isSorted)
+	if (_isSorted())
 		throw std::runtime_error("Arguments already sorted");
 
 	_isCopy();
@@ -118,15 +122,17 @@ void	PmergeMe::clearArrayA( void )
 void	PmergeMe::printArray( const std::vector<int>& arr, bool sortByLoseWin, size_t sizeGrp )
 {
 	// printMessage(DEBUGS, "PrintArray() ", (std::string(FILLIGN, '-')));
-	if (sortByLoseWin)
-		std::cout << CYAN << "LOSER " << LYLA << " WINNER" << std::endl;
 
-	if (arr == _arrayA)
-		std::cout << BLUE << "ArrA:	";
-	else if (arr == _arrayB)
-		std::cout << BLUE << "ArrB:	";
-	else
-		std::cout << BLUE << "Other:	";
+	// Title ----------------------------------------------------
+	// if (sortByLoseWin)
+	// 	std::cout << CYAN << "LOSER " << LYLA << " WINNER" << std::endl;
+
+	// if (arr == _arrayA)
+	// 	std::cout << BLUE << "ArrA:	";
+	// else if (arr == _arrayB)
+	// 	std::cout << BLUE << "ArrB:	";
+	// else
+	// 	std::cout << BLUE << "Other:	";
 
 	size_t i = 0;
 	while (i < arr.size())
@@ -135,41 +141,47 @@ void	PmergeMe::printArray( const std::vector<int>& arr, bool sortByLoseWin, size
 		std::cout << arr[i] << "	";
 		++i;
 	}
-	std::cout << std::endl << LYLA << "i:	";
-	size_t j = 0;
-	bool loser = false;
-	while (j < i)
-	{
-		if (sortByLoseWin)
-		{
-			if (loser)
-				std::cout << CYAN;
-			else 
-				std::cout << LYLA;
-			if (j != 0)
-				std::cout << "	";
-			std::cout << std::setfill('0') << std::setw(2) << j;
-		}
-		else
-		{
-			if (j != 0)
-				std::cout << "	";
-			std::cout << LYLA << std::setfill('0') << std::setw(2) << j;
-		}
-		if (sizeGrp > 0 && !((j + 1) % sizeGrp))
-		{
-			std::cout << BLUE << "|" << LYLA;
-			if (loser)
-				loser = false;
-			else
-				loser = true;
-		}
-		else
-			std::cout << " ";
-		++j;
-	}
+	std::cout << std::endl;
+
+	(void) sizeGrp;
+	(void) sortByLoseWin;
+
+	// Indexs ---------------------------------------------------
+	// std::cout << LYLA << "i:	";
+	// size_t j = 0;
+	// bool loser = false;
+	// while (j < i)
+	// {
+	// 	if (sortByLoseWin)
+	// 	{
+	// 		if (loser)
+	// 			std::cout << CYAN;
+	// 		else 
+	// 			std::cout << LYLA;
+	// 		if (j != 0)
+	// 			std::cout << "	";
+	// 		std::cout << std::setfill('0') << std::setw(2) << j;
+	// 	}
+	// 	else
+	// 	{
+	// 		if (j != 0)
+	// 			std::cout << "	";
+	// 		std::cout << LYLA << std::setfill('0') << std::setw(2) << j;
+	// 	}
+	// 	if (sizeGrp > 0 && !((j + 1) % sizeGrp))
+	// 	{
+	// 		std::cout << BLUE << "|" << LYLA;
+	// 		if (loser)
+	// 			loser = false;
+	// 		else
+	// 			loser = true;
+	// 	}
+	// 	else
+	// 		std::cout << " ";
+	// 	++j;
+	// }
 	// std::cout << RESET << std::endl;
-	std::cout << std::endl << std::string(FILLIGN, '-') << RESET << std::endl;
+	// std::cout << std::endl << std::string(FILLIGN, '-') << RESET << std::endl;
 	
 	// printMessage(DEBUGS, "", (std::string(FILLIGN, '-')));
 	// printMessage(DEBUGS, "PrintArray() - END ", (std::string(FILLIGN, '-')));
@@ -259,14 +271,14 @@ void PmergeMe::_pushToArr(size_t start, size_t length, bool deleteFromSrc,
 size_t	PmergeMe::_nbGrp( size_t sizeArr, size_t sizeGrp )
 {
 	size_t res = ceil(static_cast<double>(sizeArr) / sizeGrp);
-	std::cout << BROWN << "[DEBUG] _nbGrp -> res: " << res << RESET << std::endl;
+	// std::cout << BROWN << "[DEBUG] _nbGrp -> res: " << res << RESET << std::endl;
 	return (res);
 }
 
 size_t	PmergeMe::_nbGrpStrict( size_t sizeArr, size_t sizeGrp )
 {
 	size_t res = floor(sizeArr / sizeGrp);
-	printMessage(DEBUGS, "_nbGrpStrict() - res: ", res);
+	// printMessage(DEBUGS, "_nbGrpStrict() - res: ", res);
 	return (res);
 }
 

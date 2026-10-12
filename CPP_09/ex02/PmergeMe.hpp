@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 15:08:51 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 15:21:22 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ class PmergeMe
 		void	_invalidArguement( void );
 		void	_isCopy( void );
 		void	_sendToArray( std::string str );
+		bool	_isSorted( void );
 		
 		size_t	_nbGrp( size_t sizeArr, size_t sizeGrp );
 		size_t	_nbGrpStrict( size_t sizeArr, size_t sizeGrp );
