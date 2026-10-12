@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 17:16:23 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 17:37:38 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,94 @@
 PmergeMe::PmergeMe( void ){}
 
 template <typename T>
+void	PmergeMe::_initSuiteJacobsthal( T& arr )
+{
+	arr.push_back(1);
+	arr.push_back(1);
+}
+
+template <typename T>
+void	PmergeMe::_initLeftOvers( T& arrA, T& leftOver, size_t sizeGrp, size_t nbGrp )
+{
+	// There is a rest
+	// Here It's the last grp, a incomplete loser/winner, size is < sizeGrp
+	// Don' t misunderstood with a complete loser
+	if (arrA.size() % sizeGrp != 0)
+	{
+		size_t start = sizeGrp * (nbGrp - 1);
+		for (size_t i = start; i < arrA.size(); ++i)
+			leftOver.push_back(arrA[i]);
+		arrA.erase(arrA.begin() + start, arrA.end());
+	}
+}
+
+template <typename T>
+void	PmergeMe::_printArrayWithIndexs( const std::string& context, const T& arr, bool sortByLoseWin, size_t sizeGrp )
+{
+	// printMessage(DEBUGS, "PrintArray() ", (std::string(FILLIGN, '-')));
+
+	// Title ----------------------------------------------------
+	if (sortByLoseWin)
+		std::cout << CYAN << "LOSER " << LYLA << " WINNER" << std::endl;
+
+	std::cout << BLUE << context;
+
+	size_t i = 0;
+	while (i < arr.size())
+	{
+		std::cout << std::setfill('0') << std::setw(2);
+		std::cout << arr[i] << "	";
+		++i;
+	}
+	std::cout << std::endl;
+
+	// Indexs ---------------------------------------------------
+	std::cout << LYLA << "i:	";
+	size_t j = 0;
+	bool loser = false;
+	while (j < i)
+	{
+		if (sortByLoseWin)
+		{
+			if (loser)
+				std::cout << CYAN;
+			else 
+				std::cout << LYLA;
+			if (j != 0)
+				std::cout << "	";
+			std::cout << std::setfill('0') << std::setw(2) << j;
+		}
+		else
+		{
+			if (j != 0)
+				std::cout << "	";
+			std::cout << LYLA << std::setfill('0') << std::setw(2) << j;
+		}
+		if (sizeGrp > 0 && !((j + 1) % sizeGrp))
+		{
+			std::cout << BLUE << "|" << LYLA;
+			if (loser)
+				loser = false;
+			else
+				loser = true;
+		}
+		else
+			std::cout << " ";
+		++j;
+	}
+	// std::cout << RESET << std::endl;
+	std::cout << std::endl << std::string(FILLIGN, '-') << RESET << std::endl;
+	
+	// printMessage(DEBUGS, "PrintArray() - END ", (std::string(FILLIGN, '-')));
+}
+
+template <typename T>
 void PmergeMe::_pushToArr(size_t start, size_t length, bool deleteFromSrc,
 	T& src, T& dst)
 {
-	// std::cout << BROWN << "[DEBUG] moveRange -> start: " << start;
-	// std::cout << ", length: " << length;
-	// std::cout << RESET << std::endl;
-
 	std::vector<int> tmp(src.begin() + start, src.begin() + start + length);
 	if (deleteFromSrc)
 		src.erase(src.begin() + start, src.begin() + start + length);
-	// (void)final_dst;
-	// (void)dst;
 	dst.insert(dst.end(), tmp.begin(), tmp.end());
 }
 
@@ -42,7 +118,8 @@ void	PmergeMe::printArray( const T& arr )
 	std::cout << std::endl;
 }
 
-void	PmergeMe::_allLosersToArrayB( size_t sizeGrp, size_t nbGrp )
+template <typename T>
+void	PmergeMe::_allLosersToArrayB( T& arrA, T& arrB, size_t sizeGrp, size_t nbGrp )
 {
 	// printMessage(DEBUGS, "_allLosersToArrayB() ", std::string(50, '-'));
 	size_t	start = 0;
@@ -54,17 +131,17 @@ void	PmergeMe::_allLosersToArrayB( size_t sizeGrp, size_t nbGrp )
 	// printMessage(DEBUGS, "nbGrpLosers: ", nbGrpLosers);
 
 
-	while((nbTransfer < nbGrpLosers) && start < _arrayA.size())
+	while((nbTransfer < nbGrpLosers) && start < arrA.size())
 	{
 		// printMessage(DEBUGS, "nbTransfer: ", nbTransfer);
-		// _printArrayWithIndexs(_arrayA, 0, sizeGrp);
+		// _printArrayWithIndexs(arrA, 0, sizeGrp);
 		// printMessage(DEBUGS, "_allLosersToArrayB() - sizeGrp: ", sizeGrp);
 		
-		_pushToArr(start, sizeGrp, 1, _arrayA, _arrayB);
+		_pushToArr(start, sizeGrp, 1, arrA, arrB);
 		
 		// printMessage(DEBUGS, "_allLosersToArrayB() - start + sizeGrp - 1: ", start + sizeGrp - 1);
-		// _printArrayWithIndexs(_arrayA, false);
-		// _printArrayWithIndexs(_arrayB, false);
+		// _printArrayWithIndexs(arrA, false);
+		// _printArrayWithIndexs(arrB, false);
 		
 		nbTransfer++;
 		start = sizeGrp * skipWinners;
@@ -77,7 +154,7 @@ void	PmergeMe::_allLosersToArrayB( size_t sizeGrp, size_t nbGrp )
 
 	// test pour garder les indexs
 	size_t i = sizeGrp - 1;
-	while (i < _arrayB.size())
+	while (i < arrB.size())
 	{
 		// if (sizeGrp == 1)
 		// 	printMessage(DEBUGS, "_allLosersToArrayB() - i: ", i);
@@ -322,7 +399,9 @@ void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
 	// Sort all by grp with loser - winner ----------------------------------
 	// printMessage(DEBUGS, "_sortAll() - order is finished ", "");
 
-	if (_nbGrpStrict(_arrayA.size(), sizeGrp) < 2)
+	_printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
+
+	if (_nbGrpStrict(_DarrayA.size(), sizeGrp) < 2)
 		return ;
 	_orderGrp(sizeGrp);
 	++levelIteration;
@@ -332,19 +411,27 @@ void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
 	_sortAll(levelIteration, pow(2, levelIteration));
 	
 	// Insertion ------------------------------------------------------------
-	if (_nbGrpStrict(_arrayA.size(), sizeGrp) < 3) // already sorted
+	if (_nbGrpStrict(_DarrayA.size(), sizeGrp) < 3) // already sorted
 		return ;
 
 	// Clear all reusables - DONT MOVE
-	_arrayB.clear();
-	_leftOver.clear();
-	_suiteJacobsthal.clear();
-	_indexWinnerA.clear();
-	
+	_DarrayB.clear();
+	_DleftOver.clear();
+	_DsuiteJacobsthal.clear();
+	_DindexWinnerA.clear();
+
+	printMessage(DEBUGS, "before remove losers", "");
+	_printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
+
 	// 1. All losers to array B
-	_initSuiteJacobsthal();
-	_initLeftOvers(sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
-	_allLosersToArrayB(sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
+	_initSuiteJacobsthal(_DsuiteJacobsthal);
+	_initLeftOvers(_DarrayA, _DleftOver, sizeGrp, _nbGrp(_DarrayA.size(), sizeGrp));
+	_allLosersToArrayB(_DarrayA, _DarrayB, sizeGrp, _nbGrp(_DarrayA.size(), sizeGrp));
+
+	printMessage(DEBUGS, "after remove losers", "");
+	_printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
+	_printArrBWithWinnerIndex(sizeGrp);
+	_printArrayWithIndexs("_DleftO:	", _DleftOver, false, sizeGrp);
 
 	// 2. Reinsert to array A
 	size_t indexLastGrpInsert = _getSuiteJacobsthal();
@@ -416,9 +503,9 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	_indexWinnerA.clear();
 	
 	// 1. All losers to array B
-	_initSuiteJacobsthal();
-	_initLeftOvers(sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
-	_allLosersToArrayB(sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
+	_initSuiteJacobsthal(_suiteJacobsthal);
+	_initLeftOvers(_arrayA, _leftOver, sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
+	_allLosersToArrayB(_arrayA, _arrayB, sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
 	// if (sizeGrp == 1)
 	// {
 		// printMessage(DEBUGS, "after remove losers", "");
@@ -530,38 +617,24 @@ void	PmergeMe::_startVector( void )
 		printMessage(ERROR, "No, it isn't sorted. Good luck, yes you can !", "");
 }
 
+void	PmergeMe::_startDeque( void )
+{
+	
+	_sortDeque(0, 1);
+}
 void	PmergeMe::algo( int ac, char **av )
 {
 	try
 	{
 		_parsing(ac, av);
 		_startVector();
-		// _sortDequeue();
+		_startDeque();
 	}
 	catch (const std::exception& e)
 	{
 		printMessage(ERROR, "Parsing - ", e.what());
 		return ;
 	}
-
-	/*
-	taile du groupe = 2 puissance etape de la cursion  -> i 
-	if (groupes de la taille requise < 2)
-		return -: trie fini
-	Merge -> a partir des gagnants trier entre perdants et gagnants et deplacer, sort loser winner groups by pair
-	recursif = refaire merge puis insertion
-	if (min 3 groupes) sinon deja trier
-			 mettre les perdants dans l arrayB
-				- choisir le groupe perdants a prendre -> suite de machin
-					la suite de machin permet de donner la premiere position position
-					du grouppe perdant a prendre, puis c est vers la droite tant qu on ne recontre pas un groupe deja comparer
-						-> on peut compter le nb de groupes par index de machin
-							-> entre l index 1 et 3 il y a juste un groupe a comparer etc 
-							-> l index de machn commence a 1 attention
-				- choisir a partir du groupe de quel gagnant le comparer -> calcul nombre 
-					puis ce sera une comparaison vers la gauche
-	
-	*/
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 16:32:51 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 17:36:19 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void	PmergeMe::_parsing( int ac, char **av ) // parser les arguemnts de av et le
 		if (errno || nb < 0 || nb > INT_MAX)
 			_invalidArguement();
 		_arrayA.push_back((int)nb);
+		_DarrayA.push_back((int)nb);
 	}
 
 	if (_arrayA.size() <= 1)
@@ -102,70 +103,7 @@ void	PmergeMe::clearArrayA( void )
 
 
 
-template <typename T>
-void	PmergeMe::_printArrayWithIndexs( const T& arr, bool sortByLoseWin, size_t sizeGrp )
-{
-	// printMessage(DEBUGS, "PrintArray() ", (std::string(FILLIGN, '-')));
 
-	// Title ----------------------------------------------------
-	if (sortByLoseWin)
-		std::cout << CYAN << "LOSER " << LYLA << " WINNER" << std::endl;
-
-	if (arr == _arrayA)
-		std::cout << BLUE << "ArrA:	";
-	else if (arr == _arrayB)
-		std::cout << BLUE << "ArrB:	";
-	else
-		std::cout << BLUE << "Other:	";
-
-	size_t i = 0;
-	while (i < arr.size())
-	{
-		std::cout << std::setfill('0') << std::setw(2);
-		std::cout << arr[i] << "	";
-		++i;
-	}
-	std::cout << std::endl;
-
-	// Indexs ---------------------------------------------------
-	std::cout << LYLA << "i:	";
-	size_t j = 0;
-	bool loser = false;
-	while (j < i)
-	{
-		if (sortByLoseWin)
-		{
-			if (loser)
-				std::cout << CYAN;
-			else 
-				std::cout << LYLA;
-			if (j != 0)
-				std::cout << "	";
-			std::cout << std::setfill('0') << std::setw(2) << j;
-		}
-		else
-		{
-			if (j != 0)
-				std::cout << "	";
-			std::cout << LYLA << std::setfill('0') << std::setw(2) << j;
-		}
-		if (sizeGrp > 0 && !((j + 1) % sizeGrp))
-		{
-			std::cout << BLUE << "|" << LYLA;
-			if (loser)
-				loser = false;
-			else
-				loser = true;
-		}
-		else
-			std::cout << " ";
-		++j;
-	}
-	// std::cout << RESET << std::endl;
-	std::cout << std::endl << std::string(FILLIGN, '-') << RESET << std::endl;
-	
-	// printMessage(DEBUGS, "PrintArray() - END ", (std::string(FILLIGN, '-')));
-}
 
 /*
 the group size is parameter
@@ -262,11 +200,7 @@ void	PmergeMe::_printArrayJacobsthal( void )
 	std::cout << RESET << std::endl;
 }
 
-void	PmergeMe::_initSuiteJacobsthal( void )
-{
-	_suiteJacobsthal.push_back(1);
-	_suiteJacobsthal.push_back(1);
-}
+
 
 /*
 -> Return first index and calcul the next + 1
@@ -289,26 +223,4 @@ size_t	PmergeMe::_getSuiteJacobsthal( void )
 	return (index);
 }
 
-void	PmergeMe::_initLeftOvers( size_t sizeGrp, size_t nbGrp )
-{
-	// printMessage(DEBUGS, "_initLeftOvers() - sizeGrp: ", sizeGrp);
-	// printMessage(DEBUGS, "_initLeftOvers() - nbGrp: ", nbGrp);
-	// printMessage(DEBUGS, "_initLeftOvers() - _arrayA.size(): ", _arrayA.size());
-	// printMessage(DEBUGS, "_arrayA.size(): ", _arrayA.size());
-	// printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
-	// printArray(_arrayA, 0, sizeGrp);
 
-	// There is a rest
-	// Here It's the last grp, a incomplete loser/winner, size is < sizeGrp
-	// Don' t misunderstood with a complete loser
-	if (_arrayA.size() % sizeGrp != 0)
-	{
-		// printMessage(DEBUGS, "_initLeftOvers() - is leftOver", "");
-		// printMessage(DEBUGS, "_initLeftOvers() - sizeGrp: ", sizeGrp);
-		size_t start = sizeGrp * (nbGrp - 1);
-		for (size_t i = start; i < _arrayA.size(); ++i)
-			_leftOver.push_back(_arrayA[i]);
-		_arrayA.erase(_arrayA.begin() + start, _arrayA.end());
-	}
-	// printArray(_leftOver, 0);
-}
