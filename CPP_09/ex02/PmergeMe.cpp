@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 17:58:57 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 18:14:56 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,17 @@
 #include <sys/time.h>
 
 PmergeMe::PmergeMe( void ){}
+
+template <typename T>
+bool	PmergeMe::_isSorted( const T& arr )
+{
+	for (size_t i = 0; i < arr.size(); ++i)
+	{
+		if (i + 1 < arr.size() && arr[i] > _arrayA[i + 1])
+			return (false);
+	}
+	return (true);
+}
 
 template <typename T>
 void	PmergeMe::_initSuiteJacobsthal( T& arr )
@@ -212,6 +223,7 @@ void	PmergeMe::_insertLeftOverBinarySearch( size_t sizeGrp )
 }
 
 
+
 void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter )
 {
 	// printMessage(DEBUGS, "_insertGrpBinarySearch() ", std::string(FILLIGN, '-'));
@@ -222,8 +234,10 @@ void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_
 		startGrp = sizeGrp * isInter;
 	else
 		startGrp = (sizeGrp*(indexNextGrpToInsert)) - sizeGrp;
+	
 	if (startGrp >= _arrayB.size())
 		return ;
+	
 
 	size_t indexNbTarget = startGrp + sizeGrp - 1; // in arrB
 	int nbTarget = _arrayB[indexNbTarget];
@@ -406,80 +420,7 @@ size_t	PmergeMe::_binarySearch( T& arr, int nbTarget, size_t sizeGrp, size_t end
 	return (res);
 }
 
-void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
-{
-	// Sort all by grp with loser - winner ----------------------------------
-	// printMessage(DEBUGS, "_sortAll() - order is finished ", "");
 
-	_printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
-
-	if (_nbGrpStrict(_DarrayA.size(), sizeGrp) < 2)
-		return ;
-	_orderGrp(sizeGrp);
-	++levelIteration;
-	// ----------------------------------------------------------------------
-
-	// Recursivity ----------------------------------------------------------
-	_sortAll(levelIteration, pow(2, levelIteration));
-	
-	// Insertion ------------------------------------------------------------
-	if (_nbGrpStrict(_DarrayA.size(), sizeGrp) < 3) // already sorted
-		return ;
-
-	// Clear all reusables - DONT MOVE
-	_DarrayB.clear();
-	_DleftOver.clear();
-	_DsuiteJacobsthal.clear();
-	_DindexWinnerA.clear();
-
-	printMessage(DEBUGS, "before remove losers", "");
-	_printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
-
-	// 1. All losers to array B
-	_initSuiteJacobsthal(_DsuiteJacobsthal);
-	_initLeftOvers(_DarrayA, _DleftOver, sizeGrp, _nbGrp(_DarrayA.size(), sizeGrp));
-	_allLosersToArrayB(DEQUE, _DarrayA, _DarrayB, sizeGrp, _nbGrp(_DarrayA.size(), sizeGrp));
-
-	printMessage(DEBUGS, "after remove losers", "");
-	_printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
-	_printArrBWithWinnerIndex(DEQUE, sizeGrp);
-	_printArrayWithIndexs("_DleftO:	", _DleftOver, false, sizeGrp);
-
-	// 2. Reinsert to array A
-	size_t indexLastGrpInsert = _getSuiteJacobsthal(_DsuiteJacobsthal);
-	size_t indexNextGrpToInsert = _getSuiteJacobsthal(_DsuiteJacobsthal);
-	bool interJaco = false;
-	while (indexNextGrpToInsert < _arrayB.size())
-	{
-		_insertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, 0);
-	
-		if (interJaco)
-		{
-			interJaco = false;
-			size_t endInter = indexNextGrpToInsert - 1;
-			while (indexLastGrpInsert < endInter)
-			{
-				_insertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, indexLastGrpInsert);
-				++indexLastGrpInsert;
-			}
-		}
-		indexLastGrpInsert = indexNextGrpToInsert;
-		indexNextGrpToInsert = _getSuiteJacobsthal(_DsuiteJacobsthal);
-		interJaco = true;
-	}
-	if (indexLastGrpInsert < _arrayB.size())
-	{
-		++indexLastGrpInsert;
-		while (indexLastGrpInsert < _arrayB.size() + 1)
-		{
-			_insertGrpBinarySearch(0, sizeGrp, indexLastGrpInsert, 0);
-			++indexLastGrpInsert;
-		}
-	}
-
-	// 4. Insert leftOver
-	_insertLeftOverBinarySearch(sizeGrp);
-}
 
 void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 {
@@ -619,22 +560,141 @@ void	PmergeMe::_startVector( void )
 	std::cout << "After:	";
 	printArray(_arrayA);
 
-	ContainerType type(VECTOR);
 	std::cout << "Time to process a range of " << _arrayA.size();
-	std::cout << " elements with std::" << (type == VECTOR ? "vector" : "else")<< " : " << elapsed_us(start, end)  << " us" << std::endl;
+	std::cout << " elements with std::vector" << " : " << elapsed_us(start, end)  << " us" << std::endl;
 
-	if (_isSorted())
-		printMessage(INFO, "Yes, it's sorted. Congratulations !", "");
+	if (_isSorted(_arrayA))
+		printMessage(INFO, "(Vector) - Yes, it's sorted. Congratulations !", "");
 	else
-		printMessage(ERROR, "No, it isn't sorted. Good luck, yes you can !", "");
+		printMessage(ERROR, "(Vector) - No, it isn't sorted. Good luck, yes you can !", "");
+}
+
+void	PmergeMe::_DinsertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter )
+{
+	size_t startGrp;
+	if (isInter)
+		startGrp = sizeGrp * isInter;
+	else
+		startGrp = (sizeGrp*(indexNextGrpToInsert)) - sizeGrp;
+	
+	if (startGrp >= _DarrayB.size())
+		return ;
+
+	size_t indexNbTarget = startGrp + sizeGrp - 1; // in arrB
+	int nbTarget = _DarrayB[indexNbTarget];
+	size_t endSearch;
+	if ((indexNbTarget - 1) < _DindexWinnerA.size())
+		endSearch = _DindexWinnerA[indexNbTarget - 1];
+	else
+		endSearch = _DarrayA.size();
+
+	size_t indexInsert = _binarySearch(_DarrayA, nbTarget, sizeGrp, endSearch);
+
+	std::deque<int> tmp(_DarrayB.begin() + startGrp, _DarrayB.begin() + startGrp + sizeGrp);
+	if (deleteFromSrc)
+		_DarrayB.erase(_DarrayB.begin() + startGrp, _DarrayB.begin() + startGrp + sizeGrp);
+	_DarrayA.insert(_DarrayA.begin() + indexInsert, tmp.begin(), tmp.end());
+	for (size_t i = 0; i < _DindexWinnerA.size(); ++i) // readapt index winner with new insertion
+		_DindexWinnerA[i] += sizeGrp;
+}
+
+void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
+{
+	// Sort all by grp with loser - winner ----------------------------------
+	// printMessage(DEBUGS, "_sortAll() - order is finished ", "");
+
+	// _printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
+
+	if (_nbGrpStrict(_DarrayA.size(), sizeGrp) < 2)
+		return ;
+	_orderGrp(sizeGrp);
+	++levelIteration;
+	// ----------------------------------------------------------------------
+
+	// Recursivity ----------------------------------------------------------
+	_sortAll(levelIteration, pow(2, levelIteration));
+	
+	// Insertion ------------------------------------------------------------
+	if (_nbGrpStrict(_DarrayA.size(), sizeGrp) < 3) // already sorted
+		return ;
+
+	// Clear all reusables - DONT MOVE
+	_DarrayB.clear();
+	_DleftOver.clear();
+	_DsuiteJacobsthal.clear();
+	_DindexWinnerA.clear();
+
+	// printMessage(DEBUGS, "before remove losers", "");
+	// _printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
+
+	// 1. All losers to array B
+	_initSuiteJacobsthal(_DsuiteJacobsthal);
+	_initLeftOvers(_DarrayA, _DleftOver, sizeGrp, _nbGrp(_DarrayA.size(), sizeGrp));
+	_allLosersToArrayB(DEQUE, _DarrayA, _DarrayB, sizeGrp, _nbGrp(_DarrayA.size(), sizeGrp));
+
+	// printMessage(DEBUGS, "after remove losers", "");
+	// _printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
+	// _printArrBWithWinnerIndex(DEQUE, sizeGrp);
+	// _printArrayWithIndexs("_DleftO:	", _DleftOver, false, sizeGrp);
+
+	// 2. Reinsert to array A
+	size_t indexLastGrpInsert = _getSuiteJacobsthal(_DsuiteJacobsthal);
+	size_t indexNextGrpToInsert = _getSuiteJacobsthal(_DsuiteJacobsthal);
+	bool interJaco = false;
+	while (indexNextGrpToInsert < _DarrayB.size())
+	{
+		// printMessage(DEBUGS, "before insert", "");
+		// _printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
+		// _printArrBWithWinnerIndex(DEQUE, sizeGrp);
+		_DinsertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, 0);
+		// printMessage(DEBUGS, "after insert", "");
+		// _printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
+		// _printArrBWithWinnerIndex(DEQUE, sizeGrp);
+	
+		if (interJaco)
+		{
+			interJaco = false;
+			size_t endInter = indexNextGrpToInsert - 1;
+			while (indexLastGrpInsert < endInter)
+			{
+				_DinsertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, indexLastGrpInsert);
+				++indexLastGrpInsert;
+			}
+		}
+		indexLastGrpInsert = indexNextGrpToInsert;
+		indexNextGrpToInsert = _getSuiteJacobsthal(_DsuiteJacobsthal);
+		interJaco = true;
+	}
+	if (indexLastGrpInsert < _DarrayB.size())
+	{
+		++indexLastGrpInsert;
+		while (indexLastGrpInsert < _DarrayB.size() + 1)
+		{
+			_DinsertGrpBinarySearch(0, sizeGrp, indexLastGrpInsert, 0);
+			++indexLastGrpInsert;
+		}
+	}
+
+	// 4. Insert leftOver
+	_insertLeftOverBinarySearch(sizeGrp);
 }
 
 void	PmergeMe::_startDeque( void )
 {
-	
+	struct timeval start, end;
+	gettimeofday(&start, NULL); 
 	_sortDeque(0, 1);
+	gettimeofday(&end, NULL);
 	std::cout << "After:	";
 	printArray(_DarrayA);
+
+	std::cout << "Time to process a range of " << _arrayA.size();
+	std::cout << " elements with std::vector" << " : " << elapsed_us(start, end)  << " us" << std::endl;
+
+	if (_isSorted(_DarrayA))
+		printMessage(INFO, "(Deque) - Yes, it's sorted. Congratulations !", "");
+	else
+		printMessage(ERROR, "(Deque) - No, it isn't sorted. Good luck, yes you can !", "");
 }
 void	PmergeMe::algo( int ac, char **av )
 {
@@ -642,7 +702,7 @@ void	PmergeMe::algo( int ac, char **av )
 	{
 		_parsing(ac, av);
 		_startVector();
-		// _startDeque();
+		_startDeque();
 	}
 	catch (const std::exception& e)
 	{

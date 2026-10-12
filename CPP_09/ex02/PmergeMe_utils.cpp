@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 17:58:08 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 18:11:29 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,15 +69,7 @@ bool	isStrOnlyType( T function, const std::string& src, const size_t& start, con
 	return (true);
 }
 
-bool	PmergeMe::_isSorted( void )
-{
-	for (size_t i = 0; i < _arrayA.size(); ++i)
-	{
-		if (i + 1 < _arrayA.size() && _arrayA[i] > _arrayA[i + 1])
-			return (false);
-	}
-	return (true);
-}
+
 
 void	PmergeMe::_parsing( int ac, char **av ) // parser les arguemnts de av et les trsnaformer en int
 {
@@ -105,7 +97,7 @@ void	PmergeMe::_parsing( int ac, char **av ) // parser les arguemnts de av et le
 	if (_arrayA.size() <= 1)
 		throw std::runtime_error("Only one argument, required at least two");
 
-	if (_isSorted())
+	if (_isSorted(_arrayA))
 		throw std::runtime_error("Arguments are already sorted");
 }
 

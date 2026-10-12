@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 17:58:03 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 18:10:32 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,13 +97,16 @@ class PmergeMe
 	private:
 		void	_sortAll( size_t levelIteration, size_t sizeGrp );
 		void	_startVector( void );
+
 		void	_startDeque( void );
 		void	_sortDeque( size_t levelIteration, size_t sizeGrp );
-		
+		void	_DinsertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter );
+
 		void	_parsing( int ac, char **av );
 		void	_invalidArguement( void );
 		void	_sendToArray( std::string str );
-		bool	_isSorted( void );
+		template <typename T>
+		bool	_isSorted( const T& arr );
 		template <typename T>
 		void	_printArrayWithIndexs( const std::string& context, const T& arr, bool sortByLoseWin,size_t sizeGrp );
 		
