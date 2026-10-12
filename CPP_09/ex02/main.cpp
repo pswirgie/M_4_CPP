@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:47 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 15:35:14 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 15:36:23 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	testsParsing( void )
 
 int main( int ac, char **av )
 {
-	testsParsing();
+	// testsParsing();
 
 	{
 		std::cout << "TESTS - terminal" << std::endl;
