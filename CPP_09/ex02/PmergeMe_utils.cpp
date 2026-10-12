@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/11 16:14:09 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 09:32:31 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,4 +318,20 @@ size_t	PmergeMe::_getSuiteJacobsthal( void )
 	// _printArrayJacobsthal();
 	// printMessage(DEBUGS, "suite jaco END ----------------------------------------", "");
 	return (index);
+}
+
+void	PmergeMe::_initLeftOvers( size_t sizeGrp, size_t nbGrp )
+{
+	// printMessage(DEBUGS, "_initLeftOvers() - sizeGrp: ", sizeGrp);
+	// printMessage(DEBUGS, "_initLeftOvers() - nbGrp: ", nbGrp);
+	// printMessage(DEBUGS, "_initLeftOvers() - _arrayA.size(): ", _arrayA.size());
+	if ((_arrayA.size() % sizeGrp) != 0)
+	{
+		size_t start = sizeGrp * (nbGrp - 1);
+		// printMessage(DEBUGS, "_initLeftOvers() - start: ", start);
+		for (size_t i = start; i < _arrayA.size(); ++i)
+			_leftOver.push_back(_arrayA[i]);
+		_arrayA.erase(_arrayA.begin() + start, _arrayA.end());
+	}
+	// printArray(_leftOver, 0);
 }

@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/11 16:53:58 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 09:40:23 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,21 @@ void	PmergeMe::_allLosersToArrayB( size_t sizeGrp, size_t nbGrp )
 	// std::cout << BROWN << "[DEBUG] _allLosersToArrayB -> end " << std::string(40, '-') << RESET << std::endl;
 }
 
+void	PmergeMe::_insertLeftOverBinarySearch( void )
+{
+	for (size_t i = 0; i < _leftOver.size(); ++i)
+		_arrayA.push_back(_leftOver[i]);
+
+	// size_t indexInsert = _binarySearch(_arrayA, _leftOver[_leftOver.size() - 1], _leftOver.size(), _leftOver.size() - 1);
+	// printMessage(DEBUGS, "_leftOver[_leftOver.size() - 1]: ", _leftOver[_leftOver.size() - 1]);
+	// printMessage(DEBUGS, "_leftOver.size(): ", _leftOver.size());
+	// _arrayA.insert(_arrayA.begin() + indexInsert, _leftOver.begin(), _leftOver.end());
+}
+
 void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter )
 {
 	// printMessage(DEBUGS, "_insertGrpBinarySearch() ", std::string(FILLIGN, '-'));
-	printMessage(DEBUGS, "indexNextGrpToInsert: ", indexNextGrpToInsert);
+	// printMessage(DEBUGS, "indexNextGrpToInsert: ", indexNextGrpToInsert);
 
 	size_t startGrp;
 	if (isInter)
@@ -84,16 +95,16 @@ void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_
 	else
 		endSearch = _arrayA.size() - 1;
 
-	if (sizeGrp == 1 && indexNextGrpToInsert == 6)
-	{
-		printMessage(DEBUGS, "startGrp: ", startGrp);
-		printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
-		printMessage(DEBUGS, "indexNbTarget: ", indexNbTarget);
-		printMessage(DEBUGS, "NbTarget: ", _arrayB[indexNbTarget]);
-		printMessage(DEBUGS, "endSearch: ", endSearch);
-		printMessage(DEBUGS, "_arrayB[indexNextGrpToInsert]: ", _arrayB[indexNextGrpToInsert - 1]);
+	// if (sizeGrp == 1 && indexNextGrpToInsert == 6)
+	// {
+	// 	printMessage(DEBUGS, "startGrp: ", startGrp);
+	// 	printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
+	// 	printMessage(DEBUGS, "indexNbTarget: ", indexNbTarget);
+	// 	printMessage(DEBUGS, "NbTarget: ", _arrayB[indexNbTarget]);
+	// 	printMessage(DEBUGS, "endSearch: ", endSearch);
+	// 	printMessage(DEBUGS, "_arrayB[indexNextGrpToInsert]: ", _arrayB[indexNextGrpToInsert - 1]);
 		
-	}
+	// }
 
 	size_t indexInsert = _binarySearch(_arrayA, nbTarget, sizeGrp, endSearch);
 
@@ -114,21 +125,6 @@ void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_
 	// printMessage(DEBUGS, "_insertGrpBinarySearch() - end ", std::string(FILLIGN, '-'));
 }
 
-void	PmergeMe::_initLeftOvers( size_t sizeGrp, size_t nbGrp )
-{
-	// printMessage(DEBUGS, "_initLeftOvers() - sizeGrp: ", sizeGrp);
-	// printMessage(DEBUGS, "_initLeftOvers() - nbGrp: ", nbGrp);
-	// printMessage(DEBUGS, "_initLeftOvers() - _arrayA.size(): ", _arrayA.size());
-	if ((_arrayA.size() % sizeGrp) != 0)
-	{
-		size_t start = sizeGrp * (nbGrp - 1);
-		// printMessage(DEBUGS, "_initLeftOvers() - start: ", start);
-		for (size_t i = start; i < _arrayA.size(); ++i)
-			_leftOver.push_back(_arrayA[i]);
-		_arrayA.erase(_arrayA.begin() + start, _arrayA.end());
-	}
-	// printArray(_leftOver, 0);
-}
 
 // Comparison with winners only
 // 1. create a vector* with only winners
@@ -136,8 +132,8 @@ void	PmergeMe::_initLeftOvers( size_t sizeGrp, size_t nbGrp )
 size_t	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t sizeGrp, size_t endSearch )
 {
 	// printMessage(DEBUGS, "_binarySearch() ", std::string(FILLIGN, '-'));
-	if (sizeGrp == 1)
-		printMessage(DEBUGS, "_binarySearch() - nbTarget: ", nbTarget);
+	// if (sizeGrp == 1)
+	// 	printMessage(DEBUGS, "_binarySearch() - nbTarget: ", nbTarget);
 
 	if (endSearch <= 1) // search end at 1, so insert at 0
 	{
@@ -171,12 +167,12 @@ size_t	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t size
 	}
 
 	// print winners
-	if (sizeGrp == 1)
-	{
-		printArray(_arrayA, 0, sizeGrp);
-		for (size_t i = 0; i < winners.size(); ++i)
-			std::cout << *winners[i] << std::endl;
-	}
+	// if (sizeGrp == 1)
+	// {
+	// 	printArray(_arrayA, 0, sizeGrp);
+	// 	for (size_t i = 0; i < winners.size(); ++i)
+	// 		std::cout << *winners[i] << std::endl;
+	// }
 	// std::cout << "end";
 
 	// ------------------------------------------------------------------
@@ -259,7 +255,7 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	// printMessage(DEBUGS, "_sortAll() - already sorted", "");
 	// printMessage(DEBUGS, "levelIteration: ", levelIteration);
 
-	// Clear all reusables
+	// Clear all reusables - DONT MOVE
 	_arrayB.clear();
 	_leftOver.clear();
 	_suiteJacobsthal.clear();
@@ -295,8 +291,8 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	bool interJaco = false;
 	while (indexNextGrpToInsert < _arrayB.size())
 	{
-		if (sizeGrp == 1)
-			printMessage(DEBUGS, "interJaco - indexNextGrpToInsert: ", indexNextGrpToInsert);
+		// if (sizeGrp == 1)
+		// 	printMessage(DEBUGS, "interJaco - indexNextGrpToInsert: ", indexNextGrpToInsert);
 
 		_insertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, 0);
 		
@@ -312,8 +308,8 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 		{
 			interJaco = false;
 			size_t endInter = indexNextGrpToInsert - 1;
-			if (sizeGrp == 1)
-				printMessage(DEBUGS, "interJaco - indexNextGrpToInsert: ", indexNextGrpToInsert);
+			// if (sizeGrp == 1)
+			// 	printMessage(DEBUGS, "interJaco - indexNextGrpToInsert: ", indexNextGrpToInsert);
 			// printMessage(DEBUGS, "interJaco - endInter: ", endInter);
 			while (indexLastGrpInsert < endInter)
 			{
@@ -326,8 +322,8 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 		}
 		indexLastGrpInsert = indexNextGrpToInsert;
 		indexNextGrpToInsert = _getSuiteJacobsthal();
-		if (sizeGrp == 1)
-			printMessage(DEBUGS, "interJaco - indexNextGrpToInsert: ", indexNextGrpToInsert);
+		// if (sizeGrp == 1)
+		// 	printMessage(DEBUGS, "interJaco - indexNextGrpToInsert: ", indexNextGrpToInsert);
 		interJaco = true;
 	}
 	/*
@@ -352,8 +348,7 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	}
 
 	// 4. Insert leftOver
-	for (size_t i = 0; i < _leftOver.size(); ++i)
-		_arrayA.push_back(_leftOver[i]);
+	_insertLeftOverBinarySearch();
 
 	printArray(_arrayA, false, sizeGrp);
 
