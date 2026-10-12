@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 17:36:19 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 17:58:08 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,26 @@ void PmergeMe::_sendToArray( std::string str )
 	_arrayA.push_back((int)nb);
 }
 
-void	PmergeMe::_printArrBWithWinnerIndex( size_t sizeGrp )
+void	PmergeMe::_printArrBWithWinnerIndex( ContainerType type, size_t sizeGrp )
 {
 	printMessage(DEBUGS, "Print _array B with winner Index", std::string(FILLIGN - 20, '-'));
 	std::cout << BLUE << "ArrB:";
-	for (size_t i = 0; i < _arrayB.size(); ++i)
-		std::cout << "	" << std::setfill('0') << std::setw(2) << _arrayB[i];
+	// for (size_t i = 0; i < _arrayB.size(); ++i)
+	size_t i = 0;
+	while ((type == VECTOR && i < _arrayB.size())
+			|| (type == DEQUE && i < _DarrayB.size()))
+	{
+		std::cout << "	" << std::setfill('0') << std::setw(2) << (type == VECTOR ? _arrayB[i] : _DarrayB[i]);
+		++i;
+	}
+	i = 0;
 	std::cout << std::endl << LYLA << "Iwin:";
-	for (size_t i = 0; i < _indexWinnerA.size(); ++i)
-		std::cout << std::string(sizeGrp, '	') << std::setfill('0') << std::setw(2) << _indexWinnerA[i];
+	while ((type == VECTOR && i < _indexWinnerA.size())
+			|| (type == DEQUE && i < _DindexWinnerA.size()))
+	{
+		std::cout << std::string(sizeGrp, '	') << std::setfill('0') << std::setw(2) << (type == VECTOR ? _indexWinnerA[i] : _DindexWinnerA[i]);
+		++i;
+	}
 	std::cout << RESET << std::endl;
 	printMessage(DEBUGS, "", std::string(FILLIGN, '-'));
 }
@@ -202,25 +213,6 @@ void	PmergeMe::_printArrayJacobsthal( void )
 
 
 
-/*
--> Return first index and calcul the next + 1
-[0] = 1
-[1] = 1
-[n] = [n - 1] + 2*[n - 2]
-Suite Jacobsthal : 1, 1, 3, 5, 11, 21, 43, 85, 171, 341
-*/
-size_t	PmergeMe::_getSuiteJacobsthal( void )
-{
-	size_t	index = _suiteJacobsthal.at(0);
-	// printMessage(DEBUGS, "suite jaco BEGIN ----------------------------------------", "");
-	// _printArrayJacobsthal();
-	// printMessage(DEBUGS, "suite jaco - index[0]: ", _suiteJacobsthal.at(0));
-	// printMessage(DEBUGS, "suite jaco - index[1]: ", _suiteJacobsthal.at(1));
-	_suiteJacobsthal.push_back(_suiteJacobsthal.at(1) + (2*(_suiteJacobsthal.at(0))));
-	_suiteJacobsthal.erase(_suiteJacobsthal.begin(), _suiteJacobsthal.begin() + 1);
-	// _printArrayJacobsthal();
-	// printMessage(DEBUGS, "suite jaco END ----------------------------------------", "");
-	return (index);
-}
+
 
 

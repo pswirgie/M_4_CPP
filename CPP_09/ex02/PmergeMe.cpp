@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 17:37:38 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 17:58:57 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,28 @@ void	PmergeMe::_initSuiteJacobsthal( T& arr )
 {
 	arr.push_back(1);
 	arr.push_back(1);
+}
+
+/*
+-> Return first index and calcul the next + 1
+[0] = 1
+[1] = 1
+[n] = [n - 1] + 2*[n - 2]
+Suite Jacobsthal : 1, 1, 3, 5, 11, 21, 43, 85, 171, 341
+*/
+template <typename T>
+size_t	PmergeMe::_getSuiteJacobsthal( T& suiteJaco )
+{
+	size_t	index = suiteJaco.at(0);
+	// printMessage(DEBUGS, "suite jaco BEGIN ----------------------------------------", "");
+	// _printArrayJacobsthal();
+	// printMessage(DEBUGS, "suite jaco - index[0]: ", suiteJaco.at(0));
+	// printMessage(DEBUGS, "suite jaco - index[1]: ", suiteJaco.at(1));
+	suiteJaco.push_back(suiteJaco.at(1) + (2*(suiteJaco.at(0))));
+	suiteJaco.erase(suiteJaco.begin(), suiteJaco.begin() + 1);
+	// _printArrayJacobsthal();
+	// printMessage(DEBUGS, "suite jaco END ----------------------------------------", "");
+	return (index);
 }
 
 template <typename T>
@@ -119,7 +141,7 @@ void	PmergeMe::printArray( const T& arr )
 }
 
 template <typename T>
-void	PmergeMe::_allLosersToArrayB( T& arrA, T& arrB, size_t sizeGrp, size_t nbGrp )
+void	PmergeMe::_allLosersToArrayB( ContainerType type, T& arrA, T& arrB, size_t sizeGrp, size_t nbGrp )
 {
 	// printMessage(DEBUGS, "_allLosersToArrayB() ", std::string(50, '-'));
 	size_t	start = 0;
@@ -127,9 +149,6 @@ void	PmergeMe::_allLosersToArrayB( T& arrA, T& arrB, size_t sizeGrp, size_t nbGr
 	float nbGrpLosers = (nbGrp / 2) + 1; // fragile
 	size_t nbTransfer = 0;
 	size_t skipWinners = 1;
-	// bool	isLeftOver = false;
-	// printMessage(DEBUGS, "nbGrpLosers: ", nbGrpLosers);
-
 
 	while((nbTransfer < nbGrpLosers) && start < arrA.size())
 	{
@@ -147,23 +166,16 @@ void	PmergeMe::_allLosersToArrayB( T& arrA, T& arrB, size_t sizeGrp, size_t nbGr
 		start = sizeGrp * skipWinners;
 		skipWinners++;
 	}
-
-	// if (sizeGrp == 1)
-	// 	_printArrBWithWinnerIndex(sizeGrp);
-	
-
-	// test pour garder les indexs
 	size_t i = sizeGrp - 1;
 	while (i < arrB.size())
 	{
-		// if (sizeGrp == 1)
 		// 	printMessage(DEBUGS, "_allLosersToArrayB() - i: ", i);
-		_indexWinnerA.push_back(i);
+		if (type == VECTOR)
+			_indexWinnerA.push_back(i);
+		else
+			_DindexWinnerA.push_back(i);
 		i += sizeGrp;
 	}
-	
-	
-	// if (sizeGrp == 1)
 		// _printArrBWithWinnerIndex(sizeGrp);
 	
 	// std::cout << BROWN << "[DEBUG] _allLosersToArrayB -> end " << std::string(40, '-') << RESET << std::endl;
@@ -426,16 +438,16 @@ void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
 	// 1. All losers to array B
 	_initSuiteJacobsthal(_DsuiteJacobsthal);
 	_initLeftOvers(_DarrayA, _DleftOver, sizeGrp, _nbGrp(_DarrayA.size(), sizeGrp));
-	_allLosersToArrayB(_DarrayA, _DarrayB, sizeGrp, _nbGrp(_DarrayA.size(), sizeGrp));
+	_allLosersToArrayB(DEQUE, _DarrayA, _DarrayB, sizeGrp, _nbGrp(_DarrayA.size(), sizeGrp));
 
 	printMessage(DEBUGS, "after remove losers", "");
 	_printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
-	_printArrBWithWinnerIndex(sizeGrp);
+	_printArrBWithWinnerIndex(DEQUE, sizeGrp);
 	_printArrayWithIndexs("_DleftO:	", _DleftOver, false, sizeGrp);
 
 	// 2. Reinsert to array A
-	size_t indexLastGrpInsert = _getSuiteJacobsthal();
-	size_t indexNextGrpToInsert = _getSuiteJacobsthal();
+	size_t indexLastGrpInsert = _getSuiteJacobsthal(_DsuiteJacobsthal);
+	size_t indexNextGrpToInsert = _getSuiteJacobsthal(_DsuiteJacobsthal);
 	bool interJaco = false;
 	while (indexNextGrpToInsert < _arrayB.size())
 	{
@@ -452,7 +464,7 @@ void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
 			}
 		}
 		indexLastGrpInsert = indexNextGrpToInsert;
-		indexNextGrpToInsert = _getSuiteJacobsthal();
+		indexNextGrpToInsert = _getSuiteJacobsthal(_DsuiteJacobsthal);
 		interJaco = true;
 	}
 	if (indexLastGrpInsert < _arrayB.size())
@@ -505,7 +517,7 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	// 1. All losers to array B
 	_initSuiteJacobsthal(_suiteJacobsthal);
 	_initLeftOvers(_arrayA, _leftOver, sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
-	_allLosersToArrayB(_arrayA, _arrayB, sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
+	_allLosersToArrayB(VECTOR, _arrayA, _arrayB, sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
 	// if (sizeGrp == 1)
 	// {
 		// printMessage(DEBUGS, "after remove losers", "");
@@ -517,8 +529,8 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	// _printArrayWithIndexs(_arrayB, false, sizeGrp);
 
 	// 2. Reinsert to array A
-	size_t indexLastGrpInsert = _getSuiteJacobsthal();
-	size_t indexNextGrpToInsert = _getSuiteJacobsthal();
+	size_t indexLastGrpInsert = _getSuiteJacobsthal(_suiteJacobsthal);
+	size_t indexNextGrpToInsert = _getSuiteJacobsthal(_suiteJacobsthal);
 
 	/*
 		3. Insert interval inbetween two Jacobasthal Numbers
@@ -549,7 +561,7 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 			}
 		}
 		indexLastGrpInsert = indexNextGrpToInsert;
-		indexNextGrpToInsert = _getSuiteJacobsthal();
+		indexNextGrpToInsert = _getSuiteJacobsthal(_suiteJacobsthal);
 		// if (sizeGrp == 1)
 		// 	printMessage(DEBUGS, "interJaco - indexNextGrpToInsert: ", indexNextGrpToInsert);
 		interJaco = true;
@@ -621,6 +633,8 @@ void	PmergeMe::_startDeque( void )
 {
 	
 	_sortDeque(0, 1);
+	std::cout << "After:	";
+	printArray(_DarrayA);
 }
 void	PmergeMe::algo( int ac, char **av )
 {
@@ -628,7 +642,7 @@ void	PmergeMe::algo( int ac, char **av )
 	{
 		_parsing(ac, av);
 		_startVector();
-		_startDeque();
+		// _startDeque();
 	}
 	catch (const std::exception& e)
 	{

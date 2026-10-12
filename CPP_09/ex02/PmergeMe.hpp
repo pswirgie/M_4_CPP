@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 17:36:01 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 17:58:03 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ class PmergeMe
 		template <typename T>
 		void	_moveRange( bool deleteFromSrc, size_t startGrp, size_t length, size_t newIndex, T& src, T& dst );
 		template <typename T>
-		void	_allLosersToArrayB( T& arrA, T& arrB, size_t sizeGrp, size_t nbGrp );
+		void	_allLosersToArrayB( ContainerType type, T& arrA, T& arrB, size_t sizeGrp, size_t nbGrp );
 		template <typename T>
 		void	_pushToArr( size_t start, size_t length, bool deleteFromSrc, T& src, T& dst );
 		template <typename T>
@@ -122,11 +122,12 @@ class PmergeMe
 		void	_insertLeftOverBinarySearch( size_t sizeGrp );
 		template <typename T>
 		void	_initLeftOvers( T& arrA, T& leftOver, size_t sizeGrp, size_t nbGrp );
-		void	_printArrBWithWinnerIndex( size_t sizeGrp );
+		void	_printArrBWithWinnerIndex( ContainerType type, size_t sizeGrp );
 		
 		template <typename T>
 		void	_initSuiteJacobsthal( T& arr );
-		size_t	_getSuiteJacobsthal( void );
+		template <typename T>
+		size_t	_getSuiteJacobsthal( T& suiteJaco );
 		void	_printArrayJacobsthal( void );
 
 		std::vector<int>		_arrayA;
