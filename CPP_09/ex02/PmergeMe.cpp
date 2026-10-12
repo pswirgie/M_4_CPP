@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 18:32:26 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 18:37:48 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -515,9 +515,9 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	
 	_orderGrp(_arrayA, sizeGrp);
 	
-	printMessage(DEBUGS, "after _orderGrp() ", "" );
-	printMessage(DEBUGS, "sizeGrp: ", sizeGrp );
-	_printArrayWithIndexs("arrA:	", _arrayA, false, sizeGrp);
+	// printMessage(DEBUGS, "after _orderGrp() ", "" );
+	// printMessage(DEBUGS, "sizeGrp: ", sizeGrp );
+	// _printArrayWithIndexs("arrA:	", _arrayA, false, sizeGrp);
 	++levelIteration;
 	// ----------------------------------------------------------------------
 
@@ -683,7 +683,7 @@ void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
 	// Sort all by grp with loser - winner ----------------------------------
 	// printMessage(DEBUGS, "_sortAll() - order is finished ", "");
 
-	_printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
+	// _printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
 
 	if (_nbGrpStrict(_DarrayA.size(), sizeGrp) < 2)
 		return ;
@@ -693,7 +693,7 @@ void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
 	
 	// Recursivity ----------------------------------------------------------
 	++levelIteration;
-	_sortAll(levelIteration, pow(2, levelIteration));
+	_sortDeque(levelIteration, pow(2, levelIteration));
 	
 	// Insertion ------------------------------------------------------------
 	if (_nbGrpStrict(_DarrayA.size(), sizeGrp) < 3) // already sorted
@@ -705,18 +705,18 @@ void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
 	_DsuiteJacobsthal.clear();
 	_DindexWinnerA.clear();
 
-	printMessage(DEBUGS, "before remove losers", "");
-	_printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
+	// printMessage(DEBUGS, "before remove losers", "");
+	// _printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
 
 	// 1. All losers to array B
 	_initSuiteJacobsthal(_DsuiteJacobsthal);
 	_initLeftOvers(_DarrayA, _DleftOver, sizeGrp, _nbGrp(_DarrayA.size(), sizeGrp));
 	_allLosersToArrayB(DEQUE, _DarrayA, _DarrayB, sizeGrp, _nbGrp(_DarrayA.size(), sizeGrp));
 
-	printMessage(DEBUGS, "after remove losers", "");
-	_printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
-	_printArrBWithWinnerIndex(DEQUE, sizeGrp);
-	_printArrayWithIndexs("_DleftO:	", _DleftOver, false, sizeGrp);
+	// printMessage(DEBUGS, "after remove losers", "");
+	// _printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
+	// _printArrBWithWinnerIndex(DEQUE, sizeGrp);
+	// _printArrayWithIndexs("_DleftO:	", _DleftOver, false, sizeGrp);
 
 	// 2. Reinsert to array A
 	size_t indexLastGrpInsert = _getSuiteJacobsthal(_DsuiteJacobsthal);
@@ -724,13 +724,13 @@ void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
 	bool interJaco = false;
 	while (indexNextGrpToInsert < _DarrayB.size())
 	{
-		printMessage(DEBUGS, "before insert", "");
-		_printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
-		_printArrBWithWinnerIndex(DEQUE, sizeGrp);
+		// printMessage(DEBUGS, "before insert", "");
+		// _printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
+		// _printArrBWithWinnerIndex(DEQUE, sizeGrp);
 		_DinsertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, 0);
-		printMessage(DEBUGS, "after insert", "");
-		_printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
-		_printArrBWithWinnerIndex(DEQUE, sizeGrp);
+		// printMessage(DEBUGS, "after insert", "");
+		// _printArrayWithIndexs("_DarrA:	", _DarrayA, false, sizeGrp);
+		// _printArrBWithWinnerIndex(DEQUE, sizeGrp);
 	
 		if (interJaco)
 		{
