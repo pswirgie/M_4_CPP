@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 18:48:33 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 18:52:04 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,14 @@
 #include <sys/time.h>
 
 PmergeMe::PmergeMe( void ){}
+
+void	PmergeMe::_invalidArguement( void )
+{
+	std:: string	message("Invalid arguments, pattern required a unsorted"
+		" positive integer sequence (at least 2 elements)"
+		" separated by spaces: ./PmergeMe [numbers] [//] [//] ...");
+	throw std::runtime_error(message);
+}
 
 template <typename T>
 void	PmergeMe::_printArrayJacobsthal( const T& suiteJaco )
@@ -611,7 +619,9 @@ void	PmergeMe::_startVector( void )
 	printArray(_arrayA);
 
 	std::cout << "Time to process a range of " << _arrayA.size();
-	std::cout << " elements with std::vector" << " : " << elapsed_us(start, end)  << " us" << std::endl;
+	std::cout << " elements with std::vector" << "	: ";
+	std::cout << std::setfill('0') << std::setw(8) << elapsed_us(start, end);
+	std::cout << " us" << std::endl;
 
 	// if (_isSorted(_arrayA))
 	// 	printMessage(INFO, "(Vector) - Yes, it's sorted. Congratulations !", "");
@@ -747,7 +757,9 @@ void	PmergeMe::_startDeque( void )
 	// printArray(_DarrayA);
 
 	std::cout << "Time to process a range of " << _arrayA.size();
-	std::cout << " elements with std::deque" << " : " << elapsed_us(start, end)  << " us" << std::endl;
+	std::cout << " elements with std::deque" << "	: ";
+	std::cout << std::setfill('0') << std::setw(8) << elapsed_us(start, end);
+	std::cout << " us" << std::endl;
 
 	// if (_isSorted(_DarrayA))
 	// 	printMessage(INFO, "(Deque) - Yes, it's sorted. Congratulations !", "");

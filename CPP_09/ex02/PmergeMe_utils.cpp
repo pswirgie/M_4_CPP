@@ -6,19 +6,11 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 18:45:34 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 18:50:24 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
-
-void	PmergeMe::_invalidArguement( void )
-{
-	std:: string	message("Invalid arguments, pattern required a unsorted"
-		" positive integer sequence (at least 2 elements)"
-		" separated by spaces: ./PmergeMe [numbers] [//] [//] ...");
-	throw std::runtime_error(message);
-}
 
 void PmergeMe::_sendToArray( std::string str )
 {
@@ -53,9 +45,6 @@ void	PmergeMe::_printArrBWithWinnerIndex( ContainerType type, size_t sizeGrp )
 	std::cout << RESET << std::endl;
 	printMessage(DEBUGS, "", std::string(FILLIGN, '-'));
 }
-
-
-
 
 void	PmergeMe::clearArrayA( void )
 {
