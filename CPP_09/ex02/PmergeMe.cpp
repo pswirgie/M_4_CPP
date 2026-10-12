@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 18:37:48 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 18:41:43 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,37 +272,6 @@ void	PmergeMe::_allLosersToArrayB( ContainerType type, T& arrA, T& arrB, size_t 
 	
 	// std::cout << BROWN << "[DEBUG] _allLosersToArrayB -> end " << std::string(40, '-') << RESET << std::endl;
 }
-
-void	PmergeMe::_insertLeftOverBinarySearch( size_t sizeGrp )
-{
-	if (_leftOver.empty())
-		return ;
-
-	(void) sizeGrp;
-	// printMessage(DEBUGS, "_insertLeftOverBinarySearch()", std::string(FILLIGN, '-'));
-
-	// printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
-	// _printArrayWithIndexs(_leftOver, 0, sizeGrp);
-	// _printArrayWithIndexs(_arrayA, 0, sizeGrp);
-
-	for (size_t i = 0; i < _leftOver.size(); ++i)
-		_arrayA.push_back(_leftOver[i]);
-
-	
-	// printMessage(DEBUGS, "_leftOver[_leftOver.size() - 1]: ", _leftOver[_leftOver.size() - 1]);
-	// printMessage(DEBUGS, "_leftOver.size(): ", _leftOver.size());
-	// printMessage(DEBUGS, "_arrayA.size(): ", _arrayA.size());
-	// size_t endSearch = _arrayA.size();
-	// size_t indexInsert = _binarySearch(_arrayA, _leftOver[_leftOver.size() - 1], sizeGrp, endSearch);
-	// printMessage(DEBUGS, "indexInsert: ", indexInsert);
-	// _arrayA.insert(_arrayA.begin() + indexInsert, _leftOver.begin(), _leftOver.end());
-
-	// _printArrayWithIndexs(_arrayA, 0, sizeGrp);
-	
-	// printMessage(DEBUGS, "_insertLeftOverBinarySearch() - end", std::string(FILLIGN, '-'));
-}
-
-
 
 void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter )
 {
@@ -610,7 +579,10 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	}
 
 	// 4. Insert leftOver
-	_insertLeftOverBinarySearch(sizeGrp);
+	if (_leftOver.empty())
+		return ;
+	for (size_t i = 0; i < _leftOver.size(); ++i)
+		_arrayA.push_back(_leftOver[i]);
 
 	// _printArrayWithIndexs(_arrayA, false, sizeGrp);
 
@@ -757,7 +729,10 @@ void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
 	}
 
 	// 4. Insert leftOver
-	_insertLeftOverBinarySearch(sizeGrp);
+	if (_DleftOver.empty())
+		return ;
+	for (size_t i = 0; i < _DleftOver.size(); ++i)
+		_DarrayA.push_back(_DleftOver[i]);
 }
 
 void	PmergeMe::_startDeque( void )

@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 18:35:08 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 18:41:49 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,6 @@ class PmergeMe
 		template <typename T>
 		size_t	_binarySearch( T& arr, int nbTarget, size_t sizeGrp, size_t endSearch);
 		void	_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter );
-		void	_insertLeftOverBinarySearch( size_t sizeGrp );
 		template <typename T>
 		void	_initLeftOvers( T& arrA, T& leftOver, size_t sizeGrp, size_t nbGrp );
 		void	_printArrBWithWinnerIndex( ContainerType type, size_t sizeGrp );

@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:47 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 18:26:13 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 18:42:12 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,17 +72,17 @@ void	testsDivers( void )
 	all.clearArrayA();
 	std::cout << std::endl;
 
-	// std::cout << "75 4 8741 130 198 25 7" << std::endl;
-	// const char *args2[] = {"./Pmerge", "75", "4", "8741", "130", "198", "25", "7"};
-	// all.algo(8, (char **)args2);
-	// all.clearArrayA();
-	// std::cout << std::endl;
+	std::cout << "75 4 8741 130 198 25 7" << std::endl;
+	const char *args2[] = {"./Pmerge", "75", "4", "8741", "130", "198", "25", "7"};
+	all.algo(8, (char **)args2);
+	all.clearArrayA();
+	std::cout << std::endl;
 
-	// std::cout << "5 4 6 1 2 3 5 8 9 10 11 42 50 60 80 90" << std::endl;
-	// const char *args3[] = {"./Pmerge", "5", "4", "6", "1", "2", "3", "5", "8", "9", "10", "11", "42", "50", "60", "80", "90"};
-	// all.algo(17, (char **)args3);
-	// all.clearArrayA();
-	// std::cout << std::endl;
+	std::cout << "5 4 6 1 2 3 5 8 9 10 11 42 50 60 80 90" << std::endl;
+	const char *args3[] = {"./Pmerge", "5", "4", "6", "1", "2", "3", "5", "8", "9", "10", "11", "42", "50", "60", "80", "90"};
+	all.algo(17, (char **)args3);
+	all.clearArrayA();
+	std::cout << std::endl;
 
 }
 
