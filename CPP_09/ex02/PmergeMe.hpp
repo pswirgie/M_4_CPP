@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 18:21:07 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 18:35:08 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,5 +145,5 @@ class PmergeMe
 		std::deque<int>			_DarrayB;
 		std::deque<int>			_DleftOver;
 		std::deque<size_t>		_DindexWinnerA;
-		std::deque<size_t>		_DsuiteJacobsthal; // give the last group Index for comparsion inorder to insert losers
+		std::deque<size_t>		_DsuiteJacobsthal;
 };
