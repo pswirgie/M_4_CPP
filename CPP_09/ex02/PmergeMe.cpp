@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 14:20:20 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 15:08:47 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -410,7 +410,7 @@ void	PmergeMe::algo( int ac, char **av )
 {
 	try
 	{
-		_argsToNumbers(ac, av);
+		_parsing(ac, av);
 		_sortAll(0, 1);
 		printMessage(DEBUGS, "Final result: ", "");
 		printArray(_arrayA, false, 0);

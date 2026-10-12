@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 15:07:56 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 15:08:54 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ bool	isStrOnlyType( T function, const std::string& src, const size_t& start, con
 	return (true);
 }
 
-void	PmergeMe::_argsToNumbers( int ac, char **av ) // parser les arguemnts de av et les trsnaformer en int
+void	PmergeMe::_parsing( int ac, char **av ) // parser les arguemnts de av et les trsnaformer en int
 {
 	bool	isSorted = true;
 

@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 14:54:11 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 15:08:51 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ class PmergeMe
 	private:
 		void	_sortAll( size_t levelIteration, size_t sizeGrp );
 	
-		void	_argsToNumbers( int ac, char **av );
+		void	_parsing( int ac, char **av );
 		void	_invalidArguement( void );
 		void	_isCopy( void );
 		void	_sendToArray( std::string str );
