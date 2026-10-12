@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 10:15:30 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 10:55:05 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,7 +277,7 @@ void PmergeMe::_pushToArr(size_t start, size_t length, bool deleteFromSrc,
 size_t	PmergeMe::_nbGrp( size_t sizeArr, size_t sizeGrp )
 {
 	size_t res = ceil(static_cast<double>(sizeArr) / sizeGrp);
-	// std::cout << BROWN << "[DEBUG] _nbGrp -> res: " << res << RESET << std::endl;
+	std::cout << BROWN << "[DEBUG] _nbGrp -> res: " << res << RESET << std::endl;
 	return (res);
 }
 

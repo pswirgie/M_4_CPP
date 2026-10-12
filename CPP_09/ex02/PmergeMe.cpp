@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 10:50:20 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 10:56:24 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	PmergeMe::_insertLeftOverBinarySearch( size_t sizeGrp )
 	printArray(_arrayA, 0, sizeGrp);
 	
 	printMessage(DEBUGS, "_insertLeftOverBinarySearch() - end", std::string(FILLIGN, '-'));
-	exit(1);
+	// exit(1);
 }
 
 
@@ -256,12 +256,20 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 {
 	// Sort all by grp with loser - winner ----------------------------------
 	// printMessage(DEBUGS, "_sortAll() - order is finished ", "");
+
+	// modify here -> grp 2 is uncomplete
+	// group 1 = 4, group 2 = 3 -> refuse !!!!
 	if (_nbGrp(_arrayA.size(), sizeGrp) < 2)
 		return ;
+	
+	printMessage(DEBUGS, "before _orderGrp() ", "" );
+	printArray(_arrayA, false, sizeGrp);
+	
 	_orderGrp(sizeGrp);
 	
-	// printMessage(DEBUGS, "sizeGrp: ", sizeGrp );
-	// printArray(_arrayA, false);
+	printMessage(DEBUGS, "after _orderGrp() ", "" );
+	printMessage(DEBUGS, "sizeGrp: ", sizeGrp );
+	printArray(_arrayA, false, sizeGrp);
 	++levelIteration;
 	// ----------------------------------------------------------------------
 
