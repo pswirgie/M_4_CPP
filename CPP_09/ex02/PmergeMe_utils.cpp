@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 09:32:31 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 10:15:30 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	PmergeMe::_printArrBWithWinnerIndex( size_t sizeGrp )
 	std::cout << std::endl << LYLA << "Iwin:";
 	for (size_t i = 0; i < _indexWinnerA.size(); ++i)
 		std::cout << std::string(sizeGrp, '	') << std::setfill('0') << std::setw(2) << _indexWinnerA[i];
-	std::cout << std::string(sizeGrp, '	') << "NONE" << RESET << std::endl;
+	std::cout << RESET << std::endl;
 	printMessage(DEBUGS, "", std::string(FILLIGN, '-'));
 }
 
@@ -325,8 +325,22 @@ void	PmergeMe::_initLeftOvers( size_t sizeGrp, size_t nbGrp )
 	// printMessage(DEBUGS, "_initLeftOvers() - sizeGrp: ", sizeGrp);
 	// printMessage(DEBUGS, "_initLeftOvers() - nbGrp: ", nbGrp);
 	// printMessage(DEBUGS, "_initLeftOvers() - _arrayA.size(): ", _arrayA.size());
-	if ((_arrayA.size() % sizeGrp) != 0)
+	// printMessage(DEBUGS, "_arrayA.size(): ", _arrayA.size());
+	// printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
+	// printArray(_arrayA, 0, sizeGrp);
+	// deplacer ce calcul dans initleftover -> mettre ce restant dans initleftover
+	// puis passer ici au loser winner, -> _indexWinnerA -> _arrayB.size - 1 aussi du coup
+
+	if ((_arrayA.size() % (sizeGrp * 2) != 0) // -> un loser n a pas de winner
+		|| (_arrayA.size() % (nbGrp * 2) != 0)) // -> il y a un reste
 	{
+	// 	isLeftOver = true;
+	// 	printMessage(DEBUGS, "_allLosersToArrayB() - has a loser grp with no winner", "");
+	// }
+	
+	
+	// if ((_arrayA.size() % sizeGrp) != 0)
+	// {
 		size_t start = sizeGrp * (nbGrp - 1);
 		// printMessage(DEBUGS, "_initLeftOvers() - start: ", start);
 		for (size_t i = start; i < _arrayA.size(); ++i)

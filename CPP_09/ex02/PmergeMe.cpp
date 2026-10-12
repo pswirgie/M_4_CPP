@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 09:40:23 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 10:50:20 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,16 @@ PmergeMe::PmergeMe( void ){}
 
 void	PmergeMe::_allLosersToArrayB( size_t sizeGrp, size_t nbGrp )
 {
-	// printMessage(DEBUGS, "_allLosersToArrayB() ", std::string(50, '-'));
+	printMessage(DEBUGS, "_allLosersToArrayB() ", std::string(50, '-'));
 	size_t	start = 0;
 	// printMessage(DEBUGS, "_allLosersToArrayB() - sizeGrp: ", sizeGrp);
-	(void) nbGrp; // retirer des params ?
-	float nbGrpLosers = (_nbGrp(_arrayA.size(), sizeGrp) / 2) + 1; // fragile
+	float nbGrpLosers = (nbGrp / 2) + 1; // fragile
 	size_t nbTransfer = 0;
 	size_t skipWinners = 1;
+	// bool	isLeftOver = false;
 	// printMessage(DEBUGS, "nbGrpLosers: ", nbGrpLosers);
-	// std::cout << BLUE << "[DEBUG] nbGrpLosers: " << static_cast<float>(nbGrpLosers) ;
-	// std::cout << std::endl;
+
+
 	while((nbTransfer < nbGrpLosers) && start < _arrayA.size())
 	{
 		// printMessage(DEBUGS, "nbTransfer: ", nbTransfer);
@@ -49,7 +49,7 @@ void	PmergeMe::_allLosersToArrayB( size_t sizeGrp, size_t nbGrp )
 
 	// test pour garder les indexs
 	size_t i = sizeGrp - 1;
-	while (i < _arrayB.size() - 1)
+	while (i < _arrayB.size())
 	{
 		// if (sizeGrp == 1)
 		// 	printMessage(DEBUGS, "_allLosersToArrayB() - i: ", i);
@@ -57,22 +57,41 @@ void	PmergeMe::_allLosersToArrayB( size_t sizeGrp, size_t nbGrp )
 		i += sizeGrp;
 	}
 	
+	
 	// if (sizeGrp == 1)
-	// 	_printArrBWithWinnerIndex(sizeGrp);
+		// _printArrBWithWinnerIndex(sizeGrp);
 	
 	// std::cout << BROWN << "[DEBUG] _allLosersToArrayB -> end " << std::string(40, '-') << RESET << std::endl;
 }
 
-void	PmergeMe::_insertLeftOverBinarySearch( void )
+void	PmergeMe::_insertLeftOverBinarySearch( size_t sizeGrp )
 {
-	for (size_t i = 0; i < _leftOver.size(); ++i)
-		_arrayA.push_back(_leftOver[i]);
+	if (_leftOver.empty())
+		return ;
+	printMessage(DEBUGS, "_insertLeftOverBinarySearch()", std::string(FILLIGN, '-'));
 
-	// size_t indexInsert = _binarySearch(_arrayA, _leftOver[_leftOver.size() - 1], _leftOver.size(), _leftOver.size() - 1);
-	// printMessage(DEBUGS, "_leftOver[_leftOver.size() - 1]: ", _leftOver[_leftOver.size() - 1]);
-	// printMessage(DEBUGS, "_leftOver.size(): ", _leftOver.size());
-	// _arrayA.insert(_arrayA.begin() + indexInsert, _leftOver.begin(), _leftOver.end());
+	printMessage(DEBUGS, "sizeGrp: ", sizeGrp);
+	printArray(_leftOver, 0, sizeGrp);
+	printArray(_arrayA, 0, sizeGrp);
+
+	// for (size_t i = 0; i < _leftOver.size(); ++i)
+	// 	_arrayA.push_back(_leftOver[i]);
+
+	
+	printMessage(DEBUGS, "_leftOver[_leftOver.size() - 1]: ", _leftOver[_leftOver.size() - 1]);
+	printMessage(DEBUGS, "_leftOver.size(): ", _leftOver.size());
+	printMessage(DEBUGS, "_arrayA.size(): ", _arrayA.size());
+	size_t endSearch = _arrayA.size();
+	size_t indexInsert = _binarySearch(_arrayA, _leftOver[_leftOver.size() - 1], sizeGrp, endSearch);
+	printMessage(DEBUGS, "indexInsert: ", indexInsert);
+	_arrayA.insert(_arrayA.begin() + indexInsert, _leftOver.begin(), _leftOver.end());
+
+	printArray(_arrayA, 0, sizeGrp);
+	
+	printMessage(DEBUGS, "_insertLeftOverBinarySearch() - end", std::string(FILLIGN, '-'));
+	exit(1);
 }
+
 
 void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter )
 {
@@ -93,7 +112,7 @@ void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_
 	if ((indexNbTarget - 1) < _indexWinnerA.size())
 		endSearch = _indexWinnerA[indexNbTarget - 1];
 	else
-		endSearch = _arrayA.size() - 1;
+		endSearch = _arrayA.size();
 
 	// if (sizeGrp == 1 && indexNextGrpToInsert == 6)
 	// {
@@ -143,37 +162,35 @@ size_t	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t size
 
 	// 1. Create winner vector ------------------------------------------
 	std::vector<int*> winners;
-	size_t nbGrp = _nbGrp(arr.size(), sizeGrp);
 	size_t current = 0;
 	
-	//if the last group is uncomplete, so no winner
-	if (arr.size() % nbGrp != 0)
-		--nbGrp;
 	// printMessage(DEBUGS, "_binarySearch() - nbGrp: ", nbGrp);
 	// printMessage(DEBUGS, "_binarySearch() - sizeGrp: ", sizeGrp);
 
-	// version qui commence dans l ordre croissant
-	while ((sizeGrp > 1 && (sizeGrp * current) + 1 < arr.size())
-			|| (sizeGrp <= 1 && (sizeGrp * current) < arr.size()))
+	/*
+	sizeGrp > 1
+	eg: for sizeGrp = 4
+	winners are index 03 and 07 -> (4 or 8) - 1
+	(sizeGrp * current) - 1 -> current = 1 -> 03
+	(sizeGrp * current) - 1 -> current = 2 -> 07
+	
+	sizeGrp = 1
+	All index in _arrayA are winners
+	*/
+	if (sizeGrp > 1)
+		current = 1;
+
+	while ((sizeGrp == 1 && current < arr.size())
+			|| (sizeGrp > 1 && ((sizeGrp * current) - 1) < arr.size()))
 	{
 		if (sizeGrp > 1)
-			winners.push_back(&arr[(sizeGrp * current) + 1]);
+			winners.push_back(&arr[(sizeGrp * current) - 1]);
 		else
-			winners.push_back(&arr[sizeGrp * current]);
-		// printMessage(DEBUGS, "_binarySearch() - current: ", current);
-		// printMessage(DEBUGS, "_binarySearch() - arr[(sizeGrp * current) + 1]: ", arr[(sizeGrp * current) + 1]);
-		// printMessage(DEBUGS, "_binarySearch() - indexNow: ", (sizeGrp * current) + 1);
+			winners.push_back(&arr[current]);
 		++current;
 	}
-
-	// print winners
-	// if (sizeGrp == 1)
-	// {
-	// 	printArray(_arrayA, 0, sizeGrp);
-	// 	for (size_t i = 0; i < winners.size(); ++i)
-	// 		std::cout << *winners[i] << std::endl;
-	// }
-	// std::cout << "end";
+	for (size_t i = 0; i < winners.size(); ++i)
+		std::cout << *winners[i] << std::endl;
 
 	// ------------------------------------------------------------------
 
@@ -181,17 +198,18 @@ size_t	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t size
 	// values are indexs
 
 	size_t start = 0;
-	endSearch = endSearch / sizeGrp; // convert for the winner-only vector 
-	// printMessage(DEBUGS, "_binarySearch() - endSearch: ", endSearch);
+	// endSearch -> la coordonnes du winner
+	endSearch = endSearch / sizeGrp; // convert for the winner-only vector
+	printMessage(DEBUGS, "_binarySearch() - endSearch: ", endSearch);
 	while (start < endSearch)
 	{
 		size_t half = floor(start + ((endSearch - start)/2));
 		// start + ((end - start)/2);
 		// if (sizeGrp == 1)
 		// {
-		// 	printMessage(DEBUGS, "_binarySearch() - start: ", start);
-		// 	printMessage(DEBUGS, "_binarySearch() - half: ", half);
-		// 	printMessage(DEBUGS, "_binarySearch() - *winners[half]: ", *winners[half]);
+			printMessage(DEBUGS, "_binarySearch() - start: ", start);
+			printMessage(DEBUGS, "_binarySearch() - half: ", half);
+			printMessage(DEBUGS, "_binarySearch() - *winners[half]: ", *winners[half]);
 		// }
 		if (half <= 0)
 		{
@@ -209,7 +227,8 @@ size_t	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t size
 			start = half + 1;
 			// printMessage(DEBUGS, "_binarySearch() - *winners[start]: ", *winners[start]);
 			// printMessage(DEBUGS, "_binarySearch() - start: ", start);
-			if (*winners[start] > nbTarget)
+			if ((start < winners.size() && *winners[start] > nbTarget)
+				|| start >= winners.size())
 			{
 				start = half;
 				break;
@@ -295,15 +314,7 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 		// 	printMessage(DEBUGS, "interJaco - indexNextGrpToInsert: ", indexNextGrpToInsert);
 
 		_insertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, 0);
-		
-		// if (sizeGrp == 1)
-		// {
-		// 	printMessage(DEBUGS, "after insert", "");
-		// 	printArray(_arrayA, false, sizeGrp);
-		// }
-		// printArray(_arrayB, false);
-		// _printArrBWithWinnerIndex();
-		
+	
 		if (interJaco)
 		{
 			interJaco = false;
@@ -327,6 +338,7 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 		interJaco = true;
 	}
 	/*
+	Insert lasts groups if exist
 	if indexNextGrpToInsert >= array.size
 	-> check if inbetween arrayB[indexLastGrpInsert] - _arrayB[indexNextGrpToInsert]
 	we have value 
@@ -348,7 +360,7 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	}
 
 	// 4. Insert leftOver
-	_insertLeftOverBinarySearch();
+	_insertLeftOverBinarySearch(sizeGrp);
 
 	printArray(_arrayA, false, sizeGrp);
 
