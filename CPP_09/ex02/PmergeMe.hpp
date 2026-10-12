@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 18:10:32 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 18:21:07 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,8 @@ class PmergeMe
 		
 		size_t	_nbGrp( size_t sizeArr, size_t sizeGrp );
 		size_t	_nbGrpStrict( size_t sizeArr, size_t sizeGrp );
-		void	_orderGrp( size_t sizeGrp );
+		template <typename T>
+		void	_orderGrp( T& arr, size_t sizeGrp );
 		template <typename T>
 		void	_moveRange( bool deleteFromSrc, size_t startGrp, size_t length, size_t newIndex, T& src, T& dst );
 		template <typename T>
@@ -131,7 +132,8 @@ class PmergeMe
 		void	_initSuiteJacobsthal( T& arr );
 		template <typename T>
 		size_t	_getSuiteJacobsthal( T& suiteJaco );
-		void	_printArrayJacobsthal( void );
+		template <typename T>
+		void	_printArrayJacobsthal( const T& arr  );
 
 		std::vector<int>		_arrayA;
 		std::vector<int>		_arrayB;

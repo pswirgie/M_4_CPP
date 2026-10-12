@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 18:14:56 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 18:23:39 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,24 @@
 PmergeMe::PmergeMe( void ){}
 
 template <typename T>
+void	PmergeMe::_printArrayJacobsthal( const T& suiteJaco )
+{
+	size_t i = 0;
+	while (i < suiteJaco.size())
+	{
+		std::cout << std::setfill('0') << std::setw(2);
+		std::cout << suiteJaco[i] << " ";
+		++i;
+	}
+	std::cout << RESET << std::endl;
+}
+
+template <typename T>
 bool	PmergeMe::_isSorted( const T& arr )
 {
 	for (size_t i = 0; i < arr.size(); ++i)
 	{
-		if (i + 1 < arr.size() && arr[i] > _arrayA[i + 1])
+		if (i + 1 < arr.size() && arr[i] > arr[i + 1])
 			return (false);
 	}
 	return (true);
@@ -149,6 +162,74 @@ void	PmergeMe::printArray( const T& arr )
 		std::cout << arr[i] << "	";
 	}
 	std::cout << std::endl;
+}
+
+// Move a group
+template <typename T>
+void PmergeMe::_moveRange(bool deleteFromSrc, size_t startGrp, size_t length, size_t newIndex,
+	T& src, T& dst)
+{
+	// if newIndex > startGrp -> - length -> have first index to move group
+	size_t final_dst = newIndex > startGrp ? newIndex - length : newIndex;
+	// std::cout << BLUE << "[DEBUG] moveRange -> start: " << start;
+	// std::cout << ", length: " << length << ", newIndex: " << newIndex;
+	// std::cout << std::endl;
+	// printMessage(DEBUGS, "_moveRange() - final_dst: ", final_dst);
+	// printMessage(DEBUGS, "_moveRange() - newIndex: ", newIndex);
+	// printMessage(DEBUGS, "_moveRange() - startGrp: ", startGrp);
+
+	std::vector<int> tmp(src.begin() + startGrp, src.begin() + startGrp + length);
+	if (deleteFromSrc)
+		src.erase(src.begin() + startGrp, src.begin() + startGrp + length);
+	// printMessage(DEBUGS, "_moveRange() - tmp: ", "");
+	// printArray(tmp, 0);
+	// printMessage(DEBUGS, "_moveRange() - length: ", length);
+	dst.insert(dst.begin() + final_dst, tmp.begin(), tmp.end());
+}
+
+/*
+the group size is parameter
+5 4 6 1 2 3
+for groups of 3 elements : 6 is loser, 3 is winner
+if loser > winner, we invert group positions
+1 2 3 5 4 6
+*/
+template <typename T>
+void	PmergeMe::_orderGrp( T& arr, size_t sizeGrp )
+{
+	// printMessage(DEBUGS, "_orderGrp() ", std::string(FILLIGN, '-'));
+	if (sizeGrp < 1)
+		throw std::runtime_error("Order group: sizeGrp invalid");
+	size_t i = sizeGrp - 1;
+	while(i < arr.size())
+	{
+		size_t loser = i;
+		size_t startLoser = i - (sizeGrp - 1);
+		size_t winner = i + sizeGrp;
+
+		// printMessage(DEBUGS, "i: ", i);
+		// printMessage(DEBUGS, "loser: ", loser);
+		// printMessage(DEBUGS, "startLoser: ", startLoser);
+		// printMessage(DEBUGS, "winner: ", winner);
+
+		if ( winner >= arr.size() )
+		{
+			// printMessage(DEBUGS, "_orderGrp() - end ", std::string(FILLIGN, '-'));
+			return ; // paire fictive, ne pas modifier
+		}
+		if ( i < arr.size() - 1 )
+		{
+
+			// std::cout << BLUE << "[DEBUG] value loser = " << arr.at(loser);
+			// std::cout << " | value winner = " << arr.at(winner) << std::endl;
+			// printArray('A', true);
+
+			if (arr.at(loser) > arr.at(winner))
+				_moveRange(1, startLoser, sizeGrp, winner + 1, arr, arr);
+		}
+		i += sizeGrp * 2;
+	}
+	// printMessage(DEBUGS, "_orderGrp() - END ", std::string(FILLIGN, '-'));
 }
 
 template <typename T>
@@ -433,7 +514,7 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	// printMessage(DEBUGS, "before _orderGrp() ", "" );
 	// _printArrayWithIndexs(_arrayA, false, sizeGrp);
 	
-	_orderGrp(sizeGrp);
+	_orderGrp(_arrayA, sizeGrp);
 	
 	// printMessage(DEBUGS, "after _orderGrp() ", "" );
 	// printMessage(DEBUGS, "sizeGrp: ", sizeGrp );
@@ -607,7 +688,7 @@ void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
 
 	if (_nbGrpStrict(_DarrayA.size(), sizeGrp) < 2)
 		return ;
-	_orderGrp(sizeGrp);
+	_orderGrp(_DarrayA, sizeGrp);
 	++levelIteration;
 	// ----------------------------------------------------------------------
 
@@ -681,6 +762,9 @@ void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
 
 void	PmergeMe::_startDeque( void )
 {
+	std::cout << "Before:	";
+	printArray(_DarrayA);
+	
 	struct timeval start, end;
 	gettimeofday(&start, NULL); 
 	_sortDeque(0, 1);
@@ -701,7 +785,7 @@ void	PmergeMe::algo( int ac, char **av )
 	try
 	{
 		_parsing(ac, av);
-		_startVector();
+		// _startVector();
 		_startDeque();
 	}
 	catch (const std::exception& e)
