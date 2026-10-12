@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 12:37:18 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 14:54:11 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,18 +83,18 @@ class PmergeMe
 {
 	public:
 		PmergeMe( void );
-		void	insertNumber( void );
-		int		argsToNumbers( int ac, char **av );
-		void	invalidArguement( void );
 		void	clearArrayA( void );
 		void	printArray( const std::vector<int>& arr, bool sortByLoseWin,size_t sizeGrp );
-		void	algo( void );
+		void	algo( int ac, char **av );
 		
 	private:
 		void	_sortAll( size_t levelIteration, size_t sizeGrp );
 	
-		int		_sendToArray( std::string str );
-		bool	_isSorted( std::vector<int>& arr );
+		void	_argsToNumbers( int ac, char **av );
+		void	_invalidArguement( void );
+		void	_isCopy( void );
+		void	_sendToArray( std::string str );
+		
 		size_t	_nbGrp( size_t sizeArr, size_t sizeGrp );
 		size_t	_nbGrpStrict( size_t sizeArr, size_t sizeGrp );
 		void	_orderGrp( size_t sizeGrp );

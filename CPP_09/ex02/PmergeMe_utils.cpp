@@ -6,49 +6,28 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 13:58:54 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 15:07:56 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
 
-void	PmergeMe::invalidArguement( void )
+void	PmergeMe::_invalidArguement( void )
 {
-	std:: string	message("Invalid arguements, pattern required a unsorted"
+	std:: string	message("Invalid arguments, pattern required a unsorted"
 		" positive integer sequence (at least 2 elements)"
 		" separated by spaces: ./PmergeMe [numbers] [//] [//] ...");
-	printMessage(ERROR, "", message);
+	throw std::runtime_error(message);
 }
 
-int PmergeMe::_sendToArray( std::string str )
+void PmergeMe::_sendToArray( std::string str )
 {
 	char *end;
 	long nb = std::strtol(str.c_str(), &end, 10); // INT MIN, INT MAX
 	// std::cout << BLUE << "[DEBUG] " << nb << RESET << std::endl;
 	if (errno || nb < 0 || nb > INT_MAX)
-	{
-		invalidArguement();
-		return (1);
-	}
+		_invalidArguement();
 	_arrayA.push_back((int)nb);
-	return (0);
-}
-
-bool	PmergeMe::_isSorted( std::vector<int>& array )
-{
-	size_t i = 0;
-	while(i <= array.size())
-	{
-		if (i < array.size() - 1)
-		{
-			// std::cout << BLUE << "[DEBUG] e1 = " << array.at(i);
-			// std::cout << " e2 = " << array.at(i + 1) << RESET << std::endl;
-			if (array.at(i) > array.at(i + 1))
-				return (false);
-		}
-		++i;
-	}
-	return (true);
 }
 
 void	PmergeMe::_printArrBWithWinnerIndex( size_t sizeGrp )
@@ -64,66 +43,73 @@ void	PmergeMe::_printArrBWithWinnerIndex( size_t sizeGrp )
 	printMessage(DEBUGS, "", std::string(FILLIGN, '-'));
 }
 
-int	PmergeMe::argsToNumbers( int ac, char **av ) // parser les arguemnts de av et les trsnaformer en int
+template < typename T >
+bool	isStrOnlyType( T function, const std::string& src, const size_t& start, const size_t& end )
 {
-	bool isNumber = false;
+	size_t	index = start;
+	if (start >= end)
+		return (false);
+	while (index < end)
+	{
+		if (!function(src[index]))
+			return (false);
+		++index;
+	}
+	return (true);
+}
 
-	for(int i = 0; i < ac - 1; ++i)
+void	PmergeMe::_argsToNumbers( int ac, char **av ) // parser les arguemnts de av et les trsnaformer en int
+{
+	bool	isSorted = true;
+
+	if (ac < 2 || !av[1])
+		_invalidArguement();
+
+	size_t len = (size_t)ac;
+	// printMessage(DEBUGS, "ac: ", ac);
+	// for (size_t i = 1; i < len; ++i)
+	// 	printMessage(DEBUGS, "av[i]: ", av[i]);
+	
+	for (size_t i = 1; i < len && av[i]; ++i)
 	{
-		std::string arg = av[i];
-		// printMessage(DEBUGS, "arg: ", arg);
-		if (arg.empty()) // case arg = ""
-		{
-			invalidArguement();
-			return (1);
-		}
-		size_t start = 0;
-		for(size_t j = 0; arg[j]; ++j) // case arg != digit && space
-		{
-			// printMessage(DEBUGS, "arg[j]: ", arg[j]);
-			if (std::isspace(arg[j]))
-			{
-				if (isNumber)
-				{
-					std::string nb = arg.substr(start, j - 1);
-					// std::cout << "[DEBUG] string nb = " << nb << std::endl;
-					if (_sendToArray(nb))
-						return (1);
-				}
-				isNumber = false;
-			}
-			else if (std::isdigit(arg[j]))
-			{
-				isNumber = true;
-				while (arg[j] && std::isdigit(arg[j]))
-					j++;
-				if (!arg[j])
-				{
-					std::string nb = arg.substr(start, j);
-					// std::cout << "[DEBUG] string nb = " << nb << std::endl;
-					j--;
-					if (_sendToArray(nb))
-						return (1);
-				}
-			}
-			else
-			{
-				invalidArguement();
-				return (1);
-			}
-		}
+		std::string	strNb(av[i]);
+		if (!isStrOnlyType<int(*)(int)>(std::isdigit, strNb, 0, strNb.size()))
+			throw std::runtime_error("Argument is not only a number: " + strNb);
+		char *end;
+		long nb = std::strtol(strNb.c_str(), &end, 10);
+		if (errno || nb < 0 || nb > INT_MAX)
+			_invalidArguement();
+		_arrayA.push_back((int)nb);
 	}
+
 	if (_arrayA.size() <= 1) // case one argument
+		throw std::runtime_error("Only one argument, required at least two");
+
+	for (size_t i = 0; i < _arrayA.size(); ++i)
 	{
-		printMessage(ERROR, "Only one arguement, required at least two", "");
-		return (1);
+		if (i + 1 < _arrayA.size() && _arrayA[i] > _arrayA[i + 1])
+			isSorted = false;
 	}
-	else if (_isSorted(_arrayA)) // case already sorted
+	if (isSorted)
+		throw std::runtime_error("Arguments already sorted");
+
+	_isCopy();
+}
+
+void	PmergeMe::_isCopy( void )
+{
+	for (size_t i = 0; i < _arrayA.size(); ++i)
 	{
-		printMessage(ERROR, "Arguements already sorted", "");
-		return (1);
+		for (size_t j = i + 1; j < _arrayA.size(); ++j)
+		{
+			if (_arrayA[i] == _arrayA[j])
+			{
+				std::stringstream ss;
+				ss << _arrayA[i];
+				throw std::runtime_error("Copy is fobidden, argument copied: " + ss.str());
+			}
+		}
 	}
-	return (0);
 }
 
 void	PmergeMe::clearArrayA( void )
@@ -200,10 +186,7 @@ void	PmergeMe::_orderGrp( size_t sizeGrp )
 {
 	// printMessage(DEBUGS, "_orderGrp() ", std::string(FILLIGN, '-'));
 	if (sizeGrp < 1)
-	{
-		printMessage(ERROR, "Order group: sizeGrp invalid", "");
-		return ;
-	}
+		throw std::runtime_error("Order group: sizeGrp invalid");
 	size_t i = sizeGrp - 1;
 	while(i < _arrayA.size())
 	{

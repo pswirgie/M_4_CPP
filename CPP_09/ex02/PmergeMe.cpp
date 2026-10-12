@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 14:03:16 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/12 14:20:20 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,19 +261,23 @@ size_t	PmergeMe::_binarySearch( std::vector<int>& arr, int nbTarget, size_t size
 
 	// 3. Convert winner index to array index ------------------------------------------------------
 	size_t res = 0;
-	printMessage(DEBUGS, "start: ", start);
+	// printMessage(DEBUGS, "start: ", start);
 	if (start > 0)
 	{
-		size_t nbGroup = ++start; // start is a index, start 0, but it is the nb of group 1st, 2nd, etc
+		
+		size_t nbGroup = start + 1; // start is a index, start 0, but it is the nb of group 1st, 2nd, etc
 		// printMessage(DEBUGS, "_binarySearch() - nbGroup: ", nbGroup);
 		res = (nbGroup * sizeGrp);
+		// if (start == winners.size() && *winners[start] > nbTarget)
+		// 	res = (nbGroup * sizeGrp);
+		// else if ()
 	}
 	else if (start == 0 && *winners[start] > nbTarget)
 		res = 0;
 	else if (start == 0 && *winners[start] < nbTarget)
 		res = sizeGrp;
 	
-	printMessage(DEBUGS, "res: ", res);
+	// printMessage(DEBUGS, "res: ", res);
 
 	
 	// printMessage(DEBUGS, "_binarySearch() - res: ", res);
@@ -402,17 +406,18 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 	// printArray(_arrayA, false, sizeGrp);
 }
 
-void	PmergeMe::algo( void )
+void	PmergeMe::algo( int ac, char **av )
 {
 	try
 	{
+		_argsToNumbers(ac, av);
 		_sortAll(0, 1);
 		printMessage(DEBUGS, "Final result: ", "");
 		printArray(_arrayA, false, 0);
 	}
 	catch (const std::exception& e)
 	{
-		printMessage(ERROR, "", e.what());
+		printMessage(ERROR, "Parsing - ", e.what());
 		return ;
 	}
 
