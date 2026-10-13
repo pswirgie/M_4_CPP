@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/13 09:14:38 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/13 09:19:16 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,9 +185,11 @@ void	PmergeMe::_printAfter( ContainerType type, const T& arr )
 		std::cout << "After:	";
 		_printArray(arr);
 	}
-	// bool	sorted = _isSorted(arr);
-	// printMessage((sorted ? INFO : ERROR), (type == VECTOR ? "(vector)" : "(deque)"),
-	// 	(sorted ? " - Yes, it's sorted. Congratulations !" : " - No, it isn't sorted. Good luck, yes you can !"));
+	#ifdef SORTED
+	bool	sorted = _isSorted(arr);
+	printMessage((sorted ? INFO : ERROR), (type == VECTOR ? "(vector)" : "(deque)"),
+		(sorted ? " - Yes, it's sorted. Congratulations !" : " - No, it isn't sorted. Good luck, yes you can !"));
+	#endif
 }
 
 template <typename T>

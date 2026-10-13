@@ -6,7 +6,7 @@
 #    By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/04 10:52:43 by pswirgie          #+#    #+#              #
-#    Updated: 2026/10/13 08:52:50 by pswirgie         ###   ########.fr        #
+#    Updated: 2026/10/13 09:20:38 by pswirgie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,11 @@ $(BUILD_DIR)/%.o: %.cpp $(HEADERS)
 	@mkdir -p $(dir $@)
 	@$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
-debug : CXXFLAGS += -g -D DEBUG
+sorted: CXXFLAGS += -g -D SORTED
+sorted: fclean
+	@$(MAKE) --no-print-directory CXXFLAGS="$(CXXFLAGS)" all
+
+debug: CXXFLAGS += -g -D DEBUG
 debug: fclean
 	@$(MAKE) --no-print-directory CXXFLAGS="$(CXXFLAGS)" all
 
