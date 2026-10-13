@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:47 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/13 08:45:05 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/13 08:57:13 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,15 +82,15 @@ int main( int ac, char **av )
 
 	(void)ac;
 	(void)av;
-	{
-		std::cout << "TESTS - terminal" << std::endl;
-		std::cout << std::endl;
+	// {
+	// 	std::cout << "TESTS - terminal" << std::endl;
+	// 	std::cout << std::endl;
 
-		PmergeMe all;
-		all.algo(ac, av);
-	}
+	// 	PmergeMe all;
+	// 	all.algo(ac, av);
+	// }
 
-	// testsDivers();
+	testsDivers();
 
 	// tester nombre pair impair
 	// temps
