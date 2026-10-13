@@ -6,14 +6,12 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/13 09:01:08 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/13 09:14:38 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
 #include <sys/time.h>
-
-PmergeMe::PmergeMe( void ){}
 
 void	PmergeMe::_invalidArguement( void )
 {
@@ -169,16 +167,6 @@ void	PmergeMe::_printArrayWithIndexs( const std::string& context, const T& arr, 
 }
 
 template <typename T>
-void PmergeMe::_pushToArr(size_t start, size_t length, bool deleteFromSrc,
-	T& src, T& dst)
-{
-	std::vector<int> tmp(src.begin() + start, src.begin() + start + length);
-	if (deleteFromSrc)
-		src.erase(src.begin() + start, src.begin() + start + length);
-	dst.insert(dst.end(), tmp.begin(), tmp.end());
-}
-
-template <typename T>
 void	PmergeMe::_printArray( const T& arr )
 {
 	for (size_t i = 0; i < arr.size(); ++i)
@@ -200,6 +188,16 @@ void	PmergeMe::_printAfter( ContainerType type, const T& arr )
 	// bool	sorted = _isSorted(arr);
 	// printMessage((sorted ? INFO : ERROR), (type == VECTOR ? "(vector)" : "(deque)"),
 	// 	(sorted ? " - Yes, it's sorted. Congratulations !" : " - No, it isn't sorted. Good luck, yes you can !"));
+}
+
+template <typename T>
+void PmergeMe::_pushToArr(size_t start, size_t length, bool deleteFromSrc,
+	T& src, T& dst)
+{
+	std::vector<int> tmp(src.begin() + start, src.begin() + start + length);
+	if (deleteFromSrc)
+		src.erase(src.begin() + start, src.begin() + start + length);
+	dst.insert(dst.end(), tmp.begin(), tmp.end());
 }
 
 // Move a group
