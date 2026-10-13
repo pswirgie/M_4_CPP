@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/13 08:59:34 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/13 09:01:08 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,7 +248,7 @@ template <typename T>
 void	PmergeMe::_allLosersToArrayB( T& arrA, T& arrB, T& indexWinnerA, size_t sizeGrp, size_t nbGrp )
 {
 	size_t	start = 0;
-	float nbGrpLosers = (nbGrp / 2) + 1; // fragile
+	float nbGrpLosers = (nbGrp / 2) + 1;
 	size_t nbTransfer = 0;
 	size_t skipWinners = 1;
 
@@ -329,13 +329,10 @@ size_t	PmergeMe::_binarySearch( T& arr, int nbTarget, size_t sizeGrp, size_t end
 			winners.push_back(&arr[current]);
 		++current;
 	}
-
 	// std::cout << "winners only vector:" << std::endl;
 	// for (size_t i = 0; i < winners.size(); ++i)
 	// 	std::cout << "	" << *winners[i];
 	// std::cout << std::endl;
-
-	// ------------------------------------------------------------------
 
 	// 2. find index ------------------------------------------------------
 	// values are indexs
@@ -559,5 +556,3 @@ void	PmergeMe::algo( int ac, char **av )
 		return ;
 	}
 }
-
-

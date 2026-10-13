@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/13 08:55:26 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/13 09:01:47 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@
 #define BLUE	"\033[34m"
 #define BROWN	"\033[33m"
 #define RESET	"\033[0m"
-#define GROUP	2
 #define FILLIGN	50
 
 enum LevelMessage
