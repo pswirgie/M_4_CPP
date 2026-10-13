@@ -6,7 +6,7 @@
 #    By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/04 10:52:43 by pswirgie          #+#    #+#              #
-#    Updated: 2026/10/11 10:24:12 by pswirgie         ###   ########.fr        #
+#    Updated: 2026/10/13 08:52:50 by pswirgie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ NC			:='\033[0m'
 
 
 # Sources
-SRC_BASENAMES := main PmergeMe PmergeMe_utils
+SRC_BASENAMES := main PmergeMe
 SRCS := $(addsuffix .cpp,$(SRC_BASENAMES))
 
 OBJS		:= $(SRCS:%.cpp=$(BUILD_DIR)/%.o)

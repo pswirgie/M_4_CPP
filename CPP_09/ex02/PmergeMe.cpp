@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:44:29 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/13 08:02:13 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/13 08:54:42 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,18 @@ void	PmergeMe::_invalidArguement( void )
 		" positive integer sequence (at least 2 elements)"
 		" separated by spaces: ./PmergeMe [numbers] [//] [//] ...");
 	throw std::runtime_error(message);
+}
+
+size_t	PmergeMe::_nbGrp( size_t sizeArr, size_t sizeGrp )
+{
+	size_t res = ceil(static_cast<double>(sizeArr) / sizeGrp);
+	return (res);
+}
+
+size_t	PmergeMe::_nbGrpStrict( size_t sizeArr, size_t sizeGrp )
+{
+	size_t res = floor(sizeArr / sizeGrp);
+	return (res);
 }
 
 template <typename T>
@@ -39,6 +51,8 @@ void	PmergeMe::_printArrayJacobsthal( const T& suiteJaco )
 template <typename T>
 bool	PmergeMe::_isSorted( const T& arr )
 {
+	if (arr.empty())
+		return (false);
 	for (size_t i = 0; i < arr.size(); ++i)
 	{
 		if (i + 1 < arr.size() && arr[i] > arr[i + 1])
@@ -83,6 +97,20 @@ void	PmergeMe::_initLeftOvers( T& arrA, T& leftOver, size_t sizeGrp, size_t nbGr
 			leftOver.push_back(arrA[i]);
 		arrA.erase(arrA.begin() + start, arrA.end());
 	}
+}
+
+template <typename T>
+void	PmergeMe::_printArrBWithWinnerIndex( T& arrB, T& indexWinnerA, size_t sizeGrp )
+{
+	printMessage(DEBUGS, "Print _array B with winner Index", std::string(FILLIGN - 20, '-'));
+	std::cout << BLUE << "ArrB:";
+	for (size_t i = 0; i < arrB.size(); ++i)
+		std::cout << "	" << std::setfill('0') << std::setw(2) << arrB[i];
+	std::cout << std::endl << LYLA << "Iwin:";
+	for (size_t i = 0; i < indexWinnerA.size(); ++i)
+		std::cout << std::string(sizeGrp, '	') << std::setfill('0') << std::setw(2) << indexWinnerA[i];
+	std::cout << RESET << std::endl;
+	printMessage(DEBUGS, "", std::string(FILLIGN, '-'));
 }
 
 template <typename T>
@@ -151,7 +179,7 @@ void PmergeMe::_pushToArr(size_t start, size_t length, bool deleteFromSrc,
 }
 
 template <typename T>
-void	PmergeMe::printArray( const T& arr )
+void	PmergeMe::_printArray( const T& arr )
 {
 	for (size_t i = 0; i < arr.size(); ++i)
 	{
@@ -159,6 +187,16 @@ void	PmergeMe::printArray( const T& arr )
 		std::cout << arr[i] << "	";
 	}
 	std::cout << std::endl;
+}
+
+template <typename T>
+void	PmergeMe::_printAfter( ContainerType type, const T& arr )
+{
+	std::cout << "After:	";
+	_printArray(arr);
+	bool	sorted = _isSorted(arr);
+	printMessage((sorted ? INFO : ERROR), (type == VECTOR ? "(vector)" : "(deque)"),
+		(sorted ? " - Yes, it's sorted. Congratulations !" : " - No, it isn't sorted. Good luck, yes you can !"));
 }
 
 // Move a group
@@ -204,7 +242,7 @@ void	PmergeMe::_orderGrp( T& arr, size_t sizeGrp )
 }
 
 template <typename T>
-void	PmergeMe::_allLosersToArrayB( ContainerType type, T& arrA, T& arrB, size_t sizeGrp, size_t nbGrp )
+void	PmergeMe::_allLosersToArrayB( T& arrA, T& arrB, T& indexWinnerA, size_t sizeGrp, size_t nbGrp )
 {
 	size_t	start = 0;
 	float nbGrpLosers = (nbGrp / 2) + 1; // fragile
@@ -221,15 +259,13 @@ void	PmergeMe::_allLosersToArrayB( ContainerType type, T& arrA, T& arrB, size_t 
 	size_t i = sizeGrp - 1;
 	while (i < arrB.size())
 	{
-		if (type == VECTOR)
-			_indexWinnerA.push_back(i);
-		else
-			_DindexWinnerA.push_back(i);
+		indexWinnerA.push_back(i);
 		i += sizeGrp;
 	}
 }
 
-void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter )
+template <typename T>
+void	PmergeMe::_insertGrpBinarySearch( T& arrA, T&arrB, T& indexWinnerA, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter )
 {
 	size_t startGrp;
 	if (isInter)
@@ -237,25 +273,23 @@ void	PmergeMe::_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_
 	else
 		startGrp = (sizeGrp*(indexNextGrpToInsert)) - sizeGrp;
 	
-	if (startGrp >= _arrayB.size())
+	if (startGrp >= arrB.size())
 		return ;
 
 	size_t indexNbTarget = startGrp + sizeGrp - 1; // in arrB
-	int nbTarget = _arrayB[indexNbTarget];
+	int nbTarget = arrB[indexNbTarget];
 	size_t endSearch;
-	if ((indexNbTarget - 1) < _indexWinnerA.size())
-		endSearch = _indexWinnerA[indexNbTarget - 1];
+	if ((indexNbTarget - 1) < indexWinnerA.size())
+		endSearch = indexWinnerA[indexNbTarget - 1];
 	else
-		endSearch = _arrayA.size();
+		endSearch = arrA.size();
 
-	size_t indexInsert = _binarySearch(_arrayA, nbTarget, sizeGrp, endSearch);
+	size_t indexInsert = _binarySearch(arrA, nbTarget, sizeGrp, endSearch);
 
-	std::vector<int> tmp(_arrayB.begin() + startGrp, _arrayB.begin() + startGrp + sizeGrp);
-	if (deleteFromSrc)
-		_arrayB.erase(_arrayB.begin() + startGrp, _arrayB.begin() + startGrp + sizeGrp);
-	_arrayA.insert(_arrayA.begin() + indexInsert, tmp.begin(), tmp.end());
-	for (size_t i = 0; i < _indexWinnerA.size(); ++i) // readapt index winner with new insertion
-		_indexWinnerA[i] += sizeGrp;
+	T tmp(arrB.begin() + startGrp, arrB.begin() + startGrp + sizeGrp);
+	arrA.insert(arrA.begin() + indexInsert, tmp.begin(), tmp.end());
+	for (size_t i = 0; i < indexWinnerA.size(); ++i) // readapt index winner with new insertion
+		indexWinnerA[i] += sizeGrp;
 }
 
 
@@ -352,46 +386,49 @@ size_t	PmergeMe::_binarySearch( T& arr, int nbTarget, size_t sizeGrp, size_t end
 	return (res);
 }
 
-void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
+template <typename T>
+void	PmergeMe::_sortAll( ContainerType type, T& arrA, size_t levelIteration, size_t sizeGrp )
 {
+	T arrB, leftOver, suiteJaco, indexWinnerA;
+	
+	if (sizeGrp == 1)
+	{
+		for (size_t i = 0; i < _unsortedNumbers.size(); ++i)
+			arrA.push_back(_unsortedNumbers[i]);
+	}
+
 	// Sort all by grp with loser - winner ----------------------------------
-	if (_nbGrpStrict(_arrayA.size(), sizeGrp) < 2)
+	if (_nbGrpStrict(arrA.size(), sizeGrp) < 2)
 		return ;
 
-	_orderGrp(_arrayA, sizeGrp);
+	_orderGrp(arrA, sizeGrp);
 	++levelIteration;
 	// ----------------------------------------------------------------------
 
 	// Recursivity ----------------------------------------------------------
-	_sortAll(levelIteration, pow(2, levelIteration));
+	_sortAll(type, arrA, levelIteration, pow(2, levelIteration));
 	
 	// Insertion ------------------------------------------------------------
-	if (_nbGrpStrict(_arrayA.size(), sizeGrp) < 3) // already sorted
+	if (_nbGrpStrict(arrA.size(), sizeGrp) < 3) // already sorted
 		return ;
-
-	// Clear all reusables - DONT MOVE
-	_arrayB.clear();
-	_leftOver.clear();
-	_suiteJacobsthal.clear();
-	_indexWinnerA.clear();
 	
 	// 1. All losers to array B
-	_initSuiteJacobsthal(_suiteJacobsthal);
-	_initLeftOvers(_arrayA, _leftOver, sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
-	_allLosersToArrayB(VECTOR, _arrayA, _arrayB, sizeGrp, _nbGrp(_arrayA.size(), sizeGrp));
+	_initSuiteJacobsthal(suiteJaco);
+	_initLeftOvers(arrA, leftOver, sizeGrp, _nbGrp(arrA.size(), sizeGrp));
+	_allLosersToArrayB( arrA, arrB, indexWinnerA, sizeGrp, _nbGrp(arrA.size(), sizeGrp));
 
 	// 2. Reinsert to array A
-	size_t indexLastGrpInsert = _getSuiteJacobsthal(_suiteJacobsthal);
-	size_t indexNextGrpToInsert = _getSuiteJacobsthal(_suiteJacobsthal);
+	size_t indexLastGrpInsert = _getSuiteJacobsthal(suiteJaco);
+	size_t indexNextGrpToInsert = _getSuiteJacobsthal(suiteJaco);
 
 	/*
 	   3. Insert interval inbetween two Jacobasthal Numbers
 	1 grp a inserer -> (1(indexdugrp) * 2(sizegrp)) - sizegrp(revenir au premier)
 	*/
 	bool interJaco = false;
-	while (indexNextGrpToInsert < _arrayB.size())
+	while (indexNextGrpToInsert < arrB.size())
 	{
-		_insertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, 0);
+		_insertGrpBinarySearch(arrA, arrB, indexWinnerA, sizeGrp, indexNextGrpToInsert, 0);
 	
 		if (interJaco)
 		{
@@ -399,37 +436,44 @@ void	PmergeMe::_sortAll( size_t levelIteration, size_t sizeGrp )
 			size_t endInter = indexNextGrpToInsert - 1;
 			while (indexLastGrpInsert < endInter)
 			{
-				_insertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, indexLastGrpInsert);
+				_insertGrpBinarySearch(arrA, arrB, indexWinnerA, sizeGrp, indexNextGrpToInsert, indexLastGrpInsert);
 				++indexLastGrpInsert;
 			}
 		}
 		indexLastGrpInsert = indexNextGrpToInsert;
-		indexNextGrpToInsert = _getSuiteJacobsthal(_suiteJacobsthal);
+		indexNextGrpToInsert = _getSuiteJacobsthal(suiteJaco);
 		interJaco = true;
 	}
 	/*
 	Insert lasts groups if exist
 	if indexNextGrpToInsert >= array.size
-	-> check if inbetween arrayB[indexLastGrpInsert] - _arrayB[indexNextGrpToInsert]
+	-> check if inbetween arrayB[indexLastGrpInsert] - arrB[indexNextGrpToInsert]
 	we have value 
-	-> eg: (IndexNext = 5) == (_arrayB.size = 5)
-	_arrayB[3] - _array[5], we have _array[4]
+	-> eg: (IndexNext = 5) == (arrB.size = 5)
+	arrB[3] - _array[5], we have _array[4]
 	*/
-	if (indexLastGrpInsert < _arrayB.size())
+	if (indexLastGrpInsert < arrB.size())
 	{
 		++indexLastGrpInsert;
-		while (indexLastGrpInsert < _arrayB.size() + 1)
+		while (indexLastGrpInsert < arrB.size() + 1)
 		{
-			_insertGrpBinarySearch(0, sizeGrp, indexLastGrpInsert, 0);
+			_insertGrpBinarySearch(arrA, arrB, indexWinnerA, sizeGrp, indexLastGrpInsert, 0);
 			++indexLastGrpInsert;
 		}
 	}
 
 	// 4. Insert leftOver
-	if (_leftOver.empty())
+	if (leftOver.empty())
+	{
+		if (sizeGrp == 1)
+			_printAfter(type, arrA);
 		return ;
-	for (size_t i = 0; i < _leftOver.size(); ++i)
-		_arrayA.push_back(_leftOver[i]);
+	}
+	for (size_t i = 0; i < leftOver.size(); ++i)
+		arrA.push_back(leftOver[i]);
+
+	if (sizeGrp == 1)
+		_printAfter(type, arrA);
 }
 
 long long elapsed_us(const timeval& start, const timeval& end)
@@ -437,148 +481,18 @@ long long elapsed_us(const timeval& start, const timeval& end)
 	return (end.tv_sec - start.tv_sec) * 1000000LL + (end.tv_usec - start.tv_usec);
 }
 
-void	PmergeMe::_startVector( void )
+template <typename T>
+void	PmergeMe::_startSort( T& arrA, ContainerType type )
 {
-	std::cout << "Before:	";
-	printArray(_arrayA);
-
 	struct timeval start, end;
 	gettimeofday(&start, NULL); 
-	_sortAll(0, 1);
-	gettimeofday(&end, NULL);
-
-	std::cout << "After:	";
-	printArray(_arrayA);
-
-	std::cout << "Time to process a range of " << _arrayA.size();
-	std::cout << " elements with std::vector" << "	: ";
-	std::cout << std::setfill('0') << std::setw(8) << elapsed_us(start, end);
-	std::cout << " us" << std::endl;
-
-	if (_isSorted(_arrayA))
-		printMessage(INFO, "(Vector) - Yes, it's sorted. Congratulations !", "");
-	else
-		printMessage(ERROR, "(Vector) - No, it isn't sorted. Good luck, yes you can !", "");
-}
-
-void	PmergeMe::_DinsertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter )
-{
-	size_t startGrp;
-	if (isInter)
-		startGrp = sizeGrp * isInter;
-	else
-		startGrp = (sizeGrp*(indexNextGrpToInsert)) - sizeGrp;
-	
-	if (startGrp >= _DarrayB.size())
-		return ;
-
-	size_t indexNbTarget = startGrp + sizeGrp - 1; // in arrB
-	int nbTarget = _DarrayB[indexNbTarget];
-	size_t endSearch;
-	if ((indexNbTarget - 1) < _DindexWinnerA.size())
-		endSearch = _DindexWinnerA[indexNbTarget - 1];
-	else
-		endSearch = _DarrayA.size();
-
-	size_t indexInsert = _binarySearch(_DarrayA, nbTarget, sizeGrp, endSearch);
-
-	std::deque<int> tmp(_DarrayB.begin() + startGrp, _DarrayB.begin() + startGrp + sizeGrp);
-	if (deleteFromSrc)
-		_DarrayB.erase(_DarrayB.begin() + startGrp, _DarrayB.begin() + startGrp + sizeGrp);
-	_DarrayA.insert(_DarrayA.begin() + indexInsert, tmp.begin(), tmp.end());
-	for (size_t i = 0; i < _DindexWinnerA.size(); ++i) // readapt index winner with new insertion
-		_DindexWinnerA[i] += sizeGrp;
-}
-
-void	PmergeMe::_sortDeque( size_t levelIteration, size_t sizeGrp )
-{
-	// Sort all by grp with loser - winner ----------------------------------
-	if (_nbGrpStrict(_DarrayA.size(), sizeGrp) < 2)
-		return ;
-	_orderGrp(_DarrayA, sizeGrp);
-	
-	// ----------------------------------------------------------------------
-	
-	// Recursivity ----------------------------------------------------------
-	++levelIteration;
-	_sortDeque(levelIteration, pow(2, levelIteration));
-	
-	// Insertion ------------------------------------------------------------
-	if (_nbGrpStrict(_DarrayA.size(), sizeGrp) < 3) // already sorted
-		return ;
-
-	// Clear all reusables - DONT MOVE
-	_DarrayB.clear();
-	_DleftOver.clear();
-	_DsuiteJacobsthal.clear();
-	_DindexWinnerA.clear();
-
-	// 1. All losers to array B
-	_initSuiteJacobsthal(_DsuiteJacobsthal);
-	_initLeftOvers(_DarrayA, _DleftOver, sizeGrp, _nbGrp(_DarrayA.size(), sizeGrp));
-	_allLosersToArrayB(DEQUE, _DarrayA, _DarrayB, sizeGrp, _nbGrp(_DarrayA.size(), sizeGrp));
-
-	// 2. Reinsert to array A
-	size_t indexLastGrpInsert = _getSuiteJacobsthal(_DsuiteJacobsthal);
-	size_t indexNextGrpToInsert = _getSuiteJacobsthal(_DsuiteJacobsthal);
-	bool interJaco = false;
-	while (indexNextGrpToInsert < _DarrayB.size())
-	{
-		_DinsertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, 0);
-	
-		if (interJaco)
-		{
-			interJaco = false;
-			size_t endInter = indexNextGrpToInsert - 1;
-			while (indexLastGrpInsert < endInter)
-			{
-				_DinsertGrpBinarySearch(0, sizeGrp, indexNextGrpToInsert, indexLastGrpInsert);
-				++indexLastGrpInsert;
-			}
-		}
-		indexLastGrpInsert = indexNextGrpToInsert;
-		indexNextGrpToInsert = _getSuiteJacobsthal(_DsuiteJacobsthal);
-		interJaco = true;
-	}
-	if (indexLastGrpInsert < _DarrayB.size())
-	{
-		++indexLastGrpInsert;
-		while (indexLastGrpInsert < _DarrayB.size() + 1)
-		{
-			_DinsertGrpBinarySearch(0, sizeGrp, indexLastGrpInsert, 0);
-			++indexLastGrpInsert;
-		}
-	}
-
-	// 4. Insert leftOver
-	if (_DleftOver.empty())
-		return ;
-	for (size_t i = 0; i < _DleftOver.size(); ++i)
-		_DarrayA.push_back(_DleftOver[i]);
-}
-
-void	PmergeMe::_startDeque( void )
-{
-	// std::cout << "Before:	";
-	// printArray(_DarrayA);
-	
-	struct timeval start, end;
-	gettimeofday(&start, NULL); 
-	_sortDeque(0, 1);
+	_sortAll(type, arrA, 0, 1);
 	gettimeofday(&end, NULL);
 	
-	// std::cout << "After:	";
-	// printArray(_DarrayA);
-
-	std::cout << "Time to process a range of " << _arrayA.size();
-	std::cout << " elements with std::deque" << "	: ";
+	std::cout << "Time to process a range of " << arrA.size();
+	std::cout << " elements with std::" << (type == VECTOR ? "vector" : "deque") << "	: ";
 	std::cout << std::setfill('0') << std::setw(8) << elapsed_us(start, end);
 	std::cout << " us" << std::endl;
-
-	if (_isSorted(_DarrayA))
-		printMessage(INFO, "(Deque) - Yes, it's sorted. Congratulations !", "");
-	else
-		printMessage(ERROR, "(Deque) - No, it isn't sorted. Good luck, yes you can !", "");
 }
 
 template < typename T >
@@ -611,14 +525,13 @@ void	PmergeMe::_parsing( int ac, char **av ) // parser les arguemnts de av et le
 		long nb = std::strtol(strNb.c_str(), &end, 10);
 		if (errno || nb < 0 || nb > INT_MAX)
 			_invalidArguement();
-		_arrayA.push_back((int)nb);
-		_DarrayA.push_back((int)nb);
+		_unsortedNumbers.push_back((int)nb);
 	}
 
-	if (_arrayA.size() <= 1)
+	if (_unsortedNumbers.size() <= 1)
 		throw std::runtime_error("Only one argument, required at least two");
 
-	if (_isSorted(_arrayA))
+	if (_isSorted(_unsortedNumbers))
 		throw std::runtime_error("Arguments are already sorted");
 }
 
@@ -626,9 +539,16 @@ void	PmergeMe::algo( int ac, char **av )
 {
 	try
 	{
+		_unsortedNumbers.clear();
 		_parsing(ac, av);
-		_startVector();
-		_startDeque();
+		std::cout << "Before:	";
+		_printArray(_unsortedNumbers);
+
+		std::vector<int> VarrA;
+		_startSort(VarrA, VECTOR);
+
+		std::deque<int> DarrA;
+		_startSort(DarrA, DEQUE);
 	}
 	catch (const std::exception& e)
 	{

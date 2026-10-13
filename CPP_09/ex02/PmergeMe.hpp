@@ -6,7 +6,7 @@
 /*   By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/19 16:30:25 by pswirgie          #+#    #+#             */
-/*   Updated: 2026/10/12 18:41:49 by pswirgie         ###   ########.fr       */
+/*   Updated: 2026/10/13 08:55:26 by pswirgie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,26 +89,24 @@ class PmergeMe
 {
 	public:
 		PmergeMe( void );
-		void	clearArrayA( void );
-		template <typename T>
-		void	printArray( const T& arr );
 		void	algo( int ac, char **av );
 		
 	private:
-		void	_sortAll( size_t levelIteration, size_t sizeGrp );
-		void	_startVector( void );
-
-		void	_startDeque( void );
-		void	_sortDeque( size_t levelIteration, size_t sizeGrp );
-		void	_DinsertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter );
-
 		void	_parsing( int ac, char **av );
 		void	_invalidArguement( void );
-		void	_sendToArray( std::string str );
 		template <typename T>
 		bool	_isSorted( const T& arr );
 		template <typename T>
+		void	_printArray( const T& arr );
+		template <typename T>
 		void	_printArrayWithIndexs( const std::string& context, const T& arr, bool sortByLoseWin,size_t sizeGrp );
+
+		template <typename T>
+		void	_sortAll( ContainerType type, T& arrA, size_t levelIteration, size_t sizeGrp );
+		template <typename T>
+		void	_startSort( T& arrA, ContainerType type );
+		template <typename T>
+		void	_printAfter( ContainerType type, const T& arr );
 		
 		size_t	_nbGrp( size_t sizeArr, size_t sizeGrp );
 		size_t	_nbGrpStrict( size_t sizeArr, size_t sizeGrp );
@@ -117,15 +115,17 @@ class PmergeMe
 		template <typename T>
 		void	_moveRange( bool deleteFromSrc, size_t startGrp, size_t length, size_t newIndex, T& src, T& dst );
 		template <typename T>
-		void	_allLosersToArrayB( ContainerType type, T& arrA, T& arrB, size_t sizeGrp, size_t nbGrp );
+		void	_allLosersToArrayB( T& arrA, T& arrB, T& indexWinnerA, size_t sizeGrp, size_t nbGrp );
 		template <typename T>
 		void	_pushToArr( size_t start, size_t length, bool deleteFromSrc, T& src, T& dst );
 		template <typename T>
 		size_t	_binarySearch( T& arr, int nbTarget, size_t sizeGrp, size_t endSearch);
-		void	_insertGrpBinarySearch( bool deleteFromSrc, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter );
+		template <typename T>
+		void	_insertGrpBinarySearch( T& arrA, T&arrB, T& indexWinnerA, size_t sizeGrp, size_t indexNextGrpToInsert, size_t isInter );
 		template <typename T>
 		void	_initLeftOvers( T& arrA, T& leftOver, size_t sizeGrp, size_t nbGrp );
-		void	_printArrBWithWinnerIndex( ContainerType type, size_t sizeGrp );
+		template <typename T>
+		void	_printArrBWithWinnerIndex( T& arrB, T& indexWinnerA, size_t sizeGrp );
 		
 		template <typename T>
 		void	_initSuiteJacobsthal( T& arr );
@@ -134,15 +134,5 @@ class PmergeMe
 		template <typename T>
 		void	_printArrayJacobsthal( const T& arr  );
 
-		std::vector<int>		_arrayA;
-		std::vector<int>		_arrayB;
-		std::vector<int>		_leftOver;
-		std::vector<size_t>		_indexWinnerA;
-		std::vector<size_t>		_suiteJacobsthal; // give the last group Index for comparsion inorder to insert losers
-
-		std::deque<int>			_DarrayA;
-		std::deque<int>			_DarrayB;
-		std::deque<int>			_DleftOver;
-		std::deque<size_t>		_DindexWinnerA;
-		std::deque<size_t>		_DsuiteJacobsthal;
+		std::vector<int>		_unsortedNumbers;
 };
