@@ -6,7 +6,7 @@
 #    By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/04 10:52:43 by pswirgie          #+#    #+#              #
-#    Updated: 2026/10/14 12:43:09 by pswirgie         ###   ########.fr        #
+#    Updated: 2026/10/14 14:44:44 by pswirgie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,8 @@ NC			:='\033[0m'
 
 
 # Sources
-SRC_BASENAMES := main
+HEADERS := Array.hpp Array.tpp
+SRC_BASENAMES := main 
 SRCS := $(addsuffix .cpp,$(SRC_BASENAMES))
 
 OBJS		:= $(SRCS:%.cpp=$(BUILD_DIR)/%.o)
