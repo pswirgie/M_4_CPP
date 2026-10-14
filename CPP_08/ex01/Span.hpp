@@ -5,10 +5,13 @@
 class Span
 {
 	public:
+		Span( void );
 		Span( unsigned int N );
+		Span( const Span& other );
 		void	addNumber( int value );
 		size_t	shortestSpan( void );
 		size_t	longestSpan( void );
+		void	addRange( void );
 
 
 	private:
