@@ -7,7 +7,6 @@ class Array
 	public:
 		Array<T>( void );
 		Array<T>( unsigned int n );
-		Array<T>( unsigned int n, unsigned int value );
 		Array<T>( const Array<T>& other );
 		Array<T>&	operator=( const Array<T>& other);
 		~Array<T>( void );
