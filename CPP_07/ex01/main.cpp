@@ -2,35 +2,25 @@
 #include <iostream>
 #include <string>
 
-void	print( char& element )
-{
-	std::cout << element << std::endl;
-}
-
-void	print( std::string const& element )
-{
-	std::cout << element << std::endl;
-}
-
-void	print( int& element )
+template <typename T>
+void	print( T& element )
 {
 	std::cout << element << std::endl;
 }
 
 int main( void )
 {
-
 	char		arrChr[] = {'a', 'b'};
 	int			arrInt[2] = {1, 2};
 	std::string	arrStr[] = {"coucou", "les"};
 
 	std::cout << BROWN << "Char:" << RESET << std::endl;
-	iter(arrChr, 2, &print);
+	iter(arrChr, 2, &print<char>);
 
-	std::cout << BROWN << "size_t:" << RESET << std::endl;
-	iter(arrInt, 2, &print);
+	std::cout << BROWN << "int:" << RESET << std::endl;
+	iter(arrInt, 2, &print<int>);
 
 	std::cout << BROWN << "const string:" << RESET << std::endl;
-	iter(arrStr, 2, &print);
+	iter(arrStr, 2, &print<std::string>);
 	return 0;
 }
