@@ -1,6 +1,8 @@
 #include <string>
-#include <vector>
+#include <map>
 #include <iostream>
+#define RED		"\033[31m"
+#define RESET	"\033[0m"
 
 template <typename T>
 void	printMessage( T& message )
@@ -12,10 +14,14 @@ class BitcoinExchange
 {
 	public:
 		// forme canonique a faire
-		void	start( const std::string& databaseName );
+		void	start( const std::string& inputFile );
 
 	private:
-		void	_readDatabase( void );
+		void	_getDatabase( const std::string& databaseFile );
+		void	_parsingInput( const std::string& inputFile );
+		void	_calculValues( void );
+		void	_printMap( const std::map<std::string, double>& arr );
+		void	_isValideDate( const std::string& date );
 
-		std::vector<std::string>	_rawDatabase;
+		std::map<std::string, double>	_dataBase;
 };
