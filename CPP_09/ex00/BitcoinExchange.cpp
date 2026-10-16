@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <climits>
 
+const std::string months = {"January", "Februray", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
 void	BitcoinExchange::start( const std::string& inputFile )
 {
 	try
@@ -148,6 +150,12 @@ void	BitcoinExchange::_isValideDate( const std::string& date )
 			if (!leap && day > 28)
 				throw std::runtime_error("February day " + dayStr + " unexist for " + date);
 		}
+		if (month == 4 || month == 6 || month == 9 || month == 11)
+		{
+			if (day > 30)
+				throw std::runtime_error("Month " + monthStr + " has only 30 days, not " + dayStr);
+		}
+		// remplacer les mois appeler en str par l appel a la str months au debut du file
 	}
 }
 
