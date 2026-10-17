@@ -6,7 +6,7 @@
 #    By: pswirgie <pswirgie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/04 10:52:43 by pswirgie          #+#    #+#              #
-#    Updated: 2026/10/15 14:31:20 by pswirgie         ###   ########.fr        #
+#    Updated: 2026/10/17 13:38:28 by pswirgie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,28 +61,5 @@ fclean: clean
 
 re: fclean 
 	$(MAKE) --no-print-directory all
-
-
-# ================= Archives ================= #
-
-DEPTH	:= 2
-DATE	:= $(shell date +"%y_%m_%d_%H-%M-%S")
-
-ifeq ($(DEPTH), 1)
-	TARGET_BASE := $(shell dirname $(CURDIR))
-else ifeq ($(DEPTH), 2)
-	TARGET_BASE := $(shell dirname $(shell dirname $(CURDIR)))
-endif
-
-TARGET_DIR := $(TARGET_BASE)/00_${NAME}_backups
-
-zip:
-	@zip ${NAME}_${DATE}.zip *
-	@if [ ! -d "$(TARGET_DIR)" ]; then \
-		echo "Folder unfound, created"; \
-		mkdir -p "$(TARGET_DIR)"; \
-	fi
-	@mv ${NAME}_${DATE}.zip $(TARGET_DIR);
-	@echo ${GREEN}"Backup suCXXessfully done."${NC};
 
 .PHONY: all clean fclean re setup unzip zip

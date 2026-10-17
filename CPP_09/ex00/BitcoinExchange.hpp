@@ -13,7 +13,11 @@ void	printMessage( T& message )
 class BitcoinExchange
 {
 	public:
-		// forme canonique a faire
+		BitcoinExchange( void ){};
+		BitcoinExchange( const BitcoinExchange& ){};
+		BitcoinExchange&	operator=( const BitcoinExchange& ){ return (*this); };
+		~BitcoinExchange(){};
+	
 		void	start( const std::string& inputFile );
 
 	private:
