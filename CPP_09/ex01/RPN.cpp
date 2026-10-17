@@ -40,8 +40,9 @@ void	RPN::_parsing( const std::string& src )
 	//2. is sign at begin ?
 	bool	isNb = false;
 	// printMessage(DEBUGS, "parsing; ", src);
-	for (size_t i = 0; i > src.size(); ++i)
+	for (size_t i = 0; i < src.size(); ++i)
 	{
+		// printMessage(DEBUGS, "is sign at begin - src[i]; ", src[i]);
 		if (_isOperatorChr(src[i]))
 		{
 			if(!isNb)
@@ -72,7 +73,7 @@ void	RPN::_parsing( const std::string& src )
 		// char	nbChr = word[0];
 		if (_isOperatorStr(word))
 		{
-			// _calcul();
+			_calcul();
 			// _stack.clear();
 			// isNumbers = true;
 		}
