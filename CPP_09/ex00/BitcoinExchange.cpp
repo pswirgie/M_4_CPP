@@ -9,7 +9,9 @@ static const std::string months[] = {"January", "Februray", "March", "April", "M
 void	BitcoinExchange::start( const std::string& inputFile )
 {
 	try
-	{	_getDatabase("data.csv");	}
+	{	_getDatabase("data.csv");
+		// _printMap(_dataBase);
+	}
 	catch(const std::exception& e)
 	{
 		std::cerr << RED << "Error: database - " << e.what() << RESET << '\n';
@@ -150,12 +152,6 @@ int	BitcoinExchange::_isValideDate( const std::string& date )
 		return (1);
 	double dayD;
 	if (_strTdo(dayD, dayStr, "_isValideDate() - day"))
-	// std::cout << year << std::endl;
-	// std::cout << yearStr << std::endl;
-	// std::cout << month << std::endl;
-	// std::cout << monthStr << std::endl;
-	// std::cout << day << std::endl;
-	// std::cout << dayStr << std::endl;
 
 	if (yearD < 2009 || (yearD < 2009 && dayD < 3))
 	{
@@ -247,26 +243,8 @@ int	BitcoinExchange::_strTdo( double& target, const std::string& src, const std:
 	return (0);
 }
 
-// std::stringstream	ss;
-// ss << valueD;
-// std::string res(ss.str());
-// std::cout << res << std::endl;
-
 void	BitcoinExchange::_calculExchange( const std::string& date, const double& value )
 {
-	/*
-	Your program should display on the standard output the result of the value multiplied
-by the exchange rate according to the date indicated in your database.
-	If the date used in the input does not exist in your DB then you
-must use the closest date contained in your DB. Be careful to use the
-lower date and not the upper one.
-
-	1. trouver la date correspondante a celle demander par l input file 
-		si pas trouver, prendre la premiere date en dessous
-	2. multpilier la valeur du inputFile par la valeur de la database
-	3. 
-	*/
-	// if date find -> exchange = value * (_database[date])
 	std::map<std::string, double>::const_iterator matchDate;
 	matchDate = _dataBase.begin();
 	while (matchDate != _dataBase.end())
@@ -275,17 +253,19 @@ lower date and not the upper one.
 			break;
 		++matchDate;
 	}
-	--matchDate;
-	// std::cout << "Date cible: " << date<< std::endl;
-	// std::cout << "Database: " << matchDate->first << " -> " << matchDate->second << std::endl;
+	if (matchDate->first != date)
+		--matchDate;
+	#ifdef DEBUG
+	std::cout << "Database: " << matchDate->first << " -> " << matchDate->second << std::endl;
+	std::cout << "Value: " << value << std::endl;
+	#endif
 	double res = value * matchDate->second;
 	std::stringstream	ss;
 	ss << matchDate->second << " = " << res;
-	std::cout << date << "=> " << ss.str() << std::endl;
-
+	std::cout << date << " => " << ss.str() << std::endl;
 }
 
 void	BitcoinExchange::_printError( const std::string& message )
 {
-	std::cout << RED << "Error: " << message << RESET << std::endl;
+	std::cerr << RED << "Error: " << message << RESET << std::endl;
 }
