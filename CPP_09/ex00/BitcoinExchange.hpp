@@ -17,14 +17,13 @@ class BitcoinExchange
 		void	start( const std::string& inputFile );
 
 	private:
+		void	_printError( const std::string& message );
 		void	_getDatabase( const std::string& databaseFile );
 		void	_parsingInput( const std::string& inputFile );
-		void	_calculValues( void );
+		void	_calculExchange( const std::string& date, const double& value );
 		void	_printMap( const std::map<std::string, double>& arr );
-		void	_isValideDate( const std::string& date );
-		double	_strTdo( const std::string& src );
-		std::string	_getWordFromStr( const std::string& src, size_t* start,
-				const size_t& end, const std::string& context);
+		int		_isValideDate( const std::string& date );
+		int		_strTdo( double& target, const std::string& src, const std::string& context );
 
 		std::map<std::string, double>	_dataBase;
 };

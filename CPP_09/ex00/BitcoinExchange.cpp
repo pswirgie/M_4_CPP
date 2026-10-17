@@ -9,10 +9,7 @@ static const std::string months[] = {"January", "Februray", "March", "April", "M
 void	BitcoinExchange::start( const std::string& inputFile )
 {
 	try
-	{
-		_getDatabase("data.csv");
-		// _printMap(_dataBase);
-	}
+	{	_getDatabase("data.csv");	}
 	catch(const std::exception& e)
 	{
 		std::cerr << RED << "Error: database - " << e.what() << RESET << '\n';
@@ -44,7 +41,12 @@ void	BitcoinExchange::_getDatabase( const std::string& databaseFile )
 		std::string valueStr(buffer.substr(delimiter + 1));
 		if (date.empty() || valueStr.empty())
 			throw std::runtime_error("invalid format for: " + buffer);
-		double value = _strTdo(valueStr);
+		double value;
+		if (_strTdo(value, valueStr, "_getDatabase()"))
+		{
+			throw std::runtime_error("");
+			break;
+		}
 		if (_dataBase[date])
 			throw std::runtime_error("date already have a value for: " + buffer);
 		_dataBase[date] = value;
@@ -68,33 +70,49 @@ void	BitcoinExchange::_parsingInput( const std::string& inputFile )
 	{
 		size_t delimiter = buffer.find("|");
 		if (delimiter == std::string::npos)
-			throw std::runtime_error("invalid format for \"" + buffer + "\", required: \"[date] | [value]\"");
-		std::string dateStr(buffer.substr(0, delimiter));
+		{
+			_printError("invalid format for \"" + buffer + "\", required: \"[date] | [value]\"");
+			continue;
+		}
+		size_t len = delimiter;
+		if (!std::isdigit(buffer[delimiter]))
+			--len;
+		std::string dateStr(buffer.substr(0, len));
 		std::string tmpValueStr(buffer.substr(delimiter + 1));
+	
 		// 1. "[date][space]|[space][value]"
 		if (dateStr.empty() || tmpValueStr.empty()
-			|| dateStr[dateStr.size() - 1] != ' '
+			|| buffer[delimiter - 1] != ' '
 			|| tmpValueStr[0] != ' ')
-			throw std::runtime_error("invalid format for: " + buffer);
+		{
+			_printError("_parsingInput() - invalid format for: " + buffer);
+			continue;
+		}
 
 		std::string valueStr(tmpValueStr.substr(1, tmpValueStr.size() - 1));
 		
 		// 2. date: Year-Month-Day
-		_isValideDate(dateStr);
+		if (_isValideDate(dateStr))
+			continue;
 
 		// 3. value: a float or a positive integer, between 0 and 1000
-		double valueD = _strTdo(valueStr);
+		double valueD;
+		if (_strTdo(valueD, valueStr, "_parsingInput()"))
+			continue;
 		if (valueD < 0 || valueD > 1000)
-			throw std::runtime_error("Value \"" + valueStr + "\" is invalid,"
-				"format required: a float or a positive integer, between 0 and 1000");
+		{
+			_printError("value \"" + valueStr + "\" is invalid,"
+				" format required: a float or a positive integer, between 0 and 1000");
+			continue;
+		}
 
-				
-
+		// Send date and value to calcul
+		_calculExchange(dateStr, valueD);
 	}
 	file.close();
 }
 
-void	BitcoinExchange::_isValideDate( const std::string& date )
+int	BitcoinExchange::_isValideDate( const std::string& date )
 {
 	// Date: [Year]-[Month]-[Day]
 	// Year >= creation bitcoin
@@ -102,20 +120,36 @@ void	BitcoinExchange::_isValideDate( const std::string& date )
 	// Day: [01 - 31] -> ! 30 or 31 ! -> Leap year
 
 	// Is format: [Year]-[Month]-[Day]
-	size_t delimiter = date.find('-');
-	if (delimiter == std::string::npos)
-		throw std::runtime_error("invalid format for: " + date);
-	std::string yearStr(date.substr(0, delimiter));
-	std::string monthStr(date.substr(delimiter + 1, 2));
-	delimiter = date.find('-', delimiter + 1);
-	if (delimiter == std::string::npos)
-		throw std::runtime_error("invalid format for: " + date);
-	std::string dayStr(date.substr(delimiter + 1, 2));
+	size_t delimiterYear = date.find('-');
+	if (delimiterYear == std::string::npos)
+	{
+		_printError("_isValideDate() - invalid format for: " + date);
+		return (1);
+	}
+	size_t delimiterMonth = date.find('-', delimiterYear + 1);
+	if (delimiterMonth == std::string::npos)
+	{
+		_printError("_isValideDate() - invalid format for: " + date);
+		return (1);
+	}
+
+	size_t len = delimiterYear;
+	std::string yearStr(date.substr(0, len));
+	len = delimiterMonth - delimiterYear;
+	--len;
+	std::string monthStr(date.substr(delimiterYear + 1, len));
+	len = (date.size() - delimiterMonth) + 1;
+	std::string dayStr(date.substr(delimiterMonth + 1, len + 2));
 
 	// convert to double
-	double yearD = _strTdo(yearStr);
-	double monthD = _strTdo(monthStr);
-	double dayD = _strTdo(dayStr);
+	double yearD;
+	if (_strTdo(yearD, yearStr, "_isValideDate() - year"))
+		return (1);
+	double monthD; 
+	if (_strTdo(monthD, monthStr, "_isValideDate() - month"))
+		return (1);
+	double dayD;
+	if (_strTdo(dayD, dayStr, "_isValideDate() - day"))
 	// std::cout << year << std::endl;
 	// std::cout << yearStr << std::endl;
 	// std::cout << month << std::endl;
@@ -124,13 +158,30 @@ void	BitcoinExchange::_isValideDate( const std::string& date )
 	// std::cout << dayStr << std::endl;
 
 	if (yearD < 2009 || (yearD < 2009 && dayD < 3))
-		throw std::runtime_error("Date " + date + " is before Bitcoin creation");
+	{
+		_printError(date + " is before Bitcoin creation");
+		return (1);
+	}
 	if (yearD >= INT_MAX)
-		throw std::runtime_error("Are you sure you will be alive ? or Earth will be ?");
+	{
+		_printError(date + " are you sure you will be alive ? or Earth will be ?");
+		return (1);
+	}
 	if (monthD < 1 || monthD > 12)
-		throw std::runtime_error("month " + monthStr + " unexist");
+	{
+		_printError(date + " month " + monthStr + " unexist");
+		return (1);
+	}
 	if (dayD < 1 || dayD > 31)
-		throw std::runtime_error("day " + dayStr + " unexist");
+	{
+		if (dayD == 0)
+		{
+			_printError(date + " day can't unexist");
+			return (1);
+		}
+		_printError(date + " day " + dayStr + " unexist");
+		return (1);
+	}
 	else
 	{ // Leap year -> search on wikipedia
 		// (year % 4) == 0 -> leap
@@ -153,19 +204,55 @@ void	BitcoinExchange::_isValideDate( const std::string& date )
 					leap = true;
 			}
 			if (leap && day > 29)
-				throw std::runtime_error("Leap year " + yearStr + ", day " + dayStr + " unexist for " + date);
+			{
+				_printError(date + " leap year " + yearStr + ", day " + dayStr + " unexist");
+				return (1);
+			}
 			if (!leap && day > 28)
-				throw std::runtime_error("February day " + dayStr + " unexist for " + date);
+			{
+				_printError(date + " February day " + dayStr + " unexist");
+				return (1);
+			}
 		}
 		if (month == 4 || month == 6 || month == 9 || month == 11)
 		{
 			if (day > 30)
-				throw std::runtime_error("Month " + months[month] + " has only 30 days, not " + dayStr);
+			{
+				_printError(date + " month " + months[month] + " has only 30 days, not " + dayStr);
+				return (1);
+			}
 		}
 	}
+	return (0);
 }
 
-void	BitcoinExchange::_calculValues( void )
+void	BitcoinExchange::_printMap( const std::map<std::string, double>& arr )
+{
+	std::map<std::string, double>::const_iterator it;
+	for (it = arr.begin(); it != arr.end(); ++it)
+		std::cout << it->first << " -> " << it->second << std::endl;
+}
+
+int	BitcoinExchange::_strTdo( double& target, const std::string& src, const std::string& context )
+{
+	double	value;
+	char	*pEnd;
+	value = std::strtod(src.c_str(), &pEnd);
+	if ( *pEnd != '\0' || errno == ERANGE || value < 0 )
+	{
+		_printError(context + " invalid value for: " + src);
+		return (1);
+	}
+	target = value;
+	return (0);
+}
+
+// std::stringstream	ss;
+// ss << valueD;
+// std::string res(ss.str());
+// std::cout << res << std::endl;
+
+void	BitcoinExchange::_calculExchange( const std::string& date, const double& value )
 {
 	/*
 	Your program should display on the standard output the result of the value multiplied
@@ -179,60 +266,26 @@ lower date and not the upper one.
 	2. multpilier la valeur du inputFile par la valeur de la database
 	3. 
 	*/
-
-
-}
-
-void	BitcoinExchange::_printMap( const std::map<std::string, double>& arr )
-{
-	std::map<std::string, double>::const_iterator it;
-	for (it = arr.begin(); it != arr.end(); ++it)
-		std::cout << it->first << " -> " << it->second << std::endl;
-}
-
-std::string	BitcoinExchange::_getWordFromStr( const std::string& src, size_t* start, const size_t& end, const std::string& context)
-{
-	size_t	i = *start;
-	size_t	wordEnd = 0;
-
-	if (src.empty())
-		return (std::string());
-	while (i < end)
+	// if date find -> exchange = value * (_database[date])
+	std::map<std::string, double>::const_iterator matchDate;
+	matchDate = _dataBase.begin();
+	while (matchDate != _dataBase.end())
 	{
-		if (!std::isspace(src[i]))
-		{
-			wordEnd = i;
-			while (wordEnd < end && !std::isspace(src[wordEnd]))
-				wordEnd++;
-			if (wordEnd > i)
-			{
-				std::string res = src.substr(i, wordEnd - i);
-				*start = wordEnd;
-				return (res);
-			}
+		if (matchDate->first > date || matchDate->first == date)
 			break;
-		}
-		++i;
+		++matchDate;
 	}
-	if (i >= end)
-	{
-		*start = i;
-		return (std::string());
-	}
-	throw std::runtime_error(context + " getWord() wrong format");
+	--matchDate;
+	// std::cout << "Date cible: " << date<< std::endl;
+	// std::cout << "Database: " << matchDate->first << " -> " << matchDate->second << std::endl;
+	double res = value * matchDate->second;
+	std::stringstream	ss;
+	ss << matchDate->second << " = " << res;
+	std::cout << date << "=> " << ss.str() << std::endl;
+
 }
 
-double	BitcoinExchange::_strTdo( const std::string& src )
+void	BitcoinExchange::_printError( const std::string& message )
 {
-	double	value;
-	char	*pEnd;
-	value = std::strtod(src.c_str(), &pEnd);
-	if ( *pEnd != '\0' || errno == ERANGE || value < 0 )
-		throw std::runtime_error("invalid value for: " + src);
-	return (value);
+	std::cout << RED << "Error: " << message << RESET << std::endl;
 }
-
-// std::stringstream	ss;
-// ss << valueD;
-// std::string res(ss.str());
-// std::cout << res << std::endl;
