@@ -2,8 +2,9 @@
 #include <fstream>
 #include <cstdlib>
 #include <climits>
+#include<bits/stdc++.h>
 
-const std::string months = {"January", "Februray", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+static const std::string months[] = {"January", "Februray", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
 void	BitcoinExchange::start( const std::string& inputFile )
 {
@@ -63,26 +64,32 @@ void	BitcoinExchange::_parsingInput( const std::string& inputFile )
 	if (buffer != "date | value")
 		throw std::runtime_error("invalid format for: " + buffer + ", required: \"date | value\"");
 
-	// std::string	date;
-	// size_t i = 0;
-	// date = getWordFromStr(buffer, &i, buffer.size(), "parsing");
 	while (std::getline(file, buffer))
 	{
 		size_t delimiter = buffer.find("|");
 		if (delimiter == std::string::npos)
 			throw std::runtime_error("invalid format for \"" + buffer + "\", required: \"[date] | [value]\"");
-		std::string date(buffer.substr(0, delimiter));
-		std::string valueStr(buffer.substr(delimiter + 1));
+		std::string dateStr(buffer.substr(0, delimiter));
+		std::string tmpValueStr(buffer.substr(delimiter + 1));
 		// 1. "[date][space]|[space][value]"
-		if (date.empty() || valueStr.empty()
-			|| date[date.size() - 1] != ' '
-			|| valueStr[0] != ' ')
+		if (dateStr.empty() || tmpValueStr.empty()
+			|| dateStr[dateStr.size() - 1] != ' '
+			|| tmpValueStr[0] != ' ')
 			throw std::runtime_error("invalid format for: " + buffer);
+
+		std::string valueStr(tmpValueStr.substr(1, tmpValueStr.size() - 1));
 		
 		// 2. date: Year-Month-Day
-		_isValideDate(date);
+		_isValideDate(dateStr);
 
 		// 3. value: a float or a positive integer, between 0 and 1000
+		double valueD = _strTdo(valueStr);
+		if (valueD < 0 || valueD > 1000)
+			throw std::runtime_error("Value \"" + valueStr + "\" is invalid,"
+				"format required: a float or a positive integer, between 0 and 1000");
+
+				
+
 	}
 	file.close();
 }
@@ -153,9 +160,8 @@ void	BitcoinExchange::_isValideDate( const std::string& date )
 		if (month == 4 || month == 6 || month == 9 || month == 11)
 		{
 			if (day > 30)
-				throw std::runtime_error("Month " + monthStr + " has only 30 days, not " + dayStr);
+				throw std::runtime_error("Month " + months[month] + " has only 30 days, not " + dayStr);
 		}
-		// remplacer les mois appeler en str par l appel a la str months au debut du file
 	}
 }
 
@@ -225,3 +231,8 @@ double	BitcoinExchange::_strTdo( const std::string& src )
 		throw std::runtime_error("invalid value for: " + src);
 	return (value);
 }
+
+// std::stringstream	ss;
+// ss << valueD;
+// std::string res(ss.str());
+// std::cout << res << std::endl;
